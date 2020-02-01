@@ -2,12 +2,10 @@
 
 Basque is a top down 2d game engine.
 
-### Basque currently requires:
+---
 
--   SDL2
--   SDL2_image
--   SDL2_mixer
--   SDL2_ttf
+![Basque demo](https://github.com/ryanpcmcquen/basque/raw/master/assets/images/basque_demo.gif 'Basque demo')
+![Basque demo 2](https://github.com/ryanpcmcquen/basque/raw/master/assets/images/basque_demo_2.gif 'Basque demo 2')
 
 ---
 
@@ -32,6 +30,15 @@ Basque is a top down 2d game engine.
 <kbd>Mouse button 1</kbd> (left click): Place tile
 
 <kbd>Mouse button 2</kbd> (right click): Select tile
+
+---
+
+### Basque currently requires:
+
+-   SDL2
+-   SDL2_image
+-   SDL2_mixer
+-   SDL2_ttf
 
 ---
 
