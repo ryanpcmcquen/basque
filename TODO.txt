@@ -1,0 +1,52 @@
+x ) Get compilation on Lin/Mac/Win working.
+x ) Get portion of sprite sheet rendering on screen.
+x ) Fix sprite animations.
+x ) Add bounds checking to keep the player from walking off the screen.
+x ) Draw background.
+x ) Add scrolling of perspective as player moves.
+x ) Generate background map from tileset.
+x ) Improve map rendering so that player position can be tied to tile in X/Y space.
+x ) Only reload `map_layout.txt` if file timestamp is newer.
+x ) Improve collision detection.
+x ) Hot load tile attributes.
+x ) Add music.
+x ) Get scrolling working (again).
+x ) Detect collision on ticks instead of on input.
+
+) Map editor!
+    x ) Find out why empty columns are not being outlined.
+    x ) Draw grid on current screen that shows each tile separated.
+    x ) Show number of all tiles.
+    x ) Allow mouse to place a tile.
+    x ) Allow mouse to clear a tile.
+    x ) Fix mouse positioning.
+    x ) Display library or reference map.
+    x ) Display map library at 0, 0 point on current window.
+    x ) Investigate seg fault after placing a few tiles.
+    x ) Improve font outline for tile labels.
+    x ) Improve border color/thickness, if not showing actual width.
+    x ) Allow a new row to be added to (and existing rows).
+    x ) Investigate tile display corruption starting at row 26 for tiles that are greater than 9.
+    x ) Bulk add tiles (this kind of already works on empty rows, but it is filled with weirdness).
+    x ) Cannot bulk fill tiles on newlines ... cannot create newlines?
+    x ) Investigate random segfaults at bounds of map.
+
+    ) Add a way to delete tiles.
+    ) Implement undo/redo functionality.
+
+x ) Add fullscreen support.
+x ) Lock file writing in the map editor, so we don't get race conditions if the user clicks too quickly.
+
+) Improve scrolling, it doesn't move at the right pace (build out a larger map to demo the issue).
+) Allow the frame rate to be capped.
+) Expand the map.
+) Decide whether to look around all tiles for collisions or to expand border attributes for tiles.
+) Add ball.
+) Add NPC.
+) Add dynamic window sizing.
+
+
+----------------------------------------------------------
+
+Maybes:
+) (Map editor) Draw border to match tile attributes?
