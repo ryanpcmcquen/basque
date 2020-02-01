@@ -1,4 +1,4 @@
-Original links for these assets:
+Original links for these assets (both Public Domain):
 
 https://opengameart.org/content/zelda-like-tilesets-and-sprites
 
