@@ -56,7 +56,7 @@ The current map system utilizes three main files:
 -   map_layout.txt
 -   map_library.txt
 
-While editing the map, `map_layout.txt` has suffixed versions created, with the intention of supporting future redo/undo functionality. The current number of versions that are kept is 100. This is of course, configurable.
+While editing the map, you may use the visual map editor (available in `DEBUG_MODE` by pressing <kbd>e</kbd>) or edit the text files directly. Basque checks the timestamps of the files, and will reload them if they change, you do not need to recompile or relaunch Basque to do this. `map_layout.txt` also has suffixed versions created, with the intention of supporting future redo/undo functionality. The current number of versions that are kept is 100. This is of course, configurable.
 
 `map_attributes.txt` follows the following format (all items are integers):
 
