@@ -16,6 +16,7 @@ bool map_char_is_not_tile_info(char char_to_check)
 {
     return char_to_check == ' ' || char_to_check == '\0' || char_to_check == '\n' || char_to_check == ',';
 }
+
 #define map_memory_alloc(game)                                                    \
     {                                                                             \
         game->map.columns_in_row = (int*)calloc(game->map.rows, sizeof(int));     \
@@ -343,6 +344,11 @@ void generate_map(App* app, GameState* game)
                 break;
             }
             // Actual tiles!
+            // We make sure the last character is not
+            // tile info (an integer), because if it
+            // is, we should have already processed
+            // it and recorded it to our layout
+            // data.
             if (map_char_is_not_tile_info(last_char)) {
                 // We skip processing unless the last char is fluff.
                 last_char = game->map.layout_string[i];

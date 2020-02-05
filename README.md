@@ -40,10 +40,47 @@ Why not just use Godot/Unity/et cetera? Basque has a very different priority lis
 -   Map editing (with an easy to understand plain text format).
 -   Spritesheet animation.
 -   Background music.
+-   Scrolling.
 -   Collision detection.
--   Some frame rate limiting (this should be improved).
+-   Some frame rate limiting.
 
-At this point the engine will start becoming more specific to the game I am building, which is why I see this as the best time to open source it. Since it could be useful to others, either as a starting point, or just as a guide of how to do some things with SDL2. Note that all of the code is not necessarily the best solution to these problems, but it is _a_ solution.
+Everything that is here should not be considered a final or optimal solution, but rather, 'a good start'. At this point the engine will start becoming more specific to the game I am building, which is why I see this as the best time to open source it. Hopefully, it can be useful to others, either as a starting point, or as a guide of how to do some things with SDL2. Note that all of the code here is not necessarily the best solution to these problems, but it is _a_ solution.
+
+---
+
+### Map editing/layouts/attributes:
+
+The current map system utilizes three main files:
+
+-   map_attributes.txt
+-   map_layout.txt
+-   map_library.txt
+
+While editing the map, `map_layout.txt` has suffixed versions created, with the intention of supporting future redo/undo functionality. The current number of versions that are kept is 100. This is of course, configurable.
+
+`map_attributes.txt` follows the following format (all items are integers):
+
+```
+TILE_INDEX:
+{ X_CLIP, Y_CLIP }, { NORTH_BORDER, EAST_BORDER, SOUTH_BORDER, WEST_BORDER }, ELEVATION,
+```
+
+Comments preceded with `//` in the attributes file are allowed. The other file types do not allow comments.
+
+`map_layout.txt` and `map_library.txt` are comma separated integers, representing the tile indices. Newlines represent new rows.
+
+For example:
+
+```
+  0,  1,  2,  3,  4,  1,  5,  _
+ 27, 16, 16, 16, 16, 16, 17,  _
+ 27, 16, 16, 16, 16, 16, 17,  _
+ 27, 16, 28, 16, 16, 16, 17,  _
+```
+
+The visual map editor (available in `DEBUG_MODE` by pressing <kbd>e</kbd>) automatically writes the indices with even spacing. `_` is a shortcut for a blank tile (the index for which is configurable under `configuration.h`).
+
+`map_library.txt` is intended to be a resource for picking tiles (available in `DEBUG_MODE -> EDIT_MODE` by pressing <kbd>l</kbd>), while editing the world map (`map_layout.txt`). It has a few special properties. It will not show the player, and it always appears starting at the top left corner of the screen. It is also _not_ editable by the map editor.
 
 ---
 
