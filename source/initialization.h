@@ -31,6 +31,7 @@ void cleanup(void)
 
     IMG_Quit();
     Mix_CloseAudio();
+    Mix_Quit();
     TTF_Quit();
     SDL_Quit();
 }
