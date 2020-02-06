@@ -26,6 +26,9 @@ void cleanup(void)
         TTF_CloseFont(game.font);
     }
 
+    // Good to clean this up if we have a bad exit.
+    remove(MAP_LOCK_FILE);
+
     IMG_Quit();
     Mix_CloseAudio();
     TTF_Quit();
@@ -94,7 +97,7 @@ int init()
                         SDL_Surface* font_surface;
                         SDL_Rect font_rect;
 
-                        char map_tile_str[TILE_CHAR_LIMIT];
+                        char map_tile_str[TILE_CHAR_LIMIT] = { 0 };
                         for (int tile_index = 0; tile_index < NUMBER_OF_TILES; tile_index++) {
                             snprintf(map_tile_str, sizeof(char[TILE_CHAR_LIMIT]), "%-3i", tile_index);
                             create_outlined_font(game, map_tile_str, font_outline_surface, font_surface, font_outline_color, font_color, font_rect);

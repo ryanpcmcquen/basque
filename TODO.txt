@@ -38,11 +38,9 @@ x ) Add fullscreen support.
 x ) Lock file writing in the map editor, so we don't get race conditions if the user clicks too quickly.
 
 ) Improve scrolling, it doesn't move at the right pace (build out a larger map to demo the issue).
-) Allow the frame rate to be capped.
+) Improve frame rate limiting.
 ) Expand the map.
 ) Decide whether to look around all tiles for collisions or to expand border attributes for tiles.
-) Add ball.
-) Add NPC.
 ) Add dynamic window sizing.
 
 

@@ -170,7 +170,7 @@ void write_map_layout(GameState* game)
             }
             for (int column = 0; column < game->map.columns_in_row[row]; column++) {
 
-                char tmp[TILE_CHAR_LIMIT];
+                char tmp[TILE_CHAR_LIMIT] = { 0 };
                 // Convert integer to string:
                 if (game->map.layout[row][column] == EMPTY_COLUMN) {
                     tmp[0] = ' ';

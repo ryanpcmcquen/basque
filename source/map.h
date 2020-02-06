@@ -1,12 +1,5 @@
 #include "types.h"
 
-enum directions {
-    NORTH = 0,
-    EAST,
-    SOUTH,
-    WEST
-};
-
 bool map_char_is_tile_info(char char_to_check)
 {
     return char_to_check != ' ' && char_to_check != '\0' && char_to_check != '\n' && char_to_check != ',';
@@ -101,12 +94,12 @@ void read_map_attributes(GameState* game)
 
         // Make this allocate less memory,
         // it is wasteful right now.
-        char* tmp = (char*)calloc(200, sizeof(char));
+        char tmp[ATTRIBUTE_CHAR_LIMIT] = { 0 };
         switch (game->map.attributes_string[i]) {
 
         case ':': {
             // Start of tile.
-            char tile_string[TILE_CHAR_LIMIT];
+            char tile_string[TILE_CHAR_LIMIT] = { 0 };
             while (game->map.attributes_string[i] != '\n') {
                 // Allow comments to have colons too.
                 if (game->map.attributes_string[i] == '/') {
@@ -149,7 +142,7 @@ void read_map_attributes(GameState* game)
             tmp[attribute_index] = '\0';
             int tmp_counter = -1;
 
-            char* attribute = (char*)calloc(8, sizeof(tmp));
+            char* attribute = (char*)calloc(ATTRIBUTE_LENGTH, sizeof(char));
             int attribute_counter = 0;
 
             get_next_attribute(attribute, attribute_counter, tmp, tmp_counter);
@@ -223,7 +216,6 @@ void read_map_attributes(GameState* game)
                 game->map.tile_attributes[tile_index].elevation = 0;
             }
 
-            free(tmp);
         } break;
 
         default: {
@@ -357,13 +349,17 @@ void generate_map(App* app, GameState* game)
 
                 // @Robustness: this feels kinda sloppy, it can probably be improved later.
                 if (map_char_is_tile_info(game->map.layout_string[i + 1])) {
-                    char map_str_group[TILE_CHAR_LIMIT];
+                    // Initialize this array with zeros, so we can
+                    // guarantee weird characters do not end
+                    // up in the map layout files.
+                    char map_str_group[TILE_CHAR_LIMIT] = { 0 };
+
                     map_str_group[0] = game->map.layout_string[i];
                     map_str_group[1] = game->map.layout_string[i + 1];
                     if (map_char_is_tile_info(game->map.layout_string[i + 2])) {
                         map_str_group[2] = game->map.layout_string[i + 2];
                     }
-                    map_str_group[3] = '\0';
+
                     map_tile = atoi(map_str_group);
                 } else {
                     map_tile = game->map.layout_string[i] - '0';

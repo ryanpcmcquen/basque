@@ -16,6 +16,13 @@ typedef struct {
     int y;
 } Axes;
 
+enum directions {
+    NORTH = 0,
+    EAST,
+    SOUTH,
+    WEST
+};
+
 typedef struct {
     int north;
     int east;
