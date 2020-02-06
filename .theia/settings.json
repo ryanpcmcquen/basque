@@ -1,0 +1,7 @@
+{
+    "editor.autoClosingBrackets": "never",
+    "files.associations": {
+        "*.c": "c",
+        "*.h": "c"
+    }
+}

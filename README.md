@@ -9,6 +9,12 @@ Basque is a top down 2d game engine.
 
 ---
 
+Too lazy to do local setup, you can actually give it a spin using Gitpod!
+
+[![Gitpod Ready-to-Code](https://img.shields.io/badge/Gitpod-Ready--to--Code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/ryanpcmcquen/basque)
+
+---
+
 #### Global keyboard shortcuts:
 
 <kbd>↑</kbd>: Move player North
