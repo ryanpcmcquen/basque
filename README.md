@@ -1,6 +1,6 @@
 # Basque
 
-Basque is a top down 2d game engine.
+Basque is a top-down 2d game engine.
 
 ---
 
