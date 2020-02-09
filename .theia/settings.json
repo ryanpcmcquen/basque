@@ -1,5 +1,6 @@
 {
     "editor.autoClosingBrackets": "never",
+    "editor.formatOnSave": true,
     "files.associations": {
         "*.c": "c",
         "*.h": "c"
