@@ -9,7 +9,7 @@ Basque is a top-down 2d game engine.
 
 ---
 
-Too lazy to do local setup? You can give it a spin using Gitpod!
+Too lazy to do local setup? You can give it a spin using Gitpod (no sound or key repeats though)!
 
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/ryanpcmcquen/basque)
 
