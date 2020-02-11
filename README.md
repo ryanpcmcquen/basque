@@ -152,3 +152,7 @@ nmake
 ```
 
 ---
+
+### Running:
+
+After [compiling](#compiling) for your platform, you can launch with `./basque` (or `basque.exe` on Windows). Passing `-f` or `--fullscreen` will launch the app in fullscreen, rather than the resolution specified in [configuration.h](source/configuration.h).
