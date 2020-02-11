@@ -2,13 +2,12 @@
 
 int main(int argc, char* argv[])
 {
-    // Fake out the 'unused' parameters so that
-    // Clang does not complain. We do
-    // actually need these for
-    // Windows since SDL_main
-    // uses them.
-    (void)argc;
-    (void)argv;
+    for (int argument_index = 0; argument_index < argc; argument_index++) {
+        printf("%s\n", argv[argument_index]);
+        if (strcmp(argv[argument_index], "-f") == 0 || strcmp(argv[argument_index], "--fullscreen") == 0) {
+            FULLSCREEN_MODE = 1;
+        }
+    }
 
     memset(&app, 0, sizeof(App));
     memset(&game, 0, sizeof(GameState));
