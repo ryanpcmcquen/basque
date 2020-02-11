@@ -285,9 +285,6 @@ void handle_input(App* app, GameState* game)
             if (strcmp(game->map.layout_file, MAP_LAYOUT_FILE) == 0) {
                 handle_collisions(game);
 
-                // @Robustness:
-                // Need to account for the value of blank tiles, which is currently:
-                // 1693351072
                 current_tile_y = (game->player.global.y + PLAYER_SPRITE_HEIGHT) / TILE_SPRITE_HEIGHT;
                 current_tile_x = (game->player.global.x + (PLAYER_SPRITE_COLUMN_WIDTH / 2)) / TILE_SPRITE_WIDTH;
 
@@ -478,16 +475,7 @@ void handle_input(App* app, GameState* game)
                                 game->map.rows = mouse_tile.y;
 
                                 game->map.columns_in_row[mouse_tile.y] = 0;
-
-                                // while (game->map.columns_in_row[mouse_tile.y] < (mouse_tile.x + 1)) {
-                                //     game->map.layout[mouse_tile.y][game->map.columns_in_row[mouse_tile.y]] = game->editor.selected_tile;
-                                //     // Increase the number of columns in the row:
-                                //     game->map.columns_in_row[mouse_tile.y] = game->map.columns_in_row[mouse_tile.y] + 1;
-                                // }
-                                // game->map.layout[mouse_tile.y][mouse_tile.x + 1] = '\n';
                             }
-
-                            // map_memory_alloc(game);
 
                             // If the row is completely empty, fill everything up to
                             // mouse_tile.x with EMPTY_COLUMN.

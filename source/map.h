@@ -291,10 +291,6 @@ void generate_map(App* app, GameState* game)
             break;
         }
         switch (game->map.layout_string[i]) {
-        // @Weirdness, for some reason this has to be first,
-        // otherwise underscores fall into the comma and
-        // spaces case. I should investigate that at
-        // some point.
         case '_': {
             draw_edit_grid(app, game, background, EMPTY_COLUMN);
 

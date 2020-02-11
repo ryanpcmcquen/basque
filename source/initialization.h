@@ -57,7 +57,6 @@ int init()
 
         if (app.window != NULL) {
             app.renderer = SDL_CreateRenderer(app.window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-            // app.renderer = SDL_CreateRenderer(app.window, -1, SDL_RENDERER_ACCELERATED);
 
             if (app.renderer != NULL) {
 
@@ -68,9 +67,10 @@ int init()
                 // SDL_GetWindowSize(app.window, app.screen_width, app.screen_height);
                 // SDL_Log("Screen width: %i\n", app.screen_width);
                 // SDL_Log("Screen height: %i\n", app.screen_height);
-                // SDL_SetWindowFullscreen(app.window, SDL_WINDOW_FULLSCREEN);
-                // SDL_SetWindowFullscreen(app.window, SDL_WINDOW_FULLSCREEN_DESKTOP);
-                // SDL_SetWindowFullscreen(app.window, 0);
+                if (FULLSCREEN_MODE) {
+                    // Other options available: SDL_WINDOW_FULLSCREEN_DESKTOP or 0
+                    SDL_SetWindowFullscreen(app.window, SDL_WINDOW_FULLSCREEN);
+                }
 
                 SDL_RenderSetScale(
                     app.renderer,
