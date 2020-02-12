@@ -48,8 +48,6 @@ typedef struct {
     // This goes North, East, South, and West
     // (in increasing order by degree).
     Directions border;
-
-    int elevation;
 } Tile_Data;
 
 typedef struct {

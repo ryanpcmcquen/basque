@@ -139,7 +139,7 @@ void write_map_layout(GameState* game)
     int lock_file_time = read_file_time(MAP_LOCK_FILE);
     SDL_Log("Lock file time: %i\n", lock_file_time);
 
-    if (lock_file_time >= 0) {
+    if (lock_file_time != 0) {
         // SDL_Log("Lock file time: %i\n", lock_file_time);
 
         char* new_map_layout_file = (char*)calloc(strlen(game->map.layout_file) + 4, sizeof(char));

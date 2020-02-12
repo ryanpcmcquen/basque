@@ -70,7 +70,7 @@ While editing the map, you may use the visual map editor (available in `DEBUG_MO
 
 ```
 TILE_INDEX:
-{ X_CLIP, Y_CLIP }, { NORTH_BORDER, EAST_BORDER, SOUTH_BORDER, WEST_BORDER }, ELEVATION,
+{ X_CLIP, Y_CLIP }, { NORTH_BORDER, EAST_BORDER, SOUTH_BORDER, WEST_BORDER },
 ```
 
 Comments preceded with `//` in the attributes file are allowed. The other file types do not allow comments.

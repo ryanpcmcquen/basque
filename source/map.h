@@ -208,14 +208,6 @@ void read_map_attributes(GameState* game)
                 game->map.tile_attributes[tile_index].border.west = 0;
             }
 
-            get_next_attribute(attribute, attribute_counter, tmp, tmp_counter);
-            if (attribute != NULL) {
-                game->map.tile_attributes[tile_index].elevation = atoi(attribute);
-                free(attribute);
-            } else {
-                game->map.tile_attributes[tile_index].elevation = 0;
-            }
-
         } break;
 
         default: {
