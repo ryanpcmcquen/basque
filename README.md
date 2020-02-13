@@ -41,16 +41,16 @@ Too lazy to do local setup? You can give it a spin using Gitpod (no sound or key
 
 ### Why do this?
 
-Why not just use Godot/Unity/et cetera? Basque has a very different priority list than these engines. It is _not_ a generic engine. There isn't much here, but it is a good starting point if you are looking to roll your own engine, here is what it does do:
+Why not just use Godot/Unity/et cetera? Basque has a very different priority list than these engines. It is _not_ a generic engine. There isn't much here, but it is a good starting point if you are looking to roll your own engine, here is what it does:
 
--   Cross platform (Linux/Mac/Windows, should work on BSD or Haiku as well).
--   Map editing (with an easy to understand plain text format).
+-   Compiles cross platform (Linux/Mac/Windows, should work on BSD or Haiku as well).
+-   Visual map editing (with an easy to understand plain text format).
 -   Spritesheet animation.
 -   Background music.
 -   Scrolling.
 -   Collision detection.
 -   Some frame rate limiting.
--   Command line arguments (currently only for enabling fullscreen mode).
+-   Accepts command line arguments (currently only for enabling fullscreen mode).
 
 Everything that is here should not be considered a final or optimal solution, but rather, 'a good start'. At this point the engine will start becoming more specific to the game I am building, which is why I see this as the best time to open source it. Hopefully, it can be useful to others, either as a starting point, or as a guide of how to do some things with SDL2. Note that all of the code here is not necessarily the best solution to these problems, but it is _a_ solution.
 
