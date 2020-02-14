@@ -139,8 +139,10 @@ void write_map_layout(GameState* game)
     int lock_file_time = read_file_time(MAP_LOCK_FILE);
     SDL_Log("Lock file time: %i\n", lock_file_time);
 
-    if (lock_file_time != 0) {
-        // SDL_Log("Lock file time: %i\n", lock_file_time);
+    // On some operating systems, the time for an
+    // empty file will be 0, on other systems,
+    // it will be a negative integer.
+    if (lock_file_time < 1) {
 
         char* new_map_layout_file = (char*)calloc(strlen(game->map.layout_file) + 4, sizeof(char));
         snprintf(new_map_layout_file, sizeof(char) * (strlen(game->map.layout_file) + 4), "%s_%i%s", game->map.layout_file_base, game->editor.layout_file_suffix, TXT_EXTENSION);
@@ -208,9 +210,12 @@ void write_map_layout(GameState* game)
                     new_map_str_counter++;
                 }
             }
+
+            // This is necessary!
             new_map_str[new_map_str_counter] = '\n';
             new_map_str_counter++;
         }
+
         int new_map_str_length = strlen(new_map_str);
         new_map_str[new_map_str_length] = '\0';
         // SDL_Log("%s\n", new_map_str);
@@ -241,7 +246,10 @@ void write_map_layout(GameState* game)
         remove(MAP_LOCK_FILE);
     } else {
         // Do not write if there is a lock file, to avoid obliterating the map.
-        //return;
+        // @TODO:
+        // Would be nice to give the user some feedback, if there was a lock.
+        // SDL_SetRenderDrawColor(app->renderer, 250, 25, 0, 150);
+        SDL_Log("Map lock file present.");
     }
 }
 

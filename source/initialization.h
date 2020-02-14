@@ -117,13 +117,13 @@ int init()
                         game.editor.text_textures[NUMBER_OF_TILES + EMPTY_COLUMN] = SDL_CreateTextureFromSurface(app.renderer, game.editor.text_surfaces[NUMBER_OF_TILES + EMPTY_COLUMN]);
 
                         // Set end of row label:
-                        snprintf(map_tile_str, sizeof(char[TILE_CHAR_LIMIT]), "%-3i", END_OF_ROW);
-                        create_outlined_font(game, map_tile_str, font_outline_surface, font_surface, font_outline_color, font_color, font_rect);
+                        // snprintf(map_tile_str, sizeof(char[TILE_CHAR_LIMIT]), "%s", "\\n");
+                        // create_outlined_font(game, map_tile_str, font_outline_surface, font_surface, font_outline_color, font_color, font_rect);
 
-                        // game.editor.text_surfaces[END_OF_ROW] = font_outline_surface;
-                        // game.editor.text_textures[END_OF_ROW] = SDL_CreateTextureFromSurface(app.renderer, game.editor.text_surfaces[END_OF_ROW]);
-                        game.editor.text_surfaces[NUMBER_OF_TILES + END_OF_ROW] = font_outline_surface;
-                        game.editor.text_textures[NUMBER_OF_TILES + END_OF_ROW] = SDL_CreateTextureFromSurface(app.renderer, game.editor.text_surfaces[NUMBER_OF_TILES + END_OF_ROW]);
+                        // // game.editor.text_surfaces[END_OF_ROW] = font_outline_surface;
+                        // // game.editor.text_textures[END_OF_ROW] = SDL_CreateTextureFromSurface(app.renderer, game.editor.text_surfaces[END_OF_ROW]);
+                        // game.editor.text_surfaces[NUMBER_OF_TILES + END_OF_ROW] = font_outline_surface;
+                        // game.editor.text_textures[NUMBER_OF_TILES + END_OF_ROW] = SDL_CreateTextureFromSurface(app.renderer, game.editor.text_surfaces[NUMBER_OF_TILES + END_OF_ROW]);
 
                         SDL_FreeSurface(font_surface);
                         SDL_FreeSurface(font_outline_surface);
