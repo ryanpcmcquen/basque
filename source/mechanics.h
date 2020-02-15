@@ -132,18 +132,16 @@ void handle_collisions(GameState* game)
     }
 }
 
-void write_map_layout(GameState* game)
+int write_map_layout(GameState* game)
 {
-    // Create a lock file, while writing the map layout,
-    // and if it exists, do not try to write anything.
-    int lock_file_time = read_file_time(MAP_LOCK_FILE);
-    SDL_Log("Lock file time: %i\n", lock_file_time);
 
-    // On some operating systems, the time for an
-    // empty file will be 0, on other systems,
-    // it will be a negative integer.
-    if (lock_file_time < 1) {
-
+    if (file_exists(MAP_LOCK_FILE)) {
+        // Do not write if there is a lock file, to avoid obliterating the map.
+        // @TODO:
+        // Would be nice to give the user some feedback, if there was a lock.
+        // SDL_SetRenderDrawColor(app->renderer, 250, 25, 0, 150);
+        return 0;
+    } else {
         char* new_map_layout_file = (char*)calloc(strlen(game->map.layout_file) + 4, sizeof(char));
         snprintf(new_map_layout_file, sizeof(char) * (strlen(game->map.layout_file) + 4), "%s_%i%s", game->map.layout_file_base, game->editor.layout_file_suffix, TXT_EXTENSION);
         new_map_layout_file[strlen(new_map_layout_file)] = '\0';
@@ -192,7 +190,6 @@ void write_map_layout(GameState* game)
                     snprintf(tmp, sizeof(tmp), "%3i", game->map.layout[row][column]);
                 }
                 int tmp_length = strlen(tmp);
-                tmp[tmp_length] = '\0';
 
                 for (int tmp_counter = 0; tmp_counter < tmp_length; tmp_counter++) {
                     // Not sure I need this, but it definitely breaks everything:
@@ -216,9 +213,13 @@ void write_map_layout(GameState* game)
             new_map_str_counter++;
         }
 
+        // @Bug:
+        // If the last three characters are not newlines, we get
+        // a corrupted size vs. prev size error here.
+        // This should be investigated, obviously
+        // the parser has a logical error.
         int new_map_str_length = strlen(new_map_str);
-        new_map_str[new_map_str_length] = '\0';
-        // SDL_Log("%s\n", new_map_str);
+        SDL_Log("%c %c %c %c \n", new_map_str[new_map_str_length - 3], new_map_str[new_map_str_length - 2], new_map_str[new_map_str_length - 1], new_map_str[new_map_str_length]);
 
         int chars_written = fwrite(new_map_str, sizeof(char), new_map_str_length, new_map_layout);
         if (chars_written != new_map_str_length) {
@@ -244,12 +245,8 @@ void write_map_layout(GameState* game)
         // If all was successful, remove lock file:
         fclose(map_lock);
         remove(MAP_LOCK_FILE);
-    } else {
-        // Do not write if there is a lock file, to avoid obliterating the map.
-        // @TODO:
-        // Would be nice to give the user some feedback, if there was a lock.
-        // SDL_SetRenderDrawColor(app->renderer, 250, 25, 0, 150);
-        SDL_Log("Map lock file present.");
+
+        return 1;
     }
 }
 
@@ -513,7 +510,9 @@ void handle_input(App* app, GameState* game)
                                 game->map.columns = game->map.columns_in_row[mouse_tile.y];
                             }
                             // SDL_Log("Left click: %i\n", game->map.layout[mouse_tile.y][mouse_tile.x]);
-                            write_map_layout(game);
+                            if (write_map_layout(game)) {
+                                SDL_Log("Write successful.\n");
+                            }
                         }
                     } break;
                     case SDL_BUTTON_RIGHT: {

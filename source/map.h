@@ -23,6 +23,11 @@ void read_map_layout(GameState* game)
 {
     game->map.layout_string = read_file(game->map.layout_file);
     game->map.layout_string_length = strlen(game->map.layout_string);
+
+    if (game->map.layout_string_length < 1) {
+        SDL_Log("Map layout is empty, exiting.\n");
+        exit(1);
+    }
     int current_column = 0;
     game->map.rows = 0;
     game->map.columns = 0;
@@ -40,11 +45,6 @@ void read_map_layout(GameState* game)
             current_column++;
         }
     }
-    // @Bug?
-    // I don't think we need this ...
-    //
-    // Add one extra row:
-    // game->map.rows++;
 
     map_memory_alloc(game);
 }
@@ -68,15 +68,9 @@ char* get_multiplier(char* attribute)
     if (attribute_copy != NULL) {
 #if defined(__WIN32__) || defined(__WINRT__) || defined(_WIN64)
         strcpy_s(attribute_copy, sizeof(attribute), &attribute[1]);
-#else
-        strcpy(attribute_copy, &attribute[1]);
-#endif
-
-        attribute_copy[strlen(attribute_copy)] = '\0';
-
-#if defined(__WIN32__) || defined(__WINRT__) || defined(_WIN64)
         strcpy_s(attribute, sizeof(attribute_copy), &attribute_copy[0]);
 #else
+        strcpy(attribute_copy, &attribute[1]);
         strcpy(attribute, &attribute_copy[0]);
 #endif
 
