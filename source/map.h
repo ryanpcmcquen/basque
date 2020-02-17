@@ -23,6 +23,11 @@ void read_map_layout(GameState* game)
 {
     game->map.layout_string = read_file(game->map.layout_file);
     game->map.layout_string_length = strlen(game->map.layout_string);
+
+    if (game->map.layout_string_length < 1) {
+        SDL_Log("Map layout is empty, exiting.\n");
+        exit(1);
+    }
     int current_column = 0;
     game->map.rows = 0;
     game->map.columns = 0;
@@ -40,8 +45,6 @@ void read_map_layout(GameState* game)
             current_column++;
         }
     }
-    // Add one extra row:
-    game->map.rows++;
 
     map_memory_alloc(game);
 }
@@ -65,15 +68,9 @@ char* get_multiplier(char* attribute)
     if (attribute_copy != NULL) {
 #if defined(__WIN32__) || defined(__WINRT__) || defined(_WIN64)
         strcpy_s(attribute_copy, sizeof(attribute), &attribute[1]);
-#else
-        strcpy(attribute_copy, &attribute[1]);
-#endif
-
-        attribute_copy[strlen(attribute_copy)] = '\0';
-
-#if defined(__WIN32__) || defined(__WINRT__) || defined(_WIN64)
         strcpy_s(attribute, sizeof(attribute_copy), &attribute_copy[0]);
 #else
+        strcpy(attribute_copy, &attribute[1]);
         strcpy(attribute, &attribute_copy[0]);
 #endif
 
@@ -238,7 +235,6 @@ void read_map_attributes(GameState* game)
             box.h = TILE_SPRITE_HEIGHT;                                                                                        \
             box.w = TILE_SPRITE_WIDTH;                                                                                         \
                                                                                                                                \
-            SDL_SetRenderDrawColor(app->renderer, 250, 250, 250, 50);                                                          \
             SDL_SetRenderDrawBlendMode(app->renderer, SDL_BLENDMODE_BLEND);                                                    \
             SDL_RenderDrawRect(app->renderer, &box);                                                                           \
             if (map_tile < 0) {                                                                                                \
@@ -246,8 +242,6 @@ void read_map_attributes(GameState* game)
             } else {                                                                                                           \
                 SDL_RenderCopy(app->renderer, game->editor.text_textures[map_tile], &text_clip, &text_dest);                   \
             }                                                                                                                  \
-                                                                                                                               \
-            SDL_SetRenderDrawColor(app->renderer, 0, 0, 0, 0);                                                                 \
         }                                                                                                                      \
     }
 
@@ -276,6 +270,9 @@ void generate_map(App* app, GameState* game)
         read_map_attributes(game);
     }
 
+    // Set rectangle color for map grid:
+    SDL_SetRenderDrawColor(app->renderer, 0, 0, 0, 0);
+
     for (int i = 0; i < game->map.layout_string_length; i++) {
 
         // Stop if we are at the end of rows.
@@ -284,7 +281,14 @@ void generate_map(App* app, GameState* game)
         }
         switch (game->map.layout_string[i]) {
         case '_': {
+
+            // @Robustness:
+            // Research ways to have two render pipes,
+            // so we are not always switching back
+            // and forth between desired colors.
+            SDL_SetRenderDrawColor(app->renderer, 255, 255, 255, 40);
             draw_edit_grid(app, game, background, EMPTY_COLUMN);
+            SDL_SetRenderDrawColor(app->renderer, 0, 0, 0, 0);
 
             // This represents a blank column:
             background.x += TILE_SPRITE_WIDTH;
@@ -297,18 +301,19 @@ void generate_map(App* app, GameState* game)
             last_char = game->map.layout_string[i];
         } break;
         case '\n': {
-            draw_edit_grid(app, game, background, END_OF_ROW);
+            // draw_edit_grid(app, game, background, END_OF_ROW);
 
             // Record row data to be used for the map editor:
             game->map.columns_in_row[current_row] = current_column;
 
-            // Y axis increases!
             if (strcmp(game->map.layout_file, MAP_LIBRARY_FILE) == 0) {
                 background.x = game->player.global.x - game->player.window.x;
             } else {
                 background.x = 0;
             }
             current_column = 0;
+
+            // Y axis increases!
             background.y += TILE_SPRITE_HEIGHT;
             current_row++;
 
@@ -378,7 +383,9 @@ void generate_map(App* app, GameState* game)
                 SDL_QueryTexture(game->background_image, NULL, NULL, &src.w, &src.h);
                 SDL_RenderCopy(app->renderer, game->background_image, &clip, &dest);
 
+                SDL_SetRenderDrawColor(app->renderer, 255, 255, 255, 40);
                 draw_edit_grid(app, game, background, map_tile);
+                SDL_SetRenderDrawColor(app->renderer, 0, 0, 0, 0);
 
                 background.x += TILE_SPRITE_WIDTH;
                 game->map.layout[current_row][current_column] = map_tile;

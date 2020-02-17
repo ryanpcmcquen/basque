@@ -39,11 +39,6 @@ typedef struct {
 } Player;
 
 typedef struct {
-    int x;
-    int y;
-} Ball;
-
-typedef struct {
     Axes clip;
     // This goes North, East, South, and West
     // (in increasing order by degree).
@@ -82,8 +77,6 @@ typedef struct {
     SDL_bool done;
 
     Player player;
-
-    Ball ball;
 
     SDL_Texture* player_image;
     SDL_Texture* background_image;

@@ -5,6 +5,12 @@
 #include <sys/stat.h>
 #include <time.h>
 
+int file_exists(char* path)
+{
+    struct stat filestat;
+    return (stat(path, &filestat) == 0);
+}
+
 time_t read_file_time(char* path)
 {
     struct stat filestat;
