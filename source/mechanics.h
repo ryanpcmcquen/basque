@@ -219,7 +219,7 @@ int write_map_layout(GameState* game)
         // This should be investigated, obviously
         // the parser has a logical error.
         int new_map_str_length = strlen(new_map_str);
-        SDL_Log("%c %c %c %c \n", new_map_str[new_map_str_length - 3], new_map_str[new_map_str_length - 2], new_map_str[new_map_str_length - 1], new_map_str[new_map_str_length]);
+        // SDL_Log("%c %c %c %c \n", new_map_str[new_map_str_length - 3], new_map_str[new_map_str_length - 2], new_map_str[new_map_str_length - 1], new_map_str[new_map_str_length]);
 
         int chars_written = fwrite(new_map_str, sizeof(char), new_map_str_length, new_map_layout);
         if (chars_written != new_map_str_length) {

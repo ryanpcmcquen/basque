@@ -306,13 +306,14 @@ void generate_map(App* app, GameState* game)
             // Record row data to be used for the map editor:
             game->map.columns_in_row[current_row] = current_column;
 
-            // Y axis increases!
             if (strcmp(game->map.layout_file, MAP_LIBRARY_FILE) == 0) {
                 background.x = game->player.global.x - game->player.window.x;
             } else {
                 background.x = 0;
             }
             current_column = 0;
+
+            // Y axis increases!
             background.y += TILE_SPRITE_HEIGHT;
             current_row++;
 
