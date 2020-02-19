@@ -3,32 +3,34 @@ name: C CI
 on: [push]
 
 jobs:
-    linux:
-        runs-on: ubuntu-latest
-        steps:
-            - uses: actions/checkout@master
-            - name: Install dependencies.
-              run: sudo apt-get update && sudo apt-get -qy install libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev
-            - name: make
-              run: make
+  linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: Install dependencies.
+        run: sudo apt-get update && sudo apt-get -qy install libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev
+      - name: make
+        run: make
 
-    mac:
-        runs-on: macos-latest
-        steps:
-            - uses: actions/checkout@master
-            - name: Install dependencies.
-              run: brew install sdl2 sdl2_image sdl2_mixer sdl2_ttf
-            - name: make
-              run: make
+  mac:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: Install dependencies.
+        run: brew install sdl2 sdl2_image sdl2_mixer sdl2_ttf
+      - name: make
+        run: make
 
-    windows:
-        runs-on: windows-latest
-        steps:
-            - uses: actions/checkout@master
-            - uses: nuget/setup-nuget@v1
-            - uses: ilammy/msvc-dev-cmd@v1
-            - name: Install dependencies.
-              run: nuget install sdl2.nuget; nuget install sdl2_image.nuget; nuget install sdl2_mixer.nuget; nuget install sdl2_ttf.nuget
-            - name: nmake
-              run: nmake
-
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@master
+      - uses: nuget/setup-nuget@v1
+      - uses: ilammy/msvc-dev-cmd@v1
+      - uses: crazy-max/ghaction-chocolatey@v1
+      - name: Install dependencies.
+        run: nuget install sdl2.nuget -OutputDirectory C:\INCLUDE\; nuget install sdl2_image.nuget -OutputDirectory C:\INCLUDE\; nuget install sdl2_mixer.nuget -OutputDirectory C:\INCLUDE\; nuget install sdl2_ttf.nuget -OutputDirectory C:\INCLUDE\
+      - name: Install Clang.
+        run: choco install llvm
+      - name: nmake
+        run: nmake
