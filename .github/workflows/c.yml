@@ -1,42 +1,42 @@
-name: C CI
+name: Compiling ...
 
 on: [push]
 
 jobs:
-  linux:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@master
+    linux:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@master
 
-      - name: Install dependencies.
-        run: sudo apt-get update && sudo apt-get -qy install libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev
-      - name: make
-        run: make
+            - name: Install dependencies.
+              run: sudo apt-get update && sudo apt-get -qy install libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev
+            - name: make
+              run: make
 
-  mac:
-    runs-on: macos-latest
-    steps:
-      - uses: actions/checkout@master
+    mac:
+        runs-on: macos-latest
+        steps:
+            - uses: actions/checkout@master
 
-      - name: Install dependencies.
-        run: brew install sdl2 sdl2_image sdl2_mixer sdl2_ttf
-      - name: make
-        run: make
+            - name: Install dependencies.
+              run: brew install sdl2 sdl2_image sdl2_mixer sdl2_ttf
+            - name: make
+              run: make
 
-  windows:
-    runs-on: windows-latest
-    steps:
-      - uses: actions/checkout@master
-      - uses: nuget/setup-nuget@v1
-      - uses: ilammy/msvc-dev-cmd@v1
+    windows:
+        runs-on: windows-latest
+        steps:
+            - uses: actions/checkout@master
+            - uses: nuget/setup-nuget@v1
+            - uses: ilammy/msvc-dev-cmd@v1
 
-      - name: Install dependencies.
-        run: nuget install sdl2.nuget -NonInteractive -ExcludeVersion -OutputDirectory C:\INCLUDE\; nuget install sdl2_image.nuget -NonInteractive -ExcludeVersion -OutputDirectory C:\INCLUDE\; nuget install sdl2_mixer.nuget -NonInteractive -ExcludeVersion -OutputDirectory C:\INCLUDE\; nuget install sdl2_ttf.nuget -NonInteractive -ExcludeVersion -OutputDirectory C:\INCLUDE\
-      - name: Install LLVM/clang.
-        uses: crazy-max/ghaction-chocolatey@v1
-        with:
-          args: install llvm
-      - name: Clean up paths to match other platforms.
-        run: mkdir C:\INCLUDE\sdl2.nuget\build\native\include\SDL2\; move C:\INCLUDE\sdl2.nuget\build\native\include\* C:\INCLUDE\sdl2.nuget\build\native\include\SDL2\; mkdir C:\INCLUDE\sdl2_image.nuget\build\native\include\SDL2\; move C:\INCLUDE\sdl2_image.nuget\build\native\include\* C:\INCLUDE\sdl2_image.nuget\build\native\include\SDL2\; mkdir C:\INCLUDE\sdl2_mixer.nuget\build\native\include\SDL2\; move C:\INCLUDE\sdl2_mixer.nuget\build\native\include\* C:\INCLUDE\sdl2_mixer.nuget\build\native\include\SDL2\; mkdir C:\INCLUDE\sdl2_ttf.nuget\build\native\include\SDL2\; move C:\INCLUDE\sdl2_ttf.nuget\build\native\include\* C:\INCLUDE\sdl2_ttf.nuget\build\native\include\SDL2\
-      - name: nmake
-        run: nmake
+            - name: Install dependencies.
+              run: nuget install sdl2.nuget -NonInteractive -ExcludeVersion -OutputDirectory C:\INCLUDE\; nuget install sdl2_image.nuget -NonInteractive -ExcludeVersion -OutputDirectory C:\INCLUDE\; nuget install sdl2_mixer.nuget -NonInteractive -ExcludeVersion -OutputDirectory C:\INCLUDE\; nuget install sdl2_ttf.nuget -NonInteractive -ExcludeVersion -OutputDirectory C:\INCLUDE\
+            - name: Install LLVM/clang.
+              uses: crazy-max/ghaction-chocolatey@v1
+              with:
+                  args: install llvm
+            - name: Clean up paths to match other platforms.
+              run: mkdir C:\INCLUDE\SDL2\; move C:\INCLUDE\sdl2.nuget\build\native\include\* C:\INCLUDE\SDL2\; move C:\INCLUDE\sdl2_image.nuget\build\native\include\* C:\INCLUDE\SDL2\; move C:\INCLUDE\sdl2_mixer.nuget\build\native\include\* C:\INCLUDE\SDL2\; move C:\INCLUDE\sdl2_ttf.nuget\build\native\include\* C:\INCLUDE\SDL2\
+            - name: nmake
+              run: nmake
