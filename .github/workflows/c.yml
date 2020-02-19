@@ -27,10 +27,12 @@ jobs:
       - uses: actions/checkout@master
       - uses: nuget/setup-nuget@v1
       - uses: ilammy/msvc-dev-cmd@v1
-      - uses: crazy-max/ghaction-chocolatey@v1
+
       - name: Install dependencies.
         run: nuget install sdl2.nuget -OutputDirectory C:\INCLUDE\; nuget install sdl2_image.nuget -OutputDirectory C:\INCLUDE\; nuget install sdl2_mixer.nuget -OutputDirectory C:\INCLUDE\; nuget install sdl2_ttf.nuget -OutputDirectory C:\INCLUDE\
-      - name: Install Clang.
-        run: choco install llvm
+      - name: Install LLVM/clang.
+        uses: crazy-max/ghaction-chocolatey@v1
+        with:
+          args: install llvm
       - name: nmake
         run: nmake
