@@ -28,6 +28,6 @@ jobs:
             - uses: nuget/setup-nuget@v1
             - name: Install dependencies.
               run: nuget install sdl2.nuget; nuget install sdl2_image.nuget; nuget install sdl2_mixer.nuget; nuget install sdl2_ttf.nuget
-            - name: make
-              run: make
+            - name: nmake
+              run: nmake
 
