@@ -36,5 +36,7 @@ jobs:
         uses: crazy-max/ghaction-chocolatey@v1
         with:
           args: install llvm
+      - name: Clean up paths to match other platforms.
+        run: mkdir C:\INCLUDE\sdl2.nuget\build\native\include\SDL2\; move C:\INCLUDE\sdl2.nuget\build\native\include\* C:\INCLUDE\sdl2.nuget\build\native\include\SDL2\; mkdir C:\INCLUDE\sdl2_image.nuget\build\native\include\SDL2\; move C:\INCLUDE\sdl2_image.nuget\build\native\include\* C:\INCLUDE\sdl2_image.nuget\build\native\include\SDL2\; mkdir C:\INCLUDE\sdl2_mixer.nuget\build\native\include\SDL2\; move C:\INCLUDE\sdl2_mixer.nuget\build\native\include\* C:\INCLUDE\sdl2_mixer.nuget\build\native\include\SDL2\; mkdir C:\INCLUDE\sdl2_ttf.nuget\build\native\include\SDL2\; move C:\INCLUDE\sdl2_ttf.nuget\build\native\include\* C:\INCLUDE\sdl2_ttf.nuget\build\native\include\SDL2\
       - name: nmake
         run: nmake
