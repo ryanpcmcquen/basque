@@ -41,4 +41,4 @@ jobs:
             - name: Clean up paths to match other platforms.
               run: mkdir C:\INCLUDE\SDL2\; move C:\INCLUDE\sdl2.nuget\build\native\include\* C:\INCLUDE\SDL2\; move C:\INCLUDE\sdl2_image.nuget\build\native\include\* C:\INCLUDE\SDL2\; move C:\INCLUDE\sdl2_mixer.nuget\build\native\include\* C:\INCLUDE\SDL2\; move C:\INCLUDE\sdl2_ttf.nuget\build\native\include\* C:\INCLUDE\SDL2\
             - name: nmake
-              run: setx CC "C:\Program Files\LLVM\bin\clang" /m; nmake
+              run: set CC "C:\Program Files\LLVM\bin\clang"; nmake
