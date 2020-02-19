@@ -6,9 +6,9 @@ TITLE=basque
 CP=copy # \
 MV=move # \
 RM=del # \
-FLAGS=-Wall # \
+FLAGS=-Wall -I C:\INCLUDE # \
 SOURCE=source\$(TITLE).c # \
-LIBS=-I C:\INCLUDE -L C:\INCLUDE\SDL2 -l SDL2.lib -l SDL2main.lib -l SDL2_image.lib -l SDL2_mixer.lib -l SDL2_ttf.lib -Xlinker /SUBSYSTEM:WINDOWS # \
+LIBS=C:\INCLUDE\sdl2.nuget\build\native\lib\x64\dynamic\SDL2.lib C:\INCLUDE\sdl2.nuget\build\native\lib\x64\dynamic\SDL2main.lib C:\INCLUDE\sdl2_image.nuget\build\native\lib\x64\dynamic\SDL2_image.lib C:\INCLUDE\sdl2_mixer.nuget.\build\native\lib\x64\dynamic\SDL2_mixer.lib C:\INCLUDE\sdl2_ttf.nuget\build\native\lib\x64\dynamic\SDL2_ttf.lib # \
 TARGET=-o $(TITLE).exe # \
 !else
 # make:
@@ -23,7 +23,7 @@ TARGET=-o $(TITLE)
 # \
 !endif
 
-RELEASE=$(CC) $(SOURCE) $(FLAGS) $(LIBS) $(TARGET)
+RELEASE=$(CC) $(FLAGS) $(SOURCE) $(LIBS) $(TARGET)
 
 $(TITLE): source/*.c source/*.h
 	$(RELEASE)

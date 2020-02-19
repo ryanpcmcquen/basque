@@ -29,7 +29,7 @@ jobs:
       - uses: ilammy/msvc-dev-cmd@v1
 
       - name: Install dependencies.
-        run: nuget install sdl2.nuget -OutputDirectory C:\INCLUDE\; nuget install sdl2_image.nuget -OutputDirectory C:\INCLUDE\; nuget install sdl2_mixer.nuget -OutputDirectory C:\INCLUDE\; nuget install sdl2_ttf.nuget -OutputDirectory C:\INCLUDE\
+        run: nuget install sdl2.nuget -ExcludeVersion -OutputDirectory C:\INCLUDE\; nuget install sdl2_image.nuget -ExcludeVersion -OutputDirectory C:\INCLUDE\; nuget install sdl2_mixer.nuget -ExcludeVersion -OutputDirectory C:\INCLUDE\; nuget install sdl2_ttf.nuget -ExcludeVersion -OutputDirectory C:\INCLUDE\
       - name: Install LLVM/clang.
         uses: crazy-max/ghaction-chocolatey@v1
         with:
