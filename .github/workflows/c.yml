@@ -26,6 +26,7 @@ jobs:
         steps:
             - uses: actions/checkout@master
             - uses: nuget/setup-nuget@v1
+            - uses: ilammy/msvc-dev-cmd@v1
             - name: Install dependencies.
               run: nuget install sdl2.nuget; nuget install sdl2_image.nuget; nuget install sdl2_mixer.nuget; nuget install sdl2_ttf.nuget
             - name: nmake
