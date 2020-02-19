@@ -6,7 +6,6 @@ TITLE=basque
 CP=copy # \
 MV=move # \
 RM=del # \
-CC=clang # \
 FLAGS=-Wall -I C:\INCLUDE\ -I C:\INCLUDE\sdl2.nuget\build\native\include\ -I C:\INCLUDE\sdl2_image.nuget\build\native\include\ -I C:\INCLUDE\sdl2_mixer.nuget\build\native\include\ -I C:\INCLUDE\sdl2_ttf.nuget\build\native\include\ # \
 SOURCE=source\$(TITLE).c # \
 LIBS=C:\INCLUDE\sdl2.nuget\build\native\lib\x64\dynamic\SDL2.lib C:\INCLUDE\sdl2.nuget\build\native\lib\x64\dynamic\SDL2main.lib C:\INCLUDE\sdl2_image.nuget\build\native\lib\x64\dynamic\SDL2_image.lib C:\INCLUDE\sdl2_mixer.nuget.\build\native\lib\x64\dynamic\SDL2_mixer.lib C:\INCLUDE\sdl2_ttf.nuget\build\native\lib\x64\dynamic\SDL2_ttf.lib # \
