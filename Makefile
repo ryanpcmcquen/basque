@@ -6,6 +6,7 @@ TITLE=basque
 CP=copy # \
 MV=move # \
 RM=del # \
+FLAGS=-Wall # \
 SOURCE=source\$(TITLE).c # \
 LIBS=-I C:\INCLUDE -L C:\INCLUDE\SDL2 -l SDL2.lib -l SDL2main.lib -l SDL2_image.lib -l SDL2_mixer.lib -l SDL2_ttf.lib -Xlinker /SUBSYSTEM:WINDOWS # \
 TARGET=-o $(TITLE).exe # \
@@ -14,6 +15,7 @@ TARGET=-o $(TITLE).exe # \
 CP=cp -f
 MV=mv -f
 RM=rm -f
+FLAGS=-Wall -Wextra -std=c99
 SDL2_FLAGS=`$$(which sdl2-config) --cflags --libs`
 SOURCE=source/$(TITLE).c
 LIBS=$(SDL2_FLAGS) -l SDL2_image -l SDL2_mixer -l SDL2_ttf
@@ -21,8 +23,6 @@ TARGET=-o $(TITLE)
 # \
 !endif
 
-FLAGS=-Wall -std=c99
-# FLAGS=-Wall -Wextra -Wno-unused-parameter -std=c99
 RELEASE=$(CC) $(SOURCE) $(FLAGS) $(LIBS) $(TARGET)
 
 $(TITLE): source/*.c source/*.h
