@@ -21,7 +21,7 @@ TARGET=-o $(TITLE)
 # \
 !endif
 
-FLAGS=-Wall -Wextra -std=c99
+FLAGS=-Wall -std=c99
 # FLAGS=-Wall -Wextra -Wno-unused-parameter -std=c99
 RELEASE=$(CC) $(SOURCE) $(FLAGS) $(LIBS) $(TARGET)
 
