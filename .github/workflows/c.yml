@@ -27,4 +27,5 @@ jobs:
             - uses: actions/checkout@master
             - uses: nuget/setup-nuget@v1
             - name: Install dependencies.
-              run: Get-PackageSource -ProviderName NuGet; Install-Package sdl2.nuget; Install-Package sdl2_image.nuget; Install-Package sdl2_mixer.nuget; Install-Package sdl2_ttf.nuget
+              #run: Get-PackageSource -ProviderName NuGet; Install-Package sdl2.nuget; Install-Package sdl2_image.nuget; Install-Package sdl2_mixer.nuget; Install-Package sdl2_ttf.nuget
+              run: dotnet add package sdl2.nuget; dotnet add package sdl2_image.nuget; dotnet add package sdl2_mixer.nuget; dotnet add package sdl2_ttf.nuget
