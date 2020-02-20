@@ -7,7 +7,7 @@ CP=copy # \
 MV=move # \
 RM=del # \
 CC="C:\Program Files\LLVM\bin\clang.exe" # \
-FLAGS=-Wall -I C:\INCLUDE\ -I C:\INCLUDE\sdl2.nuget\build\native\include\ -I C:\INCLUDE\sdl2_image.nuget\build\native\include\ -I C:\INCLUDE\sdl2_mixer.nuget\build\native\include\ -I C:\INCLUDE\sdl2_ttf.nuget\build\native\include\ # \
+FLAGS=-Wall -Wextra -std=c99 -I C:\INCLUDE\ # \
 SOURCE=source\$(TITLE).c # \
 LIBS=C:\INCLUDE\sdl2.nuget\build\native\lib\x64\dynamic\SDL2.lib C:\INCLUDE\sdl2.nuget\build\native\lib\x64\dynamic\SDL2main.lib C:\INCLUDE\sdl2_image.nuget\build\native\lib\x64\dynamic\SDL2_image.lib C:\INCLUDE\sdl2_mixer.nuget.\build\native\lib\x64\dynamic\SDL2_mixer.lib C:\INCLUDE\sdl2_ttf.nuget\build\native\lib\x64\dynamic\SDL2_ttf.lib # \
 TARGET=-o $(TITLE).exe # \
@@ -24,6 +24,7 @@ TARGET=-o $(TITLE)
 # \
 !endif
 
+#FLAGS=-Wall -I C:\INCLUDE\ -I C:\INCLUDE\sdl2.nuget\build\native\include\ -I C:\INCLUDE\sdl2_image.nuget\build\native\include\ -I C:\INCLUDE\sdl2_mixer.nuget\build\native\include\ -I C:\INCLUDE\sdl2_ttf.nuget\build\native\include\ # \
 RELEASE=$(CC) $(FLAGS) $(SOURCE) $(LIBS) $(TARGET)
 
 $(TITLE): source/*.c source/*.h
