@@ -6,7 +6,7 @@ TITLE=basque
 CP=copy # \
 MV=move # \
 RM=del # \
-CC="C:\Program Files\LLVM\bin\clang.exe" # \
+CC=clang # \
 FLAGS=-Wall -Wextra -std=c99 -I C:\INCLUDE\ # \
 SOURCE=source\$(TITLE).c # \
 LIBS=-L C:\INCLUDE\SDL2\ -l C:\INCLUDE\sdl2.nuget\build\native\lib\x64\dynamic\SDL2.lib -l C:\INCLUDE\sdl2.nuget\build\native\lib\x64\dynamic\SDL2main.lib -l C:\INCLUDE\sdl2_image.nuget\build\native\lib\x64\dynamic\SDL2_image.lib -l C:\INCLUDE\sdl2_mixer.nuget.\build\native\lib\x64\dynamic\SDL2_mixer.lib -l C:\INCLUDE\sdl2_ttf.nuget\build\native\lib\x64\dynamic\SDL2_ttf.lib -Xlinker /SUBSYSTEM:WINDOWS # \
