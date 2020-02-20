@@ -9,7 +9,7 @@ RM=del # \
 CC="C:\Program Files\LLVM\bin\clang.exe" # \
 FLAGS=-Wall -Wextra -std=c99 -I C:\INCLUDE\ # \
 SOURCE=source\$(TITLE).c # \
-LIBS=C:\INCLUDE\sdl2.nuget\build\native\lib\x64\dynamic\SDL2.lib C:\INCLUDE\sdl2.nuget\build\native\lib\x64\dynamic\SDL2main.lib C:\INCLUDE\sdl2_image.nuget\build\native\lib\x64\dynamic\SDL2_image.lib C:\INCLUDE\sdl2_mixer.nuget.\build\native\lib\x64\dynamic\SDL2_mixer.lib C:\INCLUDE\sdl2_ttf.nuget\build\native\lib\x64\dynamic\SDL2_ttf.lib # \
+LIBS=-L C:\INCLUDE\SDL2\ -l C:\INCLUDE\sdl2.nuget\build\native\lib\x64\dynamic\SDL2.lib -l C:\INCLUDE\sdl2.nuget\build\native\lib\x64\dynamic\SDL2main.lib -l C:\INCLUDE\sdl2_image.nuget\build\native\lib\x64\dynamic\SDL2_image.lib -l C:\INCLUDE\sdl2_mixer.nuget.\build\native\lib\x64\dynamic\SDL2_mixer.lib -l C:\INCLUDE\sdl2_ttf.nuget\build\native\lib\x64\dynamic\SDL2_ttf.lib -Xlinker /SUBSYSTEM:WINDOWS # \
 TARGET=-o $(TITLE).exe # \
 !else
 # make:
