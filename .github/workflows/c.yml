@@ -36,10 +36,7 @@ jobs:
               uses: crazy-max/ghaction-chocolatey@v1
               with:
                   args: install llvm
-            - name: Find clang.
-              run: where clang;
-
             - name: Clean up paths to match other platforms.
               run: mkdir C:\INCLUDE\SDL2\; robocopy C:\INCLUDE\sdl2.nuget\build\native\include\ C:\INCLUDE\SDL2\; robocopy C:\INCLUDE\sdl2_image.nuget\build\native\include\ C:\INCLUDE\SDL2\; robocopy C:\INCLUDE\sdl2_mixer.nuget\build\native\include\ C:\INCLUDE\SDL2\; robocopy C:\INCLUDE\sdl2_ttf.nuget\build\native\include\ C:\INCLUDE\SDL2\; if ($LASTEXITCODE -le 7) { exit 0 } else { exit 1 }
             - name: nmake
-              run: $Env:CC = "C:\Program Files\LLVM\bin\clang.exe"; nmake /e
+              run: $Env:CC = "C:\Program^ Files\LLVM\bin\clang.exe"; nmake /e
