@@ -6,22 +6,30 @@ jobs:
     linux:
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@master
+            - uses: actions/checkout@v2
 
             - name: Install dependencies.
               run: sudo apt-get update && sudo apt-get -qy install libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev
             - name: make
               run: make
+            - uses: actions/upload-artifact@v1
+              with:
+                  name: basque_linux
+                  path: basque
 
     mac:
         runs-on: macos-latest
         steps:
-            - uses: actions/checkout@master
+            - uses: actions/checkout@v2
 
             - name: Install dependencies.
               run: brew install sdl2 sdl2_image sdl2_mixer sdl2_ttf
             - name: make
               run: make
+            - uses: actions/upload-artifact@v1
+              with:
+                  name: basque_mac
+                  path: basque
 
     windows:
         runs-on: windows-latest
@@ -40,3 +48,8 @@ jobs:
               run: mkdir C:\INCLUDE\SDL2\; robocopy C:\INCLUDE\sdl2.nuget\build\native\include\ C:\INCLUDE\SDL2\; robocopy C:\INCLUDE\sdl2_image.nuget\build\native\include\ C:\INCLUDE\SDL2\; robocopy C:\INCLUDE\sdl2_mixer.nuget\build\native\include\ C:\INCLUDE\SDL2\; robocopy C:\INCLUDE\sdl2_ttf.nuget\build\native\include\ C:\INCLUDE\SDL2\; if ($LASTEXITCODE -le 7) { exit 0 } else { exit 1 }
             - name: nmake
               run: $Env:CC = "`"C:\Program Files\LLVM\bin\clang.exe`""; nmake /e
+            
+            - uses: actions/upload-artifact@v1
+              with:
+                  name: basque_windows
+                  path: basque.exe
