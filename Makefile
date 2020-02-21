@@ -24,7 +24,6 @@ TARGET=-o $(TITLE)
 # \
 !endif
 
-#FLAGS=-Wall -I C:\INCLUDE\ -I C:\INCLUDE\sdl2.nuget\build\native\include\ -I C:\INCLUDE\sdl2_image.nuget\build\native\include\ -I C:\INCLUDE\sdl2_mixer.nuget\build\native\include\ -I C:\INCLUDE\sdl2_ttf.nuget\build\native\include\ # \
 RELEASE=$(CC) $(FLAGS) $(SOURCE) $(LIBS) $(TARGET)
 
 $(TITLE): source/*.c source/*.h
@@ -35,7 +34,8 @@ $(TITLE): source/*.c source/*.h
 # people who like that kind
 # of thing.
 clean:
-	$(RM) $(TITLE)
-	$(RM) $(TITLE).exe
+	$(RM) $(TARGET)
+force:
+	$(RELEASE)
 debug: source/*.c source/*.h
 	$(RELEASE) -g
