@@ -9,6 +9,12 @@ Basque is a top-down 2d game engine.
 
 ---
 
+Binaries for all platforms are available under the GitHub Action here:
+
+![Compiling ...](https://github.com/ryanpcmcquen/basque/workflows/Compiling%20.../badge.svg)
+
+---
+
 Too lazy to do local setup? You can give it a spin using Gitpod (no sound or key repeats though)!
 
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/ryanpcmcquen/basque)
@@ -133,15 +139,13 @@ brew install sdl2 sdl2_image sdl2_mixer sdl2_ttf
 
 #### Windows:
 
-1. Download the latest VC development files from: https://libsdl.org
+```
+nuget install sdl2.nuget -NonInteractive -ExcludeVersion -OutputDirectory C:\INCLUDE\; nuget install sdl2_image.nuget -NonInteractive -ExcludeVersion -OutputDirectory C:\INCLUDE\; nuget install sdl2_mixer.nuget -NonInteractive -ExcludeVersion -OutputDirectory C:\INCLUDE\; nuget install sdl2_ttf.nuget -NonInteractive -ExcludeVersion -OutputDirectory C:\INCLUDE\
+```
 
-2. Place the entire contents of `include` and `lib` under `C:\INCLUDE\SDL2`.
-
-3. Copy all DLLs under `lib` to `C:\Windows\System32` and `C:\Windows\SysWOW64`.
-
-4. Repeat for _SDL2_image_, _SDL2_mixer_, and _SDL2_ttf_.
-
-5. Profit.
+```
+mkdir C:\INCLUDE\SDL2\; robocopy C:\INCLUDE\sdl2.nuget\build\native\include\ C:\INCLUDE\SDL2\; robocopy C:\INCLUDE\sdl2_image.nuget\build\native\include\ C:\INCLUDE\SDL2\; robocopy C:\INCLUDE\sdl2_mixer.nuget\build\native\include\ C:\INCLUDE\SDL2\; robocopy C:\INCLUDE\sdl2_ttf.nuget\build\native\include\ C:\INCLUDE\SDL2\; if ($LASTEXITCODE -le 7) { exit 0 } else { exit 1 }
+```
 
 ---
 
