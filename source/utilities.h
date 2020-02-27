@@ -19,10 +19,12 @@ time_t read_file_time(char* path)
     return filestat.st_mtime;
 }
 
+#define PLATFORM_IS_WINDOWS() defined(_WIN64) || defined(_WIN32) || defined(__WIN32__) || defined(__WINRT__)
+
 char* read_file(char* path)
 {
     FILE* file_to_read;
-#if defined(__WIN32__) || defined(__WINRT__) || defined(_WIN64)
+#if PLATFORM_IS_WINDOWS
     fopen_s(&file_to_read, path, "rb");
 #else
     file_to_read = fopen(path, "rb");

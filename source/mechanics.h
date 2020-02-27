@@ -149,7 +149,7 @@ int write_map_layout(GameState* game)
         FILE* new_map_layout;
         FILE* old_map_layout;
         FILE* map_lock;
-#if defined(__WIN32__) || defined(__WINRT__) || defined(_WIN64)
+#if PLATFORM_IS_WINDOWS
         fopen_s(&new_map_layout, new_map_layout_file, "wb");
         fopen_s(&old_map_layout, game->map.layout_file, "wb");
         fopen_s(&map_lock, MAP_LOCK_FILE, "wb");

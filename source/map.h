@@ -66,7 +66,7 @@ char* get_multiplier(char* attribute)
 {
     char* attribute_copy = (char*)calloc(strlen(attribute), sizeof(char));
     if (attribute_copy != NULL) {
-#if defined(__WIN32__) || defined(__WINRT__) || defined(_WIN64)
+#if PLATFORM_IS_WINDOWS
         strcpy_s(attribute_copy, sizeof(attribute), &attribute[1]);
         strcpy_s(attribute, sizeof(attribute_copy), &attribute_copy[0]);
 #else
