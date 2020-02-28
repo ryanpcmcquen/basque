@@ -5,7 +5,7 @@
 #include <sys/stat.h>
 #include <time.h>
 
-#if defined(_WIN64) || defined(_WIN32) || defined(__WIN32__) || defined(__WINRT__)
+#if defined(_WIN64) || defined(_WIN32) || defined(WIN32) || defined(__WIN32__) || defined(__WINRT__)
 #define PLATFORM_IS_WINDOWS
 #endif
 
