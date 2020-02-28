@@ -5,6 +5,10 @@
 #include <sys/stat.h>
 #include <time.h>
 
+#if defined(_WIN64) || defined(_WIN32) || defined(__WIN32__) || defined(__WINRT__)
+#define PLATFORM_IS_WINDOWS
+#endif
+
 int file_exists(char* path)
 {
     struct stat filestat;
@@ -19,12 +23,10 @@ time_t read_file_time(char* path)
     return filestat.st_mtime;
 }
 
-#define PLATFORM_IS_WINDOWS() defined(_WIN64) || defined(_WIN32) || defined(__WIN32__) || defined(__WINRT__)
-
 char* read_file(char* path)
 {
     FILE* file_to_read;
-#if PLATFORM_IS_WINDOWS
+#ifdef PLATFORM_IS_WINDOWS
     fopen_s(&file_to_read, path, "rb");
 #else
     file_to_read = fopen(path, "rb");
