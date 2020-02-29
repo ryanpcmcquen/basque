@@ -11,8 +11,6 @@ int main(int argc, char* argv[])
     memset(&app, 0, sizeof(App));
     memset(&game, 0, sizeof(GameState));
 
-    platform_checks();
-
     init();
 
     atexit(cleanup);

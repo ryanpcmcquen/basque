@@ -5,13 +5,9 @@
 #include <sys/stat.h>
 #include <time.h>
 
-void platform_checks()
-{
-    if (strcmp(SDL_GetPlatform(), "Windows") == 0) {
+#if defined(_WIN64) || defined(_WIN32) || defined(WIN32) || defined(__WIN32__) || defined(__WINRT__)
 #define PLATFORM_IS_WINDOWS
-    }
-}
-void platform_checks();
+#endif
 
 int file_exists(char* path)
 {
