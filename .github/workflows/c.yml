@@ -4,7 +4,7 @@ on: [pull_request, push]
 
 jobs:
     arm:
-        runs-on: ARM32
+        runs-on: [ARM32]
         steps:
             - uses: actions/checkout@v2
 
