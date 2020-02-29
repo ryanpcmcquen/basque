@@ -11,7 +11,7 @@ Basque is a top-down 2d game engine.
 
 Binaries for all platforms are available under the GitHub Action here:
 
-![Compiling ...](https://github.com/ryanpcmcquen/basque/workflows/Compiling%20.../badge.svg)
+[![Compiling ...](https://github.com/ryanpcmcquen/basque/workflows/Compiling%20.../badge.svg)](https://github.com/ryanpcmcquen/basque/actions)
 
 ---
 
