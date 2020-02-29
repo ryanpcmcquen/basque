@@ -11,6 +11,7 @@ void platform_checks()
 #define PLATFORM_IS_WINDOWS
     }
 }
+void platform_checks();
 
 int file_exists(char* path)
 {
