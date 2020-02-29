@@ -3,6 +3,20 @@ name: Compiling ...
 on: [pull_request, push]
 
 jobs:
+    arm:
+        runs-on: ARM32
+        steps:
+            - uses: actions/checkout@v2
+
+            - name: Install dependencies.
+              run: sudo apt-get update && sudo apt-get -qy install libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev
+            - name: make
+              run: make
+            - uses: actions/upload-artifact@v1
+              with:
+                  name: basque_arm32
+                  path: basque
+
     linux:
         runs-on: ubuntu-latest
         steps:
