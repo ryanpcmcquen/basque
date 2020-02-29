@@ -28,7 +28,6 @@ void load_music(GameState* game)
         } else {
             SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Error initializing SDL_mixer: %s\n", Mix_GetError());
             // No need to exit, we just play without sound.
-            //exit(1);
         }
     }
 }
@@ -158,12 +157,7 @@ int write_map_layout(GameState* game)
         old_map_layout = fopen(game->map.layout_file, "wb");
         map_lock = fopen(MAP_LOCK_FILE, "wb");
 #endif
-        // @FIX:
-        // This check doesn't work.
-        // if (new_map_layout == NULL || old_map_layout == NULL) {
-        //     SDL_LogError(SDL_LOG_CATEGORY_ERROR, "ERROR: File failed to open.");
-        //     exit(1);
-        // }
+
         char* new_map_str = (char*)calloc(game->map.rows * game->map.columns, sizeof(char));
         int new_map_str_counter = 0;
 

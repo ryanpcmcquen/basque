@@ -125,7 +125,7 @@ int init()
                         game.editor.selected_tile = EMPTY_COLUMN;
                     } else {
                         SDL_LogError(SDL_LOG_CATEGORY_ERROR, "TTF_Init: %s\n", TTF_GetError());
-                        exit(2);
+                        exit(EXIT_FAILURE);
                     }
                 }
 

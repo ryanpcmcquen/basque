@@ -26,7 +26,7 @@ void read_map_layout(GameState* game)
 
     if (game->map.layout_string_length < 1) {
         SDL_Log("Map layout is empty, exiting.\n");
-        exit(1);
+        exit(EXIT_FAILURE);
     }
     int current_column = 0;
     game->map.rows = 0;
