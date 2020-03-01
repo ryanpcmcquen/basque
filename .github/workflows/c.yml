@@ -12,6 +12,7 @@ jobs:
               run: sudo apt-get update && sudo apt-get -qy install libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev
             - name: make
               run: make
+
             - uses: actions/upload-artifact@v1
               with:
                   name: basque_linux
@@ -26,6 +27,7 @@ jobs:
               run: brew install sdl2 sdl2_image sdl2_mixer sdl2_ttf
             - name: make
               run: make
+
             - uses: actions/upload-artifact@v1
               with:
                   name: basque_mac
@@ -48,8 +50,8 @@ jobs:
             - name: Install VS build tools and LLVM/clang.
               run: choco install visualcpp-build-tools -y; choco install llvm -y
             - name: nmake
-              run: $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User"); where clang; $Env:CC = "`"C:\Program Files\LLVM\bin\clang.exe`""; nmake /e
-            
+              run: $Env:Path = Expand-EnvironmentVariablesRecursively([System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")); where clang; $Env:CC = "`"C:\Program Files\LLVM\bin\clang.exe`""; nmake /e
+
             - uses: actions/upload-artifact@v1
               with:
                   name: basque_windows
