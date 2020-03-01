@@ -50,7 +50,7 @@ jobs:
             - name: Install VS build tools and LLVM/clang.
               run: choco install visualcpp-build-tools -y; choco install llvm -y
             - name: nmake
-              run: $Env:Path = Expand-EnvironmentVariablesRecursively([System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")); where clang; $Env:CC = "`"C:\Program Files\LLVM\bin\clang.exe`""; nmake /e
+              run: Update-SessionEnvironment; where clang; $Env:CC = "`"C:\Program Files\LLVM\bin\clang.exe`""; nmake /e
 
             - uses: actions/upload-artifact@v1
               with:
