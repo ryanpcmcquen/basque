@@ -45,7 +45,7 @@ jobs:
             - name: Clean up paths to match other platforms.
               run: mkdir C:\INCLUDE\SDL2\; robocopy C:\INCLUDE\sdl2.nuget\build\native\include\ C:\INCLUDE\SDL2\; robocopy C:\INCLUDE\sdl2_image.nuget\build\native\include\ C:\INCLUDE\SDL2\; robocopy C:\INCLUDE\sdl2_mixer.nuget\build\native\include\ C:\INCLUDE\SDL2\; robocopy C:\INCLUDE\sdl2_ttf.nuget\build\native\include\ C:\INCLUDE\SDL2\; if ($LASTEXITCODE -le 7) { exit 0 } else { exit 1 }
             - name: Install VS build tools and LLVM/clang.
-              run: choco install visualcpp-build-tools -y; Get-ChildItem -Path V:\Myfolder -Filter vcvarsall.bat -Recurse; choco install llvm -y
+              run: choco install visualcpp-build-tools -y; Get-ChildItem -Path C:\ -Filter vcvarsall.bat -Recurse; choco install llvm -y
             - name: Refresh enviro/path.
               run: $Env:ChocolateyInstall = Convert-Path "$((Get-Command choco).Path)\..\.."; Import-Module "$Env:ChocolateyInstall\helpers\chocolateyProfile.psm1"; Update-SessionEnvironment
             - name: nmake
