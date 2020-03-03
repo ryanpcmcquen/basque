@@ -49,11 +49,11 @@ jobs:
             - name: Refresh enviro/path.
               run: $Env:ChocolateyInstall = Convert-Path "$((Get-Command choco).Path)\..\.."; Import-Module "$Env:ChocolateyInstall\helpers\chocolateyProfile.psm1"; Update-SessionEnvironment
             - name: Initialize Visual Studio enviro.
-              run: $VS_EDITION = dir 'C:\Program Files (x86)\Microsoft Visual Studio\' | ? -FilterScript {$_.name -match "[0-9]*"} | Sort CreationTime | Select Name -First 1; $VCVARSALL = Get-ChildItem -Path "C:\Program Files (x86)\Microsoft Visual Studio\$($VS_EDITION.name)\" -Filter vcvarsall.bat -Recurse | Select-Object -First 1
-            - name: Is VCVARSALL real?
-              run: Get-ChildItem -Path "C:\Program Files (x86)\Microsoft Visual Studio\$($VS_EDITION.name)\" -Filter vcvarsall.bat -Recurse;Get-ChildItem -Path "C:\Program Files (x86)\Microsoft Visual Studio\$($VS_EDITION.name)\" -Filter vcvarsall.bat -Recurse | Select-Object -First 1
-            # - name: nmake
-            # run: nmake
+              run: $VS_EDITION = dir 'C:\Program Files (x86)\Microsoft Visual Studio\' | ? -FilterScript {$_.name -match "[0-9]*"} | Sort CreationTime | Select Name -First 1; $VCVARSALL = Get-ChildItem -Path "C:\Program Files (x86)\Microsoft Visual Studio\$($VS_EDITION.name)\" -Filter vcvarsall.bat -Recurse | Select Name -First 1; & "$VCVARSALL"
+            # - name: Is VCVARSALL real?
+            # run: Get-ChildItem -Path "C:\Program Files (x86)\Microsoft Visual Studio\$($VS_EDITION.name)\" -Filter vcvarsall.bat -Recurse;Get-ChildItem -Path "C:\Program Files (x86)\Microsoft Visual Studio\$($VS_EDITION.name)\" -Filter vcvarsall.bat -Recurse | Select-Object -First 1
+            - name: nmake
+            run: nmake
 
             #run: $VS_EDITION = dir 'C:\Program Files (x86)\Microsoft Visual Studio\' | ? -FilterScript {$_.name -match "[0-9]*"} | Sort CreationTime | Select Name -First 1; $VCVARSALL = Get-ChildItem -Path "C:\Program Files (x86)\Microsoft Visual Studio\$($VS_EDITION.name)" -Filter vcvarsall.bat -Recurse | Select-Object -First 1; echo "$VCVARSALL"; echo "$($VCVARSALL)"; & "$($VCVARSALL)" x64; where clang; $Env:CC = "`"C:\Program Files\LLVM\bin\clang.exe`""; nmake /e
             - uses: actions/upload-artifact@v1
