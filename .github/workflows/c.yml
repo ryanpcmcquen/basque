@@ -53,7 +53,7 @@ jobs:
             # run: Get-ChildItem -Path "C:\Program Files (x86)\Microsoft Visual Studio\$($VS_EDITION.Name)\" -Filter vcvarsall.bat -Recurse | Select-Object -Property FullName -First 1
 
             - name: Initialize Visual Studio enviro.
-              run: $VS_EDITION = dir 'C:\Program Files (x86)\Microsoft Visual Studio\' | ? -FilterScript {$_.Name -match "[0-9]*"} | Sort CreationTime | Select Name -First 1; $VCVARSALL = Get-ChildItem -Path "C:\Program Files (x86)\Microsoft Visual Studio\$($VS_EDITION.Name)\" -Filter vcvarsall.bat -Recurse; cmd /k ""$($VCVARSALL.FullName)" x64 & powershell"
+              run: $VS_EDITION = dir 'C:\Program Files (x86)\Microsoft Visual Studio\' | ? -FilterScript {$_.Name -match "[0-9]*"} | Sort CreationTime | Select Name -First 1; $VCVARSALL = Get-ChildItem -Path "C:\Program Files (x86)\Microsoft Visual Studio\$($VS_EDITION.Name)\" -Filter vcvarsall.bat -Recurse | Select-Object -Property FullName -First 1; cmd /k ""$VCVARSALL.FullName" x64 & powershell"
 
             # - name: Initialize Visual Studio enviro.
             # run: $VS_EDITION = dir 'C:\Program Files (x86)\Microsoft Visual Studio\' | ? -FilterScript {$_.Name -match "[0-9]*"} | Sort CreationTime | Select Name -First 1; $VCVARSALL = Get-ChildItem -Path "C:\Program Files (x86)\Microsoft Visual Studio\$($VS_EDITION.Name)\" -Filter vcvarsall.bat -Recurse | Select-Object -Property FullName -First 1; & "$($VCVARSALL.FullName)"
