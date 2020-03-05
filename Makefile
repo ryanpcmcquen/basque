@@ -34,7 +34,8 @@ $(TITLE): source/*.c source/*.h
 # people who like that kind
 # of thing.
 clean:
-	$(RM) $(TARGET)
+	$(RM) $(TITLE)
+	$(RM) $(TITLE).exe
 force:
 	$(RELEASE)
 debug: source/*.c source/*.h
