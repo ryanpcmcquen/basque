@@ -46,21 +46,22 @@ jobs:
               run: mkdir C:\INCLUDE\SDL2\; robocopy C:\INCLUDE\sdl2.nuget\build\native\include\ C:\INCLUDE\SDL2\; robocopy C:\INCLUDE\sdl2_image.nuget\build\native\include\ C:\INCLUDE\SDL2\; robocopy C:\INCLUDE\sdl2_mixer.nuget\build\native\include\ C:\INCLUDE\SDL2\; robocopy C:\INCLUDE\sdl2_ttf.nuget\build\native\include\ C:\INCLUDE\SDL2\; if ($LASTEXITCODE -le 7) { exit 0 } else { exit 1 }
             - name: Install VS build tools and LLVM/clang.
               run: choco install visualcpp-build-tools -y; choco install llvm -y
-            - name: Refresh enviro/path.
-              run: $Env:ChocolateyInstall = Convert-Path "$((Get-Command choco).Path)\..\.."; Import-Module "$Env:ChocolateyInstall\helpers\chocolateyProfile.psm1"; Update-SessionEnvironment
+
+            #- name: Refresh enviro/path.
+            #  run: $Env:ChocolateyInstall = Convert-Path "$((Get-Command choco).Path)\..\.."; Import-Module "$Env:ChocolateyInstall\helpers\chocolateyProfile.psm1"; Update-SessionEnvironment
             # - name: Is VCVARSALL real?
             # run: Get-ChildItem -Path "C:\Program Files (x86)\Microsoft Visual Studio\$($VS_EDITION.Name)\" -Filter vcvarsall.bat -Recurse;  Get-ChildItem -Path "C:\Program Files (x86)\Microsoft Visual Studio\$($VS_EDITION.Name)\" -Filter vcvarsall.bat -Recurse | Select-Object -Property FullName -First 1;
             # run: Get-ChildItem -Path "C:\Program Files (x86)\Microsoft Visual Studio\$($VS_EDITION.Name)\" -Filter vcvarsall.bat -Recurse | Select-Object -Property FullName -First 1
 
             - name: Initialize Visual Studio enviro.
               # run: $VS_EDITION = dir 'C:\Program Files (x86)\Microsoft Visual Studio\' | ? -FilterScript {$_.Name -match "[0-9]*"} | Sort CreationTime | Select Name -First 1; $VCVARSALL = Get-ChildItem -Path "C:\Program Files (x86)\Microsoft Visual Studio\$($VS_EDITION.Name)\" -Filter vcvarsall.bat -Recurse | Select -Property FullName -First 1; cmd /k ""$VCVARSALL.FullName" x64 & powershell"
-              run: $VS_EDITION = dir 'C:\Program Files (x86)\Microsoft Visual Studio\' | ? -FilterScript {$_.Name -match "[0-9]*"} | Sort CreationTime | Select Name -First 1; $NMAKE_BIN = Get-ChildItem -Path "C:\Program Files (x86)\Microsoft Visual Studio\$($VS_EDITION.Name)\" -Filter 'nmake.exe' -Recurse | Select FullName -First 1
+              run: $VS_EDITION = dir 'C:\Program Files (x86)\Microsoft Visual Studio\' | ? -FilterScript {$_.Name -match "[0-9]*"} | Sort CreationTime | Select Name -First 1; $Env:NMAKE_BIN = Get-ChildItem -Path "C:\Program Files (x86)\Microsoft Visual Studio\$($VS_EDITION.Name)\" -Filter 'nmake.exe' -Recurse | Select FullName -First 1; $Env:CC = "`"C:\Program Files\LLVM\bin\clang.exe`""
 
             # - name: Initialize Visual Studio enviro.
             # run: $VS_EDITION = dir 'C:\Program Files (x86)\Microsoft Visual Studio\' | ? -FilterScript {$_.Name -match "[0-9]*"} | Sort CreationTime | Select Name -First 1; $VCVARSALL = Get-ChildItem -Path "C:\Program Files (x86)\Microsoft Visual Studio\$($VS_EDITION.Name)\" -Filter vcvarsall.bat -Recurse | Select-Object -Property FullName -First 1; & "$($VCVARSALL.FullName)"
             # run: Get-ChildItem -Path "C:\Program Files (x86)\Microsoft Visual Studio\$($VS_EDITION.name)\" -Filter vcvarsall.bat -Recurse;Get-ChildItem -Path "C:\Program Files (x86)\Microsoft Visual Studio\$($VS_EDITION.name)\" -Filter vcvarsall.bat -Recurse | Select-Object -First 1
             - name: Launch cmd.
-              run: where clang & where nmake & where vcvarsall & @echo on & echo %CC% & echo %NMAKE_BIN%
+              run: "%NMAKE_BIN%"
               shell: cmd
 
             - name: nmake
