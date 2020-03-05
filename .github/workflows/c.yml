@@ -10,7 +10,8 @@ jobs:
 
             - name: Install dependencies.
               run: sudo apt-get update && sudo apt-get -qy install libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev
-            - name: make
+
+            - name: Compile!
               run: make
 
             - uses: actions/upload-artifact@v1
@@ -25,7 +26,8 @@ jobs:
 
             - name: Install dependencies.
               run: brew install sdl2 sdl2_image sdl2_mixer sdl2_ttf
-            - name: make
+
+            - name: Compile!
               run: make
 
             - uses: actions/upload-artifact@v1
@@ -38,7 +40,6 @@ jobs:
         steps:
             - uses: actions/checkout@v2
             - uses: nuget/setup-nuget@v1
-            #- uses: ilammy/msvc-dev-cmd@v1
 
             - name: Install dependencies.
               run: nuget install sdl2.nuget -NonInteractive -ExcludeVersion -OutputDirectory C:\INCLUDE\; nuget install sdl2_image.nuget -NonInteractive -ExcludeVersion -OutputDirectory C:\INCLUDE\; nuget install sdl2_mixer.nuget -NonInteractive -ExcludeVersion -OutputDirectory C:\INCLUDE\; nuget install sdl2_ttf.nuget -NonInteractive -ExcludeVersion -OutputDirectory C:\INCLUDE\
@@ -47,26 +48,9 @@ jobs:
             - name: Install VS build tools and LLVM/clang.
               run: choco install visualcpp-build-tools -y; choco install llvm -y
 
-            #- name: Refresh enviro/path.
-            #  run: $Env:ChocolateyInstall = Convert-Path "$((Get-Command choco).Path)\..\.."; Import-Module "$Env:ChocolateyInstall\helpers\chocolateyProfile.psm1"; Update-SessionEnvironment
-            # - name: Is VCVARSALL real?
-            # run: Get-ChildItem -Path "C:\Program Files (x86)\Microsoft Visual Studio\$($VS_EDITION.Name)\" -Filter vcvarsall.bat -Recurse;  Get-ChildItem -Path "C:\Program Files (x86)\Microsoft Visual Studio\$($VS_EDITION.Name)\" -Filter vcvarsall.bat -Recurse | Select-Object -Property FullName -First 1;
-            # run: Get-ChildItem -Path "C:\Program Files (x86)\Microsoft Visual Studio\$($VS_EDITION.Name)\" -Filter vcvarsall.bat -Recurse | Select-Object -Property FullName -First 1
-
             - name: Prepare VS enviro and compile!
-              # run: $VS_EDITION = dir 'C:\Program Files (x86)\Microsoft Visual Studio\' | ? -FilterScript {$_.Name -match "[0-9]*"} | Sort CreationTime | Select Name -First 1; $VCVARSALL = Get-ChildItem -Path "C:\Program Files (x86)\Microsoft Visual Studio\$($VS_EDITION.Name)\" -Filter vcvarsall.bat -Recurse | Select -Property FullName -First 1; cmd /k ""$VCVARSALL.FullName" x64 & powershell"
               run: $VS_EDITION = dir 'C:\Program Files (x86)\Microsoft Visual Studio\' | ? -FilterScript {$_.Name -like "[0-9]*"} | Sort CreationTime | Select Name -First 1; $VCVARSALL_BIN = Get-ChildItem -Path "C:\Program Files (x86)\Microsoft Visual Studio\$($VS_EDITION.Name)\" -Filter 'vcvarsall.bat' -Recurse | Select FullName -First 1; $Env:CC = "`"C:\Program Files\LLVM\bin\clang.exe`""; cmd /k "`"$($VCVARSALL_BIN.FullName)`" x64 && nmake /e"
 
-            # - name: Initialize Visual Studio enviro.
-            # run: $VS_EDITION = dir 'C:\Program Files (x86)\Microsoft Visual Studio\' | ? -FilterScript {$_.Name -match "[0-9]*"} | Sort CreationTime | Select Name -First 1; $VCVARSALL = Get-ChildItem -Path "C:\Program Files (x86)\Microsoft Visual Studio\$($VS_EDITION.Name)\" -Filter vcvarsall.bat -Recurse | Select-Object -Property FullName -First 1; & "$($VCVARSALL.FullName)"
-            # run: Get-ChildItem -Path "C:\Program Files (x86)\Microsoft Visual Studio\$($VS_EDITION.name)\" -Filter vcvarsall.bat -Recurse;Get-ChildItem -Path "C:\Program Files (x86)\Microsoft Visual Studio\$($VS_EDITION.name)\" -Filter vcvarsall.bat -Recurse | Select-Object -First 1
-            #- name: Launch nmake.
-            #  run: cmd /k "`"$($VCVARSALL.FullName)`" x64 && nmake"
-
-            #- name: nmake
-            #  run: nmake
-            #  shell: cmd
-            #run: $VS_EDITION = dir 'C:\Program Files (x86)\Microsoft Visual Studio\' | ? -FilterScript {$_.name -match "[0-9]*"} | Sort CreationTime | Select Name -First 1; $VCVARSALL = Get-ChildItem -Path "C:\Program Files (x86)\Microsoft Visual Studio\$($VS_EDITION.name)" -Filter vcvarsall.bat -Recurse | Select-Object -First 1; echo "$VCVARSALL"; echo "$($VCVARSALL)"; & "$($VCVARSALL)" x64; where clang; $Env:CC = "`"C:\Program Files\LLVM\bin\clang.exe`""; nmake /e
             - uses: actions/upload-artifact@v1
               with:
                   name: basque_windows
