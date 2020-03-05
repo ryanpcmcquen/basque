@@ -53,16 +53,15 @@ jobs:
             # run: Get-ChildItem -Path "C:\Program Files (x86)\Microsoft Visual Studio\$($VS_EDITION.Name)\" -Filter vcvarsall.bat -Recurse;  Get-ChildItem -Path "C:\Program Files (x86)\Microsoft Visual Studio\$($VS_EDITION.Name)\" -Filter vcvarsall.bat -Recurse | Select-Object -Property FullName -First 1;
             # run: Get-ChildItem -Path "C:\Program Files (x86)\Microsoft Visual Studio\$($VS_EDITION.Name)\" -Filter vcvarsall.bat -Recurse | Select-Object -Property FullName -First 1
 
-            - name: Initialize Visual Studio enviro.
+            - name: Prepare VS enviro.
               # run: $VS_EDITION = dir 'C:\Program Files (x86)\Microsoft Visual Studio\' | ? -FilterScript {$_.Name -match "[0-9]*"} | Sort CreationTime | Select Name -First 1; $VCVARSALL = Get-ChildItem -Path "C:\Program Files (x86)\Microsoft Visual Studio\$($VS_EDITION.Name)\" -Filter vcvarsall.bat -Recurse | Select -Property FullName -First 1; cmd /k ""$VCVARSALL.FullName" x64 & powershell"
-              run: $VS_EDITION = dir 'C:\Program Files (x86)\Microsoft Visual Studio\' | ? -FilterScript {$_.Name -match "[0-9]*"} | Sort CreationTime | Select Name -First 1; $Env:NMAKE_BIN = Get-ChildItem -Path "C:\Program Files (x86)\Microsoft Visual Studio\$($VS_EDITION.Name)\" -Filter 'nmake.exe' -Recurse | Select FullName -First 1; $Env:CC = "`"C:\Program Files\LLVM\bin\clang.exe`""
+              run: $VS_EDITION = dir 'C:\Program Files (x86)\Microsoft Visual Studio\' | ? -FilterScript {$_.Name -match "[0-9]*"} | Sort CreationTime | Select Name -First 1; $VCVARSALL = Get-ChildItem -Path "C:\Program Files (x86)\Microsoft Visual Studio\$($VS_EDITION.Name)\" -Filter 'vcvarsall.bat' -Recurse | Select FullName -First 1; $Env:CC = "`"C:\Program Files\LLVM\bin\clang.exe`""
 
             # - name: Initialize Visual Studio enviro.
             # run: $VS_EDITION = dir 'C:\Program Files (x86)\Microsoft Visual Studio\' | ? -FilterScript {$_.Name -match "[0-9]*"} | Sort CreationTime | Select Name -First 1; $VCVARSALL = Get-ChildItem -Path "C:\Program Files (x86)\Microsoft Visual Studio\$($VS_EDITION.Name)\" -Filter vcvarsall.bat -Recurse | Select-Object -Property FullName -First 1; & "$($VCVARSALL.FullName)"
             # run: Get-ChildItem -Path "C:\Program Files (x86)\Microsoft Visual Studio\$($VS_EDITION.name)\" -Filter vcvarsall.bat -Recurse;Get-ChildItem -Path "C:\Program Files (x86)\Microsoft Visual Studio\$($VS_EDITION.name)\" -Filter vcvarsall.bat -Recurse | Select-Object -First 1
             - name: Launch nmake.
-              run: "%NMAKE_BIN%"
-              shell: cmd
+              run: cmd /k "`"$($VCVARSALL.FullName)`" x64 && nmake"
 
             #- name: nmake
             #  run: nmake
