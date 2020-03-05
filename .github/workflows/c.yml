@@ -60,7 +60,7 @@ jobs:
             # run: $VS_EDITION = dir 'C:\Program Files (x86)\Microsoft Visual Studio\' | ? -FilterScript {$_.Name -match "[0-9]*"} | Sort CreationTime | Select Name -First 1; $VCVARSALL = Get-ChildItem -Path "C:\Program Files (x86)\Microsoft Visual Studio\$($VS_EDITION.Name)\" -Filter vcvarsall.bat -Recurse | Select-Object -Property FullName -First 1; & "$($VCVARSALL.FullName)"
             # run: Get-ChildItem -Path "C:\Program Files (x86)\Microsoft Visual Studio\$($VS_EDITION.name)\" -Filter vcvarsall.bat -Recurse;Get-ChildItem -Path "C:\Program Files (x86)\Microsoft Visual Studio\$($VS_EDITION.name)\" -Filter vcvarsall.bat -Recurse | Select-Object -First 1
             - name: nmake
-              run: Write-Output "$($NMAKE_BIN.FullName)"
+              run: cmd
 
             #run: $VS_EDITION = dir 'C:\Program Files (x86)\Microsoft Visual Studio\' | ? -FilterScript {$_.name -match "[0-9]*"} | Sort CreationTime | Select Name -First 1; $VCVARSALL = Get-ChildItem -Path "C:\Program Files (x86)\Microsoft Visual Studio\$($VS_EDITION.name)" -Filter vcvarsall.bat -Recurse | Select-Object -First 1; echo "$VCVARSALL"; echo "$($VCVARSALL)"; & "$($VCVARSALL)" x64; where clang; $Env:CC = "`"C:\Program Files\LLVM\bin\clang.exe`""; nmake /e
             - uses: actions/upload-artifact@v1
