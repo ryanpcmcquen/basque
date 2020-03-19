@@ -163,6 +163,18 @@ nuget install sdl2.nuget -NonInteractive -ExcludeVersion -OutputDirectory C:\INC
 mkdir C:\INCLUDE\SDL2\; robocopy C:\INCLUDE\sdl2.nuget\build\native\include\ C:\INCLUDE\SDL2\; robocopy C:\INCLUDE\sdl2_image.nuget\build\native\include\ C:\INCLUDE\SDL2\; robocopy C:\INCLUDE\sdl2_mixer.nuget\build\native\include\ C:\INCLUDE\SDL2\; robocopy C:\INCLUDE\sdl2_ttf.nuget\build\native\include\ C:\INCLUDE\SDL2\
 ```
 
+##### Old school:
+
+1. Download the latest VC development files from: https://libsdl.org
+
+2. Place the entire contents of `include` and `lib` under `C:\INCLUDE\SDL2`.
+
+3. Copy all DLLs under `lib` to `C:\Windows\System32` and `C:\Windows\SysWOW64`.
+
+4. Repeat for _SDL2_image_, _SDL2_mixer_, and _SDL2_ttf_.
+
+5. Profit.
+
 ---
 
 ### Compiling:
