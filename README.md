@@ -163,6 +163,22 @@ nuget install sdl2.nuget -NonInteractive -ExcludeVersion -OutputDirectory C:\INC
 mkdir C:\INCLUDE\SDL2\; robocopy C:\INCLUDE\sdl2.nuget\build\native\include\ C:\INCLUDE\SDL2\; robocopy C:\INCLUDE\sdl2_image.nuget\build\native\include\ C:\INCLUDE\SDL2\; robocopy C:\INCLUDE\sdl2_mixer.nuget\build\native\include\ C:\INCLUDE\SDL2\; robocopy C:\INCLUDE\sdl2_ttf.nuget\build\native\include\ C:\INCLUDE\SDL2\
 ```
 
+#### Powershell or Cmd as admin:
+
+```
+robocopy C:\INCLUDE\sdl2.nuget.redist\build\native\bin\x64\dynamic\ C:\Windows\System32\ *.dll
+robocopy C:\INCLUDE\sdl2.nuget.redist\build\native\bin\x64\dynamic\ C:\Windows\SysWOW64\ *.dll
+
+robocopy C:\INCLUDE\sdl2_image.nuget.redist\build\native\bin\x64\dynamic\ C:\Windows\System32\ *.dll
+robocopy C:\INCLUDE\sdl2_image.nuget.redist\build\native\bin\x64\dynamic\ C:\Windows\SysWOW64\ *.dll
+
+robocopy C:\INCLUDE\sdl2_mixer.nuget.redist\build\native\bin\x64\dynamic\ C:\Windows\System32\ *.dll
+robocopy C:\INCLUDE\sdl2_mixer.nuget.redist\build\native\bin\x64\dynamic\ C:\Windows\SysWOW64\ *.dll
+
+robocopy C:\INCLUDE\sdl2_ttf.nuget.redist\build\native\bin\x64\dynamic\ C:\Windows\System32\ *.dll
+robocopy C:\INCLUDE\sdl2_ttf.nuget.redist\build\native\bin\x64\dynamic\ C:\Windows\SysWOW64\ *.dll
+```
+
 ##### Old school:
 
 1. Download the latest VC development files from: https://libsdl.org
