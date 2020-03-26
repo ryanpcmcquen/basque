@@ -89,6 +89,10 @@ void read_map_attributes(GameState* game)
     // See if there is a faster way to do this.
     for (int i = 0; i < game->map.attributes_string_length; i++) {
 
+        // Store our starting point, for times when we reverse
+        // through the string (comments, et cetera).
+        int original_i = i;
+
         // Make this allocate less memory,
         // it is wasteful right now.
         char tmp[ATTRIBUTE_CHAR_LIMIT] = { 0 };
@@ -97,10 +101,12 @@ void read_map_attributes(GameState* game)
         case ':': {
             // Start of tile.
             char tile_string[TILE_CHAR_LIMIT] = { 0 };
+
             while (game->map.attributes_string[i] != '\n') {
-                // Allow comments to have colons too.
                 if (game->map.attributes_string[i] == '/') {
-                    return;
+                    // Reset the counter!
+                    i = original_i;
+                    break;
                 }
                 i--;
             }

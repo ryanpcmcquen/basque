@@ -1,4 +1,4 @@
-// This is the top border section.
+// This is the top border section:
 0:
 { 0, 0 }, { 1, 0, 0, 1 },
 
@@ -17,6 +17,8 @@
 5:
 { *5, 0 }, { 1, 1, 0, 0 },
 
+// There is a different grouping of
+// tiles here along the x axis:
 6:
 { *6, 0 }, { 1, 0, 0, 0 },
 
