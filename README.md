@@ -139,7 +139,7 @@ brew install sdl2 sdl2_image sdl2_mixer sdl2_ttf
 
 #### Windows:
 
-Run the script here: [install_sdl_on_windows.cmd](install_sdl_on_windows.cmd)
+Run the script here (this may be broken: https://github.com/ryanpcmcquen/basque/issues/7): [install_sdl_on_windows.cmd](install_sdl_on_windows.cmd)
 
 ---
 
