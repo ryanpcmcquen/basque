@@ -156,15 +156,30 @@ nuget install sdl2_ttf.nuget -NonInteractive -ExcludeVersion -OutputDirectory C:
 
 ```
 mkdir C:\INCLUDE\SDL2\
+
+:: Headers:
 robocopy C:\INCLUDE\sdl2.nuget\build\native\include\ C:\INCLUDE\SDL2\
 robocopy C:\INCLUDE\sdl2_image.nuget\build\native\include\ C:\INCLUDE\SDL2\
 robocopy C:\INCLUDE\sdl2_mixer.nuget\build\native\include\ C:\INCLUDE\SDL2\
 robocopy C:\INCLUDE\sdl2_ttf.nuget\build\native\include\ C:\INCLUDE\SDL2\
+
+:: Libs:
+robocopy C:\INCLUDE\sdl2.nuget\build\native\lib\x64\dynamic\ C:\INCLUDE\SDL2\
+robocopy C:\INCLUDE\sdl2_image.nuget\build\native\lib\x64\dynamic\ C:\INCLUDE\SDL2\
+robocopy C:\INCLUDE\sdl2_mixer.nuget\build\native\lib\x64\dynamic\ C:\INCLUDE\SDL2\
+robocopy C:\INCLUDE\sdl2_ttf.nuget\build\native\lib\x64\dynamic\ C:\INCLUDE\SDL2\
+
+:: DLLs:
+robocopy C:\INCLUDE\sdl2.nuget.redist\build\native\bin\x64\dynamic\ C:\INCLUDE\SDL2\
+robocopy C:\INCLUDE\sdl2_image.nuget.redist\build\native\bin\x64\dynamic\ C:\INCLUDE\SDL2\
+robocopy C:\INCLUDE\sdl2_mixer.nuget.redist\build\native\bin\x64\dynamic\ C:\INCLUDE\SDL2\
+robocopy C:\INCLUDE\sdl2_ttf.nuget.redist\build\native\bin\x64\dynamic\ C:\INCLUDE\SDL2\
 ```
 
 #### Cmd or Powershell as admin:
 
 ```
+:: System DLLs:
 robocopy C:\INCLUDE\sdl2.nuget.redist\build\native\bin\x64\dynamic\ C:\Windows\System32\ *.dll
 robocopy C:\INCLUDE\sdl2.nuget.redist\build\native\bin\x64\dynamic\ C:\Windows\SysWOW64\ *.dll
 
