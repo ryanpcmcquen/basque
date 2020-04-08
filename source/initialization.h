@@ -53,6 +53,22 @@ void cleanup(void)
 int init()
 {
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) == 0) {
+        if (DETECT_RESOLUTION) {
+            SDL_DisplayMode display_mode;
+            if (SDL_GetDesktopDisplayMode(0, &display_mode) != 0) {
+                SDL_Log("SDL_GetDesktopDisplayMode failed: %s\nWe will use the default resolution instead.", SDL_GetError());
+            } else {
+                if (FULLSCREEN_MODE) {
+                    SCREEN_WIDTH = display_mode.w;
+                    SCREEN_HEIGHT = display_mode.h;
+                } else {
+                    SCREEN_WIDTH = display_mode.w * 0.8;
+                    SCREEN_HEIGHT = display_mode.h * 0.8;
+                }
+            }
+            SDL_Log("Detected screen width: %i\nDetected screen height: %i\n", display_mode.w, display_mode.h);
+        }
+
         app.window = SDL_CreateWindow(GAME_TITLE, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, (int)SCREEN_WIDTH, (int)SCREEN_HEIGHT, 0);
 
         if (app.window != NULL) {
@@ -60,22 +76,12 @@ int init()
 
             if (app.renderer != NULL) {
 
-                // @TODO:
-                // It'd be nice to get the screen width dynamically, in case it changes.
-                // This will also help us handle full screen better.
-                // It's not high priority yet though.
-                // SDL_GetWindowSize(app.window, app.screen_width, app.screen_height);
-                // SDL_Log("Screen width: %i\n", app.screen_width);
-                // SDL_Log("Screen height: %i\n", app.screen_height);
                 if (FULLSCREEN_MODE) {
                     // Other options available: SDL_WINDOW_FULLSCREEN_DESKTOP or 0
                     SDL_SetWindowFullscreen(app.window, SDL_WINDOW_FULLSCREEN);
                 }
 
-                SDL_RenderSetScale(
-                    app.renderer,
-                    SCALING,
-                    SCALING);
+                SDL_RenderSetScale(app.renderer, SCALING, SCALING);
                 SDL_Log("Basque started with %ix scaling.", SCALING);
                 // Set initial draw color:
                 SDL_SetRenderDrawColor(app.renderer, 0, 0, 0, 0);
@@ -146,7 +152,6 @@ int init()
             }
         }
     } else {
-        printf("Unable to initialize SDL.\n");
         SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Unable to initialize SDL: %s", SDL_GetError());
         return 1;
     }

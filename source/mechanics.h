@@ -14,8 +14,7 @@ void load_music(GameState* game)
     int flags = MIX_INIT_OGG;
     int initted = Mix_Init(flags);
     if ((initted & flags) != flags) {
-        printf("Mix_Init: Failed to init required ogg support!\n");
-        printf("Mix_Init: %s\n", Mix_GetError());
+        printf("Mix_Init: Failed to init required ogg support!\nMix_Init: %s\n", Mix_GetError());
         // We can still continue without audio. :^(
     } else {
 

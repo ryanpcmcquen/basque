@@ -7,8 +7,6 @@
 typedef struct {
     SDL_Renderer* renderer;
     SDL_Window* window;
-    int* screen_width;
-    int* screen_height;
 } App;
 
 typedef struct {
