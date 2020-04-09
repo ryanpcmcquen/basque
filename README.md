@@ -57,6 +57,7 @@ Why not just use Godot/Unity/et cetera? Basque has a very different priority lis
 -   Collision detection.
 -   Some frame rate limiting.
 -   Accepts command line arguments (currently only for enabling fullscreen mode).
+-   Resolution detection (estimates window size to 80% of the screen or uses the full resolution for fullscreen mode, this can be switched off).
 
 Everything that is here should not be considered a final or optimal solution, but rather, 'a good start'. At this point the engine will start becoming more specific to the game I am building, which is why I see this as the best time to open source it. Hopefully, it can be useful to others, either as a starting point, or as a guide of how to do some things with SDL2. Note that all of the code here is not necessarily the best solution to these problems, but it is _a_ solution.
 
@@ -139,7 +140,7 @@ brew install sdl2 sdl2_image sdl2_mixer sdl2_ttf
 
 #### Windows:
 
-Run the script here (this may be broken: https://github.com/ryanpcmcquen/basque/issues/7): [install_sdl_on_windows.cmd](install_sdl_on_windows.cmd)
+Run the script here: [install_sdl_on_windows.cmd](install_sdl_on_windows.cmd)
 
 ---
 
