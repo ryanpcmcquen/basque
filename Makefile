@@ -39,3 +39,11 @@ force:
 	$(RELEASE)
 debug: source/*.c source/*.h
 	$(RELEASE) -g
+
+lin:
+	# AppImage stuff here.
+mac:
+	cp -r $(TITLE) $(TITLE).app/Contents/Resources/
+	cp -r assets $(TITLE).app/Contents/Resources/
+win:
+	# Package assets into .exe for Windows here.
