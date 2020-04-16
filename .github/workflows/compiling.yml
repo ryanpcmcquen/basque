@@ -12,12 +12,12 @@ jobs:
               run: sudo apt-get update && sudo apt-get -qy install libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev
 
             - name: Compile!
-              run: make
+              run: make && make linux
 
             - uses: actions/upload-artifact@v1
               with:
-                  name: basque_linux
-                  path: basque
+                  name: basque.linux.zip
+                  path: basque.linux.zip
 
     mac:
         runs-on: macos-latest
@@ -28,12 +28,12 @@ jobs:
               run: brew install sdl2 sdl2_image sdl2_mixer sdl2_ttf
 
             - name: Compile!
-              run: make
+              run: make && make mac
 
             - uses: actions/upload-artifact@v1
               with:
-                  name: basque_mac
-                  path: basque
+                  name: basque.mac.zip
+                  path: basque.mac.zip
 
     windows:
         runs-on: windows-latest
@@ -49,9 +49,9 @@ jobs:
               run: choco install visualcpp-build-tools -y; choco install llvm -y
 
             - name: Prepare VS enviro and compile!
-              run: $VS_EDITION = dir 'C:\Program Files (x86)\Microsoft Visual Studio\' | ? -FilterScript {$_.Name -like "[0-9]*"} | Sort CreationTime | Select Name -First 1; $VCVARSALL_BIN = Get-ChildItem -Path "C:\Program Files (x86)\Microsoft Visual Studio\$($VS_EDITION.Name)\" -Filter 'vcvarsall.bat' -Recurse | Select FullName -First 1; $Env:CC = "`"C:\Program Files\LLVM\bin\clang.exe`""; cmd /c "`"$($VCVARSALL_BIN.FullName)`" x64 && nmake /e"
+              run: $VS_EDITION = dir 'C:\Program Files (x86)\Microsoft Visual Studio\' | ? -FilterScript {$_.Name -like "[0-9]*"} | Sort CreationTime | Select Name -First 1; $VCVARSALL_BIN = Get-ChildItem -Path "C:\Program Files (x86)\Microsoft Visual Studio\$($VS_EDITION.Name)\" -Filter 'vcvarsall.bat' -Recurse | Select FullName -First 1; $Env:CC = "`"C:\Program Files\LLVM\bin\clang.exe`""; cmd /c "`"$($VCVARSALL_BIN.FullName)`" x64 && nmake /e && nmake win"
 
             - uses: actions/upload-artifact@v1
               with:
-                  name: basque_windows
-                  path: basque.exe
+                  name: basque.windows.zip
+                  path: basque.windows.zip

@@ -1,5 +1,11 @@
 *.sublime-workspace
+linux/assets/**
+linux/basque
 linux/basque.AppImage.zip
+mac/assets/**
+mac/basque
 mac/basque.app/Contents/Resources/**
 mac/basque.app.zip
+windows/assets/**
+windows/basque.exe
 windows/basque.exe.zip

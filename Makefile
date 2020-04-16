@@ -41,9 +41,14 @@ debug: source/*.c source/*.h
 	$(RELEASE) -g
 
 lin:
-	# AppImage stuff here.
+	cp $(TITLE) linux/
+	cp -r assets linux/
+	zip -r $(TITLE).linux.zip linux/*
 mac:
-	cp -r $(TITLE) mac/$(TITLE).app/Contents/Resources/
+	cp $(TITLE) mac/$(TITLE).app/Contents/Resources/
 	cp -r assets mac/$(TITLE).app/Contents/Resources/
+	zip -r $(TITLE).mac.zip mac/$(TITLE).app
 win:
-	# Package assets into .exe for Windows here.
+	copy $(TITLE).exe windows\ &
+	robocopy assets\ windows\assets\ /e &
+	powershell Compress-Archive -Force windows\* $(TITLE).windows.zip
