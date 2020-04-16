@@ -40,7 +40,7 @@ force:
 debug: source/*.c source/*.h
 	$(RELEASE) -g
 
-lin:
+linux:
 	cp $(TITLE) linux/
 	cp -r assets linux/
 	zip -r $(TITLE).linux.zip linux/*
@@ -48,7 +48,7 @@ mac:
 	cp $(TITLE) mac/$(TITLE).app/Contents/Resources/
 	cp -r assets mac/$(TITLE).app/Contents/Resources/
 	zip -r $(TITLE).mac.zip mac/$(TITLE).app
-win:
+windows:
 	copy $(TITLE).exe windows\ &
 	robocopy assets\ windows\assets\ /e &
 	powershell Compress-Archive -Force windows\* $(TITLE).windows.zip

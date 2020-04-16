@@ -49,7 +49,7 @@ jobs:
               run: choco install visualcpp-build-tools -y; choco install llvm -y
 
             - name: Prepare VS enviro and compile!
-              run: $VS_EDITION = dir 'C:\Program Files (x86)\Microsoft Visual Studio\' | ? -FilterScript {$_.Name -like "[0-9]*"} | Sort CreationTime | Select Name -First 1; $VCVARSALL_BIN = Get-ChildItem -Path "C:\Program Files (x86)\Microsoft Visual Studio\$($VS_EDITION.Name)\" -Filter 'vcvarsall.bat' -Recurse | Select FullName -First 1; $Env:CC = "`"C:\Program Files\LLVM\bin\clang.exe`""; cmd /c "`"$($VCVARSALL_BIN.FullName)`" x64 && nmake /e && nmake win"
+              run: $VS_EDITION = dir 'C:\Program Files (x86)\Microsoft Visual Studio\' | ? -FilterScript {$_.Name -like "[0-9]*"} | Sort CreationTime | Select Name -First 1; $VCVARSALL_BIN = Get-ChildItem -Path "C:\Program Files (x86)\Microsoft Visual Studio\$($VS_EDITION.Name)\" -Filter 'vcvarsall.bat' -Recurse | Select FullName -First 1; $Env:CC = "`"C:\Program Files\LLVM\bin\clang.exe`""; cmd /c "`"$($VCVARSALL_BIN.FullName)`" x64 && nmake /e && nmake windows"
 
             - uses: actions/upload-artifact@v1
               with:
