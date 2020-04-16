@@ -45,6 +45,7 @@ linux:
 	cp -r assets linux/
 	zip -r $(TITLE).linux.zip linux/*
 mac:
+	mkdir -p mac/basque.app/Contents/Resources/
 	cp $(TITLE) mac/$(TITLE).app/Contents/Resources/
 	cp -r assets mac/$(TITLE).app/Contents/Resources/
 	zip -r $(TITLE).mac.zip mac/$(TITLE).app
