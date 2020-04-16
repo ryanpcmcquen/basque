@@ -5,7 +5,7 @@ linux:
     image: gcc
     stage: build
     before_script:
-        - apt-get update && apt-get install -y libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev
+        - apt-get update && apt-get install -y libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev zip
     script: make && make --always-make linux
     artifacts:
         paths:
