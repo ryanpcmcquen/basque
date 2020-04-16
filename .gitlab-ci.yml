@@ -8,6 +8,7 @@ linux:
         - apt-get update && apt-get install -y libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev zip
     script: make && make --always-make linux
     artifacts:
+        name: basque.linux
         paths:
             - basque.linux.zip
 
@@ -22,5 +23,6 @@ windows:
         - choco install llvm -y
     script: $VS_EDITION = dir 'C:\Program Files (x86)\Microsoft Visual Studio\' | ? -FilterScript {$_.Name -like "[0-9]*"} | Sort CreationTime | Select Name -First 1; $VCVARSALL_BIN = Get-ChildItem -Path "C:\Program Files (x86)\Microsoft Visual Studio\$($VS_EDITION.Name)\" -Filter 'vcvarsall.bat' -Recurse | Select FullName -First 1; $Env:CC = "`"C:\Program Files\LLVM\bin\clang.exe`""; cmd /c "`"$($VCVARSALL_BIN.FullName)`" x64 && nmake /e && nmake /a windows"
     artifacts:
+        name: basque.windows
         paths:
             - basque.windows.zip
