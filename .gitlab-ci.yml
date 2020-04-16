@@ -6,7 +6,7 @@ linux:
     stage: build
     before_script:
         - apt-get update && apt-get install -y libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev
-    script: make && make linux
+    script: make && make --always-make linux
     artifacts:
         paths:
             - basque.linux.zip
