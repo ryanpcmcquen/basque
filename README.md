@@ -225,6 +225,34 @@ nmake
 
 ---
 
+### Packaging:
+
+To produce a zip containing the binary and all assets, run the below commands.
+
+Note that this will only run on a system with SDL2 globally
+installed, in the future, we will statically link SDL2
+to make this an easily distributable package.
+
+#### Linux:
+
+```
+make && make --always-make linux
+```
+
+#### Mac:
+
+```
+make && make --always-make mac
+```
+
+#### Windows:
+
+```
+nmake && nmake /a windows
+```
+
+---
+
 ### Running:
 
 After [compiling](#compiling) for your platform, you can launch with `./basque` (or `basque.exe` on Windows). Passing `-f` or `--fullscreen` will launch the app in fullscreen, rather than the resolution specified in [configuration.h](source/configuration.h).
