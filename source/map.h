@@ -121,6 +121,7 @@ void read_map_attributes(GameState* game)
             }
             tile_string[tile_string_index] = '\0';
             int tile_index = atoi(tile_string);
+            SDL_Log("Tile index: %i\n", tile_index);
 
             // Advance twice here, because we are at the colon
             // and need to also go through the newline.
@@ -165,6 +166,7 @@ void read_map_attributes(GameState* game)
             } else {
                 game->map.tile_attributes[tile_index].clip.x = 0;
             }
+            SDL_Log("X clip: %i\n", game->map.tile_attributes[tile_index].clip.x);
 
             get_next_attribute(attribute, attribute_counter, tmp, tmp_counter);
             if (attribute != NULL) {
@@ -178,6 +180,7 @@ void read_map_attributes(GameState* game)
             } else {
                 game->map.tile_attributes[tile_index].clip.y = 0;
             }
+            SDL_Log("Y clip: %i\n", game->map.tile_attributes[tile_index].clip.y);
 
             get_next_attribute(attribute, attribute_counter, tmp, tmp_counter);
             if (attribute != NULL) {
@@ -186,6 +189,7 @@ void read_map_attributes(GameState* game)
             } else {
                 game->map.tile_attributes[tile_index].border.north = 0;
             }
+            SDL_Log("North border: %i\n", game->map.tile_attributes[tile_index].border.north);
 
             get_next_attribute(attribute, attribute_counter, tmp, tmp_counter);
             if (attribute != NULL) {
@@ -194,6 +198,7 @@ void read_map_attributes(GameState* game)
             } else {
                 game->map.tile_attributes[tile_index].border.east = 0;
             }
+            SDL_Log("East border: %i\n", game->map.tile_attributes[tile_index].border.east);
 
             get_next_attribute(attribute, attribute_counter, tmp, tmp_counter);
             if (attribute != NULL) {
@@ -202,6 +207,7 @@ void read_map_attributes(GameState* game)
             } else {
                 game->map.tile_attributes[tile_index].border.south = 0;
             }
+            SDL_Log("South border: %i\n", game->map.tile_attributes[tile_index].border.south);
 
             get_next_attribute(attribute, attribute_counter, tmp, tmp_counter);
             if (attribute != NULL) {
@@ -210,6 +216,8 @@ void read_map_attributes(GameState* game)
             } else {
                 game->map.tile_attributes[tile_index].border.west = 0;
             }
+
+            SDL_Log("West border: %i\n", game->map.tile_attributes[tile_index].border.west);
 
         } break;
 
