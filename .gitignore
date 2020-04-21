@@ -1,4 +1,9 @@
 *.sublime-workspace
+*.pdb
+*.ilk
+./basque
+./basque.exe
+
 linux/assets/**
 linux/basque
 linux/basque.AppImage.zip
@@ -9,5 +14,3 @@ mac/basque.app.zip
 windows/assets/**
 windows/basque.exe
 windows/basque.exe.zip
-*.pdb
-*.ilk
