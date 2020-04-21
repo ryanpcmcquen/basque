@@ -37,8 +37,8 @@ int FULLSCREEN_MODE = 0;
 #define BACKGROUND_IMAGE IMAGE_DIR "tiles_packed.png"
 
 #define MUSIC_INTRO_FILE AUDIO_DIR "Basque_sample_music.ogg"
-// #define MUSIC_VOLUME (MIX_MAX_VOLUME / 3)
-#define MUSIC_VOLUME 0
+#define MUSIC_VOLUME (MIX_MAX_VOLUME / 3)
+// #define MUSIC_VOLUME 0
 
 #define EDITOR_FONT FONT_DIR "BPtypewrite.ttf"
 #define EDITOR_FONT_SIZE 11
