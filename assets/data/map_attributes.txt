@@ -1,8 +1,6 @@
-//
 // Attribute format is:
 // { x clip, y clip }, { north, east, south, west }
 //
-
 // Start of top group:
 
 0:

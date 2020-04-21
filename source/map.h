@@ -62,8 +62,11 @@ void read_map_layout(GameState* game)
         attribute[attribute_counter] = '\0';                               \
     }
 
+// This chops off the first character from the string
+// when it is a multiple (prefixed with *).
 char* get_multiplier(char* attribute)
 {
+
     char* attribute_copy = (char*)calloc(strlen(attribute), sizeof(char));
     if (attribute_copy != NULL) {
 #ifdef PLATFORM_IS_WINDOWS
@@ -88,11 +91,10 @@ void read_map_attributes(GameState* game)
     // @Robustness:
     // See if there is a faster way to do this.
     for (int i = 0; i < game->map.attributes_string_length; i++) {
-
         // Store our starting point, for times when we reverse
         // through the string (comments, et cetera).
         int original_i = i;
-
+        int skip_line = 0;
         // Make this allocate less memory,
         // it is wasteful right now.
         char tmp[ATTRIBUTE_CHAR_LIMIT] = { 0 };
@@ -106,9 +108,13 @@ void read_map_attributes(GameState* game)
                 if (game->map.attributes_string[i] == '/') {
                     // Reset the counter!
                     i = original_i;
+                    skip_line = 1;
                     break;
                 }
                 i--;
+            }
+            if (skip_line) {
+                break;
             }
             // We don't need to read the newline character.
             i++;
@@ -121,7 +127,6 @@ void read_map_attributes(GameState* game)
             }
             tile_string[tile_string_index] = '\0';
             int tile_index = atoi(tile_string);
-            SDL_Log("Tile index: %i\n", tile_index);
 
             // Advance twice here, because we are at the colon
             // and need to also go through the newline.
@@ -166,7 +171,6 @@ void read_map_attributes(GameState* game)
             } else {
                 game->map.tile_attributes[tile_index].clip.x = 0;
             }
-            SDL_Log("X clip: %i\n", game->map.tile_attributes[tile_index].clip.x);
 
             get_next_attribute(attribute, attribute_counter, tmp, tmp_counter);
             if (attribute != NULL) {
@@ -180,7 +184,6 @@ void read_map_attributes(GameState* game)
             } else {
                 game->map.tile_attributes[tile_index].clip.y = 0;
             }
-            SDL_Log("Y clip: %i\n", game->map.tile_attributes[tile_index].clip.y);
 
             get_next_attribute(attribute, attribute_counter, tmp, tmp_counter);
             if (attribute != NULL) {
@@ -189,7 +192,6 @@ void read_map_attributes(GameState* game)
             } else {
                 game->map.tile_attributes[tile_index].border.north = 0;
             }
-            SDL_Log("North border: %i\n", game->map.tile_attributes[tile_index].border.north);
 
             get_next_attribute(attribute, attribute_counter, tmp, tmp_counter);
             if (attribute != NULL) {
@@ -198,7 +200,6 @@ void read_map_attributes(GameState* game)
             } else {
                 game->map.tile_attributes[tile_index].border.east = 0;
             }
-            SDL_Log("East border: %i\n", game->map.tile_attributes[tile_index].border.east);
 
             get_next_attribute(attribute, attribute_counter, tmp, tmp_counter);
             if (attribute != NULL) {
@@ -207,7 +208,6 @@ void read_map_attributes(GameState* game)
             } else {
                 game->map.tile_attributes[tile_index].border.south = 0;
             }
-            SDL_Log("South border: %i\n", game->map.tile_attributes[tile_index].border.south);
 
             get_next_attribute(attribute, attribute_counter, tmp, tmp_counter);
             if (attribute != NULL) {
@@ -216,8 +216,6 @@ void read_map_attributes(GameState* game)
             } else {
                 game->map.tile_attributes[tile_index].border.west = 0;
             }
-
-            SDL_Log("West border: %i\n", game->map.tile_attributes[tile_index].border.west);
 
         } break;
 
@@ -279,8 +277,13 @@ void generate_map(App* app, GameState* game)
         game->map.layout_modified_time = read_file_time(game->map.layout_file);
         read_map_layout(game);
     }
+
+    if (game->map.attributes_modified_time == 0) {
+        game->map.attributes_modified_time = read_file_time(game->map.attributes_file);
+    }
     if (DEBUG_MODE && read_file_time(game->map.attributes_file) > game->map.attributes_modified_time) {
         game->map.attributes_modified_time = read_file_time(game->map.attributes_file);
+        SDL_Log("Reloading map attributes ...\n");
         read_map_attributes(game);
     }
 

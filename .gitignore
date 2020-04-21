@@ -9,3 +9,4 @@ mac/basque.app.zip
 windows/assets/**
 windows/basque.exe
 windows/basque.exe.zip
+*.pdb
