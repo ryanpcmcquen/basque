@@ -23,7 +23,9 @@ TARGET=-o $(TITLE)
 !endif
 
 FLAGS=-Wall -Wextra -std=c99
-RELEASE=$(CC) $(FLAGS) $(SOURCE) $(LIBS) $(TARGET)
+COMPILE=$(CC) $(FLAGS) $(SOURCE) $(LIBS)
+RELEASE=$(COMPILE) $(TARGET)
+DEBUG=$(COMPILE) -g $(TARGET)
 
 $(TITLE): source/*.c source/*.h
 	$(RELEASE)
@@ -38,7 +40,7 @@ clean:
 force:
 	$(RELEASE)
 debug: source/*.c source/*.h
-	$(RELEASE) -g
+	$(DEBUG)
 
 linux:
 	cp $(TITLE) linux/

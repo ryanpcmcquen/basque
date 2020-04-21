@@ -243,21 +243,21 @@ int write_map_layout(GameState* game)
     }
 }
 
-int next_cycle;
+// int next_cycle;
 
-int time_left()
-{
-    int now;
+// int time_left()
+// {
+//     int now;
 
-    now = SDL_GetTicks();
-    // SDL_Log("now: %i\n", now);
-    // SDL_Log("next_cycle: %i\n", next_cycle);
-    if (next_cycle <= now) {
-        return 0;
-    } else {
-        return next_cycle - now;
-    }
-}
+//     now = SDL_GetTicks();
+//     // SDL_Log("now: %i\n", now);
+//     // SDL_Log("next_cycle: %i\n", next_cycle);
+//     if (next_cycle <= now) {
+//         return 0;
+//     } else {
+//         return next_cycle - now;
+//     }
+// }
 
 void handle_input(App* app, GameState* game)
 {
@@ -274,7 +274,7 @@ void handle_input(App* app, GameState* game)
     int current_tile_x = 0;
     int current_tile = 0;
 
-    next_cycle = SDL_GetTicks() + FRAME_INTERVAL_REDUCTION;
+    // next_cycle = SDL_GetTicks() + FRAME_INTERVAL_REDUCTION;
 
     while (!game->done) {
         SDL_Event event;
