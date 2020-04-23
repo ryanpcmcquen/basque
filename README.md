@@ -4,8 +4,11 @@ Basque is a top-down 2d game engine.
 
 ---
 
-![Basque demo](assets/images/basque_demo.gif 'Basque demo')
-![Basque demo 2](assets/images/basque_demo_2.gif 'Basque demo 2')
+![Basque Windows demo](demos/basque_windows_demo.gif 'Basque Windows demo')
+
+![Basque Mac demo](demos/basque_mac_demo.gif 'Basque Mac demo')
+
+![Basque Linux demo](demos/basque_linux_demo.gif 'Basque Linux demo')
 
 ---
 
@@ -55,7 +58,7 @@ Why not just use Godot/Unity/et cetera? Basque has a very different priority lis
 -   Background music.
 -   Scrolling.
 -   Collision detection.
--   Some frame rate limiting.
+-   Rudimentary frame rate limiting.
 -   Accepts command line arguments (currently only for enabling fullscreen mode).
 -   Resolution detection (estimates window size to 80% of the screen or uses the full resolution for fullscreen mode, this can be switched off).
 -   High DPI awareness. By default the game will not run in high DPI mode, but it will be aware of high DPI contexts. This prevents things from looking fuzzy with weird scaling settings.
