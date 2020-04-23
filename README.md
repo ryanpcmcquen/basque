@@ -4,9 +4,11 @@ Basque is a top-down 2d game engine.
 
 ---
 
+![Basque Windows demo](demos/basque_windows_demo.gif 'Basque Windows demo')
+
 ![Basque Mac demo](demos/basque_mac_demo.gif 'Basque Mac demo')
 
-![Basque Windows demo](demos/basque_windows_demo.gif 'Basque Windows demo')
+![Basque Linux demo](demos/basque_linux_demo.gif 'Basque Linux demo')
 
 ---
 
