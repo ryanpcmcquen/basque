@@ -1,6 +1,8 @@
+#!/usr/bin/env xdg-open
 [Desktop Entry]
-Name=basque
-Exec=basque
-Icon=basque
+Name=Basque
+Exec=basque_launch
+Icon=basque_logo
 Type=Application
 Categories=Game;
+Terminal=false

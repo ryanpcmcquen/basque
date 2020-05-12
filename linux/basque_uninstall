@@ -1,0 +1,7 @@
+#!/bin/sh
+TITLE=basque
+
+rm ${HOME}/.local/share/applications/${TITLE}.desktop
+rm ${HOME}/.local/share/icons/${TITLE}_logo.png
+rm ${HOME}/.local/bin/${TITLE}_launch
+rm -rf ${HOME}/.local/share/${TITLE}

@@ -1,0 +1,5 @@
+#!/bin/sh
+TITLE=basque
+
+cd ${HOME}/.local/share/${TITLE}
+./${TITLE}

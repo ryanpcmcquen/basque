@@ -1,0 +1,12 @@
+#!/bin/sh
+TITLE=basque
+
+cp ${TITLE}.desktop ${HOME}/.local/share/applications/
+cp ${TITLE}_logo.png ${HOME}/.local/share/icons/
+
+mkdir -p ${HOME}/.local/bin/
+cp ${TITLE}_launch ${HOME}/.local/bin/
+
+mkdir -p ${HOME}/.local/share/${TITLE}
+cp -r assets ${HOME}/.local/share/${TITLE}/
+cp ${TITLE} ${HOME}/.local/share/${TITLE}/
