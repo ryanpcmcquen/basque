@@ -6,5 +6,7 @@
     <string>false</string>
     <key>NSHighResolutionCapable</key>
     <false/>
+    <key>CFBundleIconFile</key>
+    <string>assets/icons/basque_logo</string>
 </dict>
 </plist>
