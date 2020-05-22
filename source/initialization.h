@@ -98,7 +98,7 @@ int init()
                         game.font_outline = TTF_OpenFont(EDITOR_FONT, EDITOR_FONT_SIZE);
                         TTF_SetFontOutline(game.font_outline, EDITOR_FONT_OUTLINE);
 
-                        SDL_Color font_color = { 255, 255, 255, 255 };
+                        SDL_Color font_color = { 255, 255, 255, 230 };
                         SDL_Color font_outline_color = { 10, 10, 10, 200 };
                         SDL_Surface* font_outline_surface;
                         SDL_Surface* font_surface;
