@@ -504,7 +504,7 @@ void handle_input(App* app, GameState* game)
                             }
                             // SDL_Log("Left click: %i\n", game->map.layout[mouse_tile.y][mouse_tile.x]);
                             if (write_map_layout(game)) {
-                                SDL_Log("Write successful.\n");
+                                SDL_Log("Write %i successful.\n", game->editor.layout_file_suffix);
                             }
                         }
                     } break;
