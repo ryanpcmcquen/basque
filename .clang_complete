@@ -1,6 +1,5 @@
 -Wall
 -Wextra
--Wno-unused-parameter
 -I /usr/include/SDL2
 -I /usr/local/include/SDL2
 -I C:\INCLUDE
