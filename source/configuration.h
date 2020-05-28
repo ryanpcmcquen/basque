@@ -37,7 +37,7 @@ int FULLSCREEN_MODE = 0;
 #define BACKGROUND_IMAGE IMAGE_DIR "tiles_packed.png"
 
 #define MUSIC_INTRO_FILE AUDIO_DIR "Basque_sample_music.ogg"
-#define MUSIC_VOLUME (MIX_MAX_VOLUME / 3)
+#define MUSIC_VOLUME (MIX_MAX_VOLUME / 8)
 // #define MUSIC_VOLUME 0
 
 #define EDITOR_FONT FONT_DIR "BPtypewrite.ttf"
@@ -52,8 +52,6 @@ int FULLSCREEN_MODE = 0;
 #define END_OF_ROW -2
 
 #define PLAYER_INCREMENT 1
-#define GLOBAL_INCREMENT (PLAYER_INCREMENT * 3)
+#define GLOBAL_INCREMENT (PLAYER_INCREMENT * (SCALING + 1))
 
-#define GAME_LOOP_DELAY 20
-// Currently broken:
-// #define FRAME_INTERVAL_REDUCTION 30
+#define MIN_FRAMETIME_MSECS 30

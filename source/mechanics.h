@@ -115,16 +115,16 @@ void handle_collisions(GameState* game)
         game->player.can_move.south = false;
         game->player.can_move.west = false;
 
-        if (is_above_bound(game->player.global.y, PLAYER_SPRITE_ROW_HEIGHT / 2, game->player.bound.north)) {
+        if (is_above_bound(game->player.global.y - PLAYER_INCREMENT, PLAYER_SPRITE_ROW_HEIGHT / 2, game->player.bound.north)) {
             game->player.can_move.north = true;
         }
-        if (is_below_bound(game->player.global.x, PLAYER_SPRITE_WIDTH, game->player.bound.east)) {
+        if (is_below_bound(game->player.global.x + PLAYER_INCREMENT, PLAYER_SPRITE_WIDTH, game->player.bound.east)) {
             game->player.can_move.east = true;
         }
-        if (is_below_bound(game->player.global.y, PLAYER_SPRITE_ROW_HEIGHT, game->player.bound.south)) {
+        if (is_below_bound(game->player.global.y + PLAYER_INCREMENT, PLAYER_SPRITE_ROW_HEIGHT, game->player.bound.south)) {
             game->player.can_move.south = true;
         }
-        if (is_above_bound(game->player.global.x, 0, game->player.bound.west)) {
+        if (is_above_bound(game->player.global.x - PLAYER_INCREMENT, 0, game->player.bound.west)) {
             game->player.can_move.west = true;
         }
     }
@@ -243,22 +243,6 @@ int write_map_layout(GameState* game)
     }
 }
 
-// int next_cycle;
-
-// int time_left()
-// {
-//     int now;
-
-//     now = SDL_GetTicks();
-//     // SDL_Log("now: %i\n", now);
-//     // SDL_Log("next_cycle: %i\n", next_cycle);
-//     if (next_cycle <= now) {
-//         return 0;
-//     } else {
-//         return next_cycle - now;
-//     }
-// }
-
 void handle_input(App* app, GameState* game)
 {
     game->done = SDL_FALSE;
@@ -274,10 +258,9 @@ void handle_input(App* app, GameState* game)
     int current_tile_x = 0;
     int current_tile = 0;
 
-    // next_cycle = SDL_GetTicks() + FRAME_INTERVAL_REDUCTION;
-
     while (!game->done) {
         SDL_Event event;
+        int prev_time;
 
         while (SDL_PollEvent(&event)) {
             if (strcmp(game->map.layout_file, MAP_LAYOUT_FILE) == 0) {
@@ -400,11 +383,10 @@ void handle_input(App* app, GameState* game)
                         if (strcmp(game->map.layout_file, MAP_LIBRARY_FILE) != 0) {
                             // Load map_library.txt:
                             game->map.layout_file = MAP_LIBRARY_FILE;
-                            read_map_layout(game);
                         } else {
                             game->map.layout_file = MAP_LAYOUT_FILE;
-                            read_map_layout(game);
                         }
+                        read_map_layout(game);
                     }
                 } break;
                 case SDLK_RETURN: {
@@ -517,19 +499,11 @@ void handle_input(App* app, GameState* game)
             } break;
             }
 
-            // @TODO:
-            // It is time to rework scrolling ...
-            //
-            // We probably want to have the player near the center of the screen
-            // at all times. Perhaps, we could do segmented scrolling, where
-            // scrolling happens once the player reaches some bounding
-            // rectangle that represents an arbitrary percentage of
-            // the screen (for example, 40%).
             if (game->player.window.x < SCREEN_WIDTH) {
-                game->scroll.x = -(game->player.window.x * 2);
+                game->scroll.x = -(game->player.window.x * SCALING);
             }
             if (game->player.window.y < SCREEN_HEIGHT) {
-                game->scroll.y = -(game->player.window.y * 2);
+                game->scroll.y = -(game->player.window.y * SCALING);
             }
 
             generate_map(app, game);
@@ -537,20 +511,18 @@ void handle_input(App* app, GameState* game)
                 sprite_blit(app, game->player_image, game->player.window.x, game->player.window.y, game->player.direction);
             }
 
+            int curr_time = SDL_GetTicks();
+            int time_elapsed = curr_time - prev_time;
+
+            if (time_elapsed < MIN_FRAMETIME_MSECS) {
+                // Not enough time has elapsed. Let's limit the frame rate!
+                SDL_Delay(MIN_FRAMETIME_MSECS - time_elapsed);
+                curr_time = SDL_GetTicks();
+                time_elapsed = curr_time - prev_time;
+            }
+            prev_time = curr_time;
+
             present_scene(app);
-
-            // @Bug:
-            // This is a bit broken now.
-            // Cap frame rate:
-            // SDL_Delay(time_left());
-            // next_cycle += FRAME_INTERVAL_REDUCTION;
-
-            // SDL_Log("%i\n", time_left());
-            // SDL_Log("%i\n", next_cycle);
-
-            // Allegedly this keeps the app from running at too
-            // high of a frame rate. We also VSync.
-            SDL_Delay(GAME_LOOP_DELAY);
         }
     }
 }

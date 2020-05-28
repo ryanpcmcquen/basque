@@ -137,10 +137,13 @@ int init()
 
                 game.map.layout_file_base = MAP_LAYOUT_FILE_BASE;
                 game.map.layout_file = MAP_LAYOUT_FILE;
-                game.map.layout_modified_time = read_file_time(game.map.layout_file);
+                // TODO:
+                // Try to figure out why this was being set twice, the same
+                // goes for attributes_modified_time.
+                // game.map.layout_modified_time = read_file_time(game.map.layout_file);
                 game.map.layout_modified_time = 0;
                 game.map.attributes_file = MAP_ATTRIBUTES_FILE;
-                game.map.attributes_modified_time = read_file_time(game.map.attributes_file);
+                // game.map.attributes_modified_time = read_file_time(game.map.attributes_file);
                 game.map.attributes_modified_time = 0;
 
                 read_map_layout(&game);
