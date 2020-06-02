@@ -13,10 +13,10 @@ TARGET=-o $(TITLE).exe && mt.exe -nologo -manifest windows\$(TITLE).manifest -ou
 COMPILE=rc.exe /nologo windows\$(TITLE).rc && $(CC) $(FLAGS) $(SOURCE) $(LIBS) # \
 !else
 # make:
-CC=clang
 CP=cp -f
 MV=mv -f
 RM=rm -f
+CC=clang
 SDL2_FLAGS=`$$(which sdl2-config) --cflags --libs`
 SOURCE=source/$(TITLE).c
 LIBS=$(SDL2_FLAGS) -l SDL2_image -l SDL2_mixer -l SDL2_ttf
