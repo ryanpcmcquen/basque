@@ -1,4 +1,4 @@
 #!/bin/sh
 cd "$(dirname $BASH_SOURCE)"
 cd ../Resources
-./basque
+exec ./basque

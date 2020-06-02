@@ -13,6 +13,7 @@ TARGET=-o $(TITLE).exe && mt.exe -nologo -manifest windows\$(TITLE).manifest -ou
 COMPILE=rc.exe /nologo windows\$(TITLE).rc && $(CC) $(FLAGS) $(SOURCE) $(LIBS) # \
 !else
 # make:
+CC=clang
 CP=cp -f
 MV=mv -f
 RM=rm -f

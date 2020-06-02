@@ -2,4 +2,4 @@
 TITLE=basque
 
 cd ${HOME}/.local/share/${TITLE}
-./${TITLE}
+exec ./${TITLE}
