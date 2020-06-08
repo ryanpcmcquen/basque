@@ -37,10 +37,8 @@ char* read_file(char* path)
         fseek(file_to_read, 0, SEEK_SET);
 
         char* file_contents = (char*)calloc(file_size + 1, sizeof(char));
+
         fread(file_contents, 1, file_size, file_to_read);
-        // Ensure that weird or random characters
-        // do not terminate this string.
-        file_contents[file_size] = '\0';
         fclose(file_to_read);
 
         return file_contents;
