@@ -28,6 +28,7 @@ COMPILE=$(CC) $(FLAGS) $(SOURCE) $(LIBS)
 FLAGS=-Wall -Wextra -std=c99
 RELEASE=$(COMPILE) $(TARGET)
 DEBUG=$(COMPILE) -g $(TARGET)
+MEMDEBUG=$(COMPILE) -g -fsanitize=address $(TARGET)
 
 $(TITLE): source/*.c source/*.h
 	$(RELEASE)
@@ -41,8 +42,11 @@ clean:
 	$(RM) $(TITLE).exe
 force:
 	$(RELEASE)
+
 debug: source/*.c source/*.h
 	$(DEBUG)
+memdebug: source/*.c source/*.h
+	$(MEMDEBUG)
 
 linux:
 	cp $(TITLE) linux/
