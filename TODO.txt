@@ -36,12 +36,12 @@ x ) Detect collision on ticks instead of on input.
 
 x ) Add fullscreen support.
 x ) Lock file writing in the map editor, so we don't get race conditions if the user clicks too quickly.
+x ) Improve scrolling, it doesn't move at the right pace (build out a larger map to demo the issue).
+x ) Improve frame rate limiting.
+x ) Add dynamic window sizing.
 
-) Improve scrolling, it doesn't move at the right pace (build out a larger map to demo the issue).
-) Improve frame rate limiting.
 ) Expand the map.
 ) Decide whether to look around all tiles for collisions or to expand border attributes for tiles.
-) Add dynamic window sizing.
 
 
 ----------------------------------------------------------
