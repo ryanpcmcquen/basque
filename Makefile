@@ -51,6 +51,7 @@ memdebug: source/*.c source/*.h
 linux:
 	cp $(TITLE) linux/
 	cp -r assets linux/
+	find /usr/lib -type f -iname "*sdl2*.so.*" -exec cp {} linux/ \;
 	zip -r $(TITLE).linux.zip linux/*
 mac:
 	mkdir -p mac/$(TITLE).app/Contents/Resources/

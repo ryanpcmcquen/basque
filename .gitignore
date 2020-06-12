@@ -1,6 +1,9 @@
 *.sublime-workspace
 *.pdb
 *.ilk
+*.dll
+*.dylib
+*.so.*
 ./basque
 ./basque.exe
 
