@@ -67,7 +67,7 @@ void read_map_layout(GameState* game)
 char* get_multiplier(char* attribute)
 {
 
-    char* attribute_copy = (char*)calloc(strlen(attribute), sizeof(char));
+    char* attribute_copy = (char*)calloc(strlen(attribute) + 1, sizeof(char));
     if (attribute_copy != NULL) {
 #ifdef PLATFORM_IS_WINDOWS
         strcpy_s(attribute_copy, sizeof(attribute), &attribute[1]);
@@ -77,8 +77,10 @@ char* get_multiplier(char* attribute)
         strcpy(attribute, &attribute_copy[0]);
 #endif
 
+        free(attribute_copy);
         return attribute;
     }
+    free(attribute_copy);
     return "";
 }
 
@@ -86,7 +88,7 @@ void read_map_attributes(GameState* game)
 {
     game->map.attributes_string = read_file(game->map.attributes_file);
     game->map.attributes_string_length = strlen(game->map.attributes_string);
-    game->map.tile_attributes = (Tile_Data*)calloc(game->map.attributes_string_length, sizeof(char));
+    game->map.tile_attributes = (Tile_Data*)calloc(game->map.attributes_string_length + 1, sizeof(char));
 
     // @Robustness:
     // See if there is a faster way to do this.
@@ -97,12 +99,12 @@ void read_map_attributes(GameState* game)
         int skip_line = 0;
         // Make this allocate less memory,
         // it is wasteful right now.
-        char tmp[ATTRIBUTE_CHAR_LIMIT] = { 0 };
+        char tmp[ATTRIBUTE_CHAR_LIMIT + 1] = { 0 };
         switch (game->map.attributes_string[i]) {
 
         case ':': {
             // Start of tile.
-            char tile_string[TILE_CHAR_LIMIT] = { 0 };
+            char tile_string[TILE_CHAR_LIMIT + 1] = { 0 };
 
             while (game->map.attributes_string[i] != '\n') {
                 if (game->map.attributes_string[i] == '/') {

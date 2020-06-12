@@ -140,9 +140,8 @@ int write_map_layout(GameState* game)
         // SDL_SetRenderDrawColor(app->renderer, 250, 25, 0, 150);
         return 0;
     } else {
-        char* new_map_layout_file = (char*)calloc(strlen(game->map.layout_file) + 4, sizeof(char));
+        char* new_map_layout_file = (char*)calloc(strlen(game->map.layout_file) + 4 + 1, sizeof(char));
         snprintf(new_map_layout_file, sizeof(char) * (strlen(game->map.layout_file) + 4), "%s_%i%s", game->map.layout_file_base, game->editor.layout_file_suffix, TXT_EXTENSION);
-        new_map_layout_file[strlen(new_map_layout_file)] = '\0';
 
         FILE* new_map_layout;
         FILE* old_map_layout;
@@ -157,7 +156,7 @@ int write_map_layout(GameState* game)
         map_lock = fopen(MAP_LOCK_FILE, "wb");
 #endif
 
-        char* new_map_str = (char*)calloc(game->map.rows * game->map.columns, sizeof(char));
+        char* new_map_str = (char*)calloc((game->map.rows * game->map.columns) + 1, sizeof(char));
         int new_map_str_counter = 0;
 
         for (int row = 0; row < game->map.rows; row++) {
@@ -185,13 +184,8 @@ int write_map_layout(GameState* game)
                 int tmp_length = strlen(tmp);
 
                 for (int tmp_counter = 0; tmp_counter < tmp_length; tmp_counter++) {
-                    // Not sure I need this, but it definitely breaks everything:
-                    // if (new_map_str[new_map_str_counter] == '\0') {
-                    // break;
-                    // } else {
                     new_map_str[new_map_str_counter] = tmp[tmp_counter];
                     new_map_str_counter++;
-                    // }
                 }
 
                 // Do not write a comma for the last column:
