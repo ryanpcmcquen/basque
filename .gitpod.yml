@@ -1,15 +1,15 @@
 tasks:
-  - init: make && ./basque
+    - init: make -B && make -B linux
 image:
-  file: .gitpod.Dockerfile
+    file: .gitpod.Dockerfile
 ports:
-  - port: 5900
-    onOpen: ignore
-  - port: 6080
-    onOpen: open-browser
-  - port: 35900
-    onOpen: ignore
+    - port: 5900
+      onOpen: ignore
+    - port: 6080
+      onOpen: open-browser
+    - port: 35900
+      onOpen: ignore
 
 vscode:
-  extensions:
-    - xaver.clang-format@1.9.0:auCYfQ5pnsZ6Cjf4ZxkAtA==
+    extensions:
+        - xaver.clang-format@1.9.0:auCYfQ5pnsZ6Cjf4ZxkAtA==
