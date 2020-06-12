@@ -56,8 +56,10 @@ mac:
 	mkdir -p mac/$(TITLE).app/Contents/Resources/
 	cp $(TITLE) mac/$(TITLE).app/Contents/Resources/
 	cp -r assets mac/$(TITLE).app/Contents/Resources/
+	find /usr/local -type f -iname "*sdl2*.dylib" -exec cp {} mac/$(TITLE).app/Contents/Resources/ \;
 	zip -r $(TITLE).mac.zip mac/$(TITLE).app
 windows:
 	copy $(TITLE).exe windows\ &
 	robocopy assets\ windows\assets\ /e &
+	robocopy C:\INCLUDE\SDL2\ windows\ *.dll &
 	powershell Compress-Archive -Force windows\* $(TITLE).windows.zip

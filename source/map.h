@@ -80,6 +80,7 @@ char* get_multiplier(char* attribute)
         free(attribute_copy);
         return attribute;
     }
+
     free(attribute_copy);
     return "";
 }

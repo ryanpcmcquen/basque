@@ -1,4 +1,4 @@
 #!/bin/sh
 cd "$(dirname $BASH_SOURCE)"
 cd ../Resources
-exec ./basque
+DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:. exec ./basque
