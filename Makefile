@@ -19,7 +19,7 @@ RM=rm -f
 CC=clang
 SDL2_FLAGS=`$$(which sdl2-config) --cflags --libs`
 SOURCE=source/$(TITLE).c
-LIBS=$(SDL2_FLAGS) -l SDL2_image -l SDL2_mixer -l SDL2_ttf
+LIBS='-Wl,-rpath,$$ORIGIN' $(SDL2_FLAGS) -l SDL2_image -l SDL2_mixer -l SDL2_ttf
 TARGET=-o $(TITLE)
 COMPILE=$(CC) $(FLAGS) $(SOURCE) $(LIBS)
 # \
