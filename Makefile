@@ -52,6 +52,7 @@ linux:
 	cp $(TITLE) linux/
 	cp -r assets linux/
 	find /usr/lib -type f -iname "*sdl2*.so.*" -exec cp {} linux/ \;
+	for FILE in $$(find linux/ -type f -iname "*sdl2*.so.0.*"); do ln -sfv $$(basename $${FILE}) $$(echo $${FILE} | sed 's/.so.0.*/.so.0/'); done
 	zip -r $(TITLE).linux.zip linux/*
 mac:
 	mkdir -p mac/$(TITLE).app/Contents/Resources/
