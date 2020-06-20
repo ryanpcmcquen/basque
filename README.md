@@ -66,7 +66,7 @@ Why not just use Godot/Unity/et cetera? Basque has a very different priority lis
 -   High DPI awareness. By default the game will not run in high DPI mode, but it will be aware of high DPI contexts. This prevents things from looking fuzzy with weird scaling settings.
 -   Automated GitHub and GitLab packaging pipelines.
 
-Everything that is here should not be considered a final or optimal solution, but rather, 'a good start'. At this point the engine will start becoming more specific to the game I am building, which is why I see this as the best time to open source it. Hopefully, it can be useful to others, either as a starting point, or as a guide of how to do some things with SDL2. Note that all of the code here is not necessarily the best solution to these problems, but it is _a_ solution.
+Everything that is here should not be considered a final or optimal solution, but rather, a simple approach that can be morphed into a better solution. At this point the engine will become more specific to the game I am building, which is why I see this as the best time to open source it. Hopefully, it can be useful to others, either as a starting point, or as a reference of some things you can accomplish with SDL2.
 
 ---
 
