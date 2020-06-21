@@ -18,6 +18,10 @@ Packages for all platforms are available under the GitHub Action here:
 
 [![Compiling ...](https://github.com/ryanpcmcquen/basque/workflows/Compiling%20.../badge.svg)](https://github.com/ryanpcmcquen/basque/actions)
 
+Or on Itch:
+
+https://ryanpcmcquen.itch.io/basque
+
 ---
 
 Too lazy to do local setup? You can give it a spin using Gitpod (no sound or key repeats though)!
