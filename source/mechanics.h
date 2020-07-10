@@ -239,6 +239,12 @@ int write_map_layout(GameState* game)
         }                                                                                   \
     }
 
+#define set_default_bounds(bounds, default) \
+    {                                       \
+        bounds[0] = default;                \
+        bounds[1] = default;                \
+    }
+
 void handle_input(App* app, GameState* game)
 {
     game->done = SDL_FALSE;
@@ -376,7 +382,6 @@ void handle_input(App* app, GameState* game)
                                 // If the user clicks way out in space, just add one row, not several:
                                 mouse_tile.y = game->map.rows;
                                 game->map.rows = mouse_tile.y;
-
                                 game->map.columns_in_row[mouse_tile.y] = 0;
                             }
 
@@ -512,8 +517,7 @@ void handle_input(App* app, GameState* game)
             int tile_coordinate_y = current_tile_y * TILE_SPRITE_HEIGHT;
             int next_tile_north_coordinate_y = (current_tile_y - 1) * TILE_SPRITE_WIDTH;
 
-            game->player.bounds.north[0] = 0;
-            game->player.bounds.north[1] = 0;
+            set_default_bounds(game->player.bounds.north, 0);
 
             if (current_tile_attributes.border.north > 0) {
                 game->player.bounds.north[0] = tile_coordinate_y + current_tile_attributes.border.north;
@@ -533,8 +537,7 @@ void handle_input(App* app, GameState* game)
             int tile_coordinate_x = (current_tile_x + 1) * TILE_SPRITE_WIDTH;
             int next_tile_east_coordinate_x = ((current_tile_x + 1) + 1) * TILE_SPRITE_WIDTH;
 
-            game->player.bounds.east[0] = SCREEN_WIDTH;
-            game->player.bounds.east[1] = SCREEN_WIDTH;
+            set_default_bounds(game->player.bounds.east, SCREEN_WIDTH);
 
             if (current_tile_attributes.border.east > 0) {
                 game->player.bounds.east[0] = tile_coordinate_x - current_tile_attributes.border.east;
@@ -555,8 +558,7 @@ void handle_input(App* app, GameState* game)
             int tile_coordinate_y = (current_tile_y + 1) * TILE_SPRITE_HEIGHT;
             int next_tile_south_coordinate_y = ((current_tile_y + 1) + 1) * TILE_SPRITE_HEIGHT;
 
-            game->player.bounds.south[0] = SCREEN_HEIGHT;
-            game->player.bounds.south[1] = SCREEN_HEIGHT;
+            set_default_bounds(game->player.bounds.south, SCREEN_HEIGHT);
 
             if (current_tile_attributes.border.south > 0) {
                 game->player.bounds.south[0] = tile_coordinate_y - current_tile_attributes.border.south;
@@ -576,8 +578,7 @@ void handle_input(App* app, GameState* game)
             int tile_coordinate_x = current_tile_x * TILE_SPRITE_WIDTH;
             int next_tile_west_coordinate_x = (current_tile_x - 1) * TILE_SPRITE_WIDTH;
 
-            game->player.bounds.west[0] = 0;
-            game->player.bounds.west[1] = 0;
+            set_default_bounds(game->player.bounds.west, 0);
 
             if (current_tile_attributes.border.west > 0) {
                 game->player.bounds.west[0] = tile_coordinate_x + current_tile_attributes.border.west;
