@@ -245,6 +245,13 @@ int write_map_layout(GameState* game)
         bounds[1] = default;                \
     }
 
+#define set_next_tile(next_tile, next_tile_attributes, game)                    \
+    {                                                                           \
+        if (next_tile >= 0 && next_tile <= game->map.total_parsed_attributes) { \
+            next_tile_attributes = game->map.tile_attributes[next_tile];        \
+        }                                                                       \
+    }
+
 void handle_input(App* app, GameState* game)
 {
     game->done = SDL_FALSE;
@@ -427,16 +434,17 @@ void handle_input(App* app, GameState* game)
             }
         }
 
+        int next_tile_north_y, next_tile_east_x, next_tile_south_y, next_tile_west_x;
+
         if (strcmp(game->map.layout_file, MAP_LAYOUT_FILE) == 0) {
 
             current_tile_y = (game->player.global.y + PLAYER_SPRITE_HEIGHT) / TILE_SPRITE_HEIGHT;
             current_tile_x = (game->player.global.x + (PLAYER_SPRITE_COLUMN_WIDTH / 2)) / TILE_SPRITE_WIDTH;
 
-            // HACKY:
-            // Refactor this section once everything works a little better.
-            // We are falling into these conditionals when it is 0, or
-            // less than zero, because we also have to handle the
-            // next_bound attributes.
+            next_tile_north_y = current_tile_y - 1;
+            next_tile_east_x = current_tile_x + 1;
+            next_tile_south_y = current_tile_y + 1;
+            next_tile_west_x = current_tile_x - 1;
 
             if (current_tile_y < 0 || current_tile_y == 0) {
                 current_tile_y = 0;
@@ -451,10 +459,10 @@ void handle_input(App* app, GameState* game)
             if (game->map.layout[current_tile_y][current_tile_x] >= 0) {
                 current_tile = game->map.layout[current_tile_y][current_tile_x];
 
-                next_tile_north = game->map.layout[current_tile_y - 1][current_tile_x];
-                next_tile_east = game->map.layout[current_tile_y][current_tile_x + 1];
-                next_tile_south = game->map.layout[current_tile_y + 1][current_tile_x];
-                next_tile_west = game->map.layout[current_tile_y][current_tile_x - 1];
+                next_tile_north = next_tile_north_y > 0 ? game->map.layout[next_tile_north_y][current_tile_x] : 0;
+                next_tile_east = next_tile_east_x > 0 ? game->map.layout[current_tile_y][next_tile_east_x] : 0;
+                next_tile_south = next_tile_south_y > 0 ? game->map.layout[next_tile_south_y][current_tile_x] : 0;
+                next_tile_west = next_tile_west_x > 0 ? game->map.layout[current_tile_y][next_tile_west_x] : 0;
             } else {
                 current_tile = 0;
             }
@@ -467,30 +475,17 @@ void handle_input(App* app, GameState* game)
 
         Tile_Data current_tile_attributes = game->map.tile_attributes[current_tile];
 
-        // int next_tile_north_y = current_tile_y - 1;
-        // int next_tile_east_x = current_tile_x + 1;
-        // int next_tile_south_y = current_tile_y + 1;
-        // int next_tile_west_x = current_tile_x - 1;
-
         Tile_Data next_tile_north_attributes = game->map.tile_attributes[current_tile];
-        if (next_tile_north > 0 && next_tile_north < game->map.total_parsed_attributes) {
-            next_tile_north_attributes = game->map.tile_attributes[next_tile_north];
-        }
+        set_next_tile(next_tile_north, next_tile_north_attributes, game);
 
         Tile_Data next_tile_east_attributes = game->map.tile_attributes[current_tile];
-        if (next_tile_east > 0 && next_tile_east < game->map.total_parsed_attributes) {
-            next_tile_east_attributes = game->map.tile_attributes[next_tile_east];
-        }
+        set_next_tile(next_tile_east, next_tile_east_attributes, game);
 
         Tile_Data next_tile_south_attributes = game->map.tile_attributes[current_tile];
-        if (next_tile_south > 0 && next_tile_south < game->map.total_parsed_attributes) {
-            next_tile_south_attributes = game->map.tile_attributes[next_tile_south];
-        }
+        set_next_tile(next_tile_south, next_tile_south_attributes, game);
 
         Tile_Data next_tile_west_attributes = game->map.tile_attributes[current_tile];
-        if (next_tile_west > 0 && next_tile_west < game->map.total_parsed_attributes) {
-            next_tile_west_attributes = game->map.tile_attributes[next_tile_west];
-        }
+        set_next_tile(next_tile_west, next_tile_west_attributes, game);
 
         generate_map(app, game);
         if (strcmp(game->map.layout_file, MAP_LAYOUT_FILE) == 0) {
@@ -515,7 +510,7 @@ void handle_input(App* app, GameState* game)
         //
         if (current_key_states[SDL_SCANCODE_UP]) {
             int tile_coordinate_y = current_tile_y * TILE_SPRITE_HEIGHT;
-            int next_tile_north_coordinate_y = (current_tile_y - 1) * TILE_SPRITE_WIDTH;
+            int next_tile_north_coordinate_y = next_tile_north_y * TILE_SPRITE_WIDTH;
 
             set_default_bounds(game->player.bounds.north, 0);
 
@@ -535,7 +530,7 @@ void handle_input(App* app, GameState* game)
         //
         if (current_key_states[SDL_SCANCODE_RIGHT]) {
             int tile_coordinate_x = (current_tile_x + 1) * TILE_SPRITE_WIDTH;
-            int next_tile_east_coordinate_x = ((current_tile_x + 1) + 1) * TILE_SPRITE_WIDTH;
+            int next_tile_east_coordinate_x = (next_tile_east_x + 1) * TILE_SPRITE_WIDTH;
 
             set_default_bounds(game->player.bounds.east, SCREEN_WIDTH);
 
@@ -556,7 +551,7 @@ void handle_input(App* app, GameState* game)
         //
         if (current_key_states[SDL_SCANCODE_DOWN]) {
             int tile_coordinate_y = (current_tile_y + 1) * TILE_SPRITE_HEIGHT;
-            int next_tile_south_coordinate_y = ((current_tile_y + 1) + 1) * TILE_SPRITE_HEIGHT;
+            int next_tile_south_coordinate_y = (next_tile_south_y + 1) * TILE_SPRITE_HEIGHT;
 
             set_default_bounds(game->player.bounds.south, SCREEN_HEIGHT);
 
@@ -576,7 +571,7 @@ void handle_input(App* app, GameState* game)
         //
         if (current_key_states[SDL_SCANCODE_LEFT]) {
             int tile_coordinate_x = current_tile_x * TILE_SPRITE_WIDTH;
-            int next_tile_west_coordinate_x = (current_tile_x - 1) * TILE_SPRITE_WIDTH;
+            int next_tile_west_coordinate_x = next_tile_west_x * TILE_SPRITE_WIDTH;
 
             set_default_bounds(game->player.bounds.west, 0);
 

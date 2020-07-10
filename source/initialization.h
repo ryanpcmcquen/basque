@@ -38,14 +38,12 @@ void cleanup(void)
 
 #define create_outlined_font(game, map_tile_str, font_outline_surface, font_surface, font_outline_color, font_color, font_rect) \
     {                                                                                                                           \
-                                                                                                                                \
         font_outline_surface = TTF_RenderText_Blended(game.font_outline, map_tile_str, font_outline_color);                     \
         font_surface = TTF_RenderText_Blended(game.font, map_tile_str, font_color);                                             \
         font_rect.x = EDITOR_FONT_OUTLINE;                                                                                      \
         font_rect.y = EDITOR_FONT_OUTLINE;                                                                                      \
         font_rect.w = font_surface->w;                                                                                          \
         font_rect.h = font_surface->h;                                                                                          \
-                                                                                                                                \
         SDL_SetSurfaceBlendMode(font_surface, SDL_BLENDMODE_BLEND);                                                             \
         SDL_BlitSurface(font_surface, NULL, font_outline_surface, &font_rect);                                                  \
     }
