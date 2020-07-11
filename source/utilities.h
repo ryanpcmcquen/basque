@@ -45,3 +45,10 @@ char* read_file(char* path)
     }
     return "";
 }
+
+#define array_fill(arr, val)                                                                  \
+    {                                                                                         \
+        for (size_t arr_index = 0; arr_index < (sizeof(arr) / sizeof(arr[0])); arr_index++) { \
+            arr[arr_index] = val;                                                             \
+        }                                                                                     \
+    }
