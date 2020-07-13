@@ -4,12 +4,15 @@ Basque is a cross-platform top-down 2d game engine.
 
 ---
 Running on Windows:
+
 ![Basque Windows demo](demos/basque_windows_demo.gif 'Basque Windows demo')
 
 Running on Mac:
+
 ![Basque Mac demo](demos/basque_mac_demo.gif 'Basque Mac demo')
 
 Running on Linux:
+
 ![Basque Linux demo](demos/basque_linux_demo.gif 'Basque Linux demo')
 
 ---
