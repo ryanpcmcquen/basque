@@ -4,12 +4,15 @@ Basque is a cross-platform top-down 2d game engine.
 
 ---
 Running on Windows:
+
 ![Basque Windows demo](demos/basque_windows_demo.gif 'Basque Windows demo')
 
 Running on Mac:
+
 ![Basque Mac demo](demos/basque_mac_demo.gif 'Basque Mac demo')
 
 Running on Linux:
+
 ![Basque Linux demo](demos/basque_linux_demo.gif 'Basque Linux demo')
 
 ---
@@ -69,6 +72,7 @@ Why not just use Godot/Unity/et cetera? Basque has a very different priority lis
 -   Resolution detection (estimates window size to 80% of the screen or uses the full resolution for fullscreen mode, this can be switched off).
 -   High DPI awareness. By default the game will not run in high DPI mode, but it will be aware of high DPI contexts. This prevents things from looking fuzzy with weird scaling settings.
 -   Automated GitHub and GitLab packaging pipelines.
+-   Scancode based movement (rather than event loop key states). This keeps the controls from being susceptible to operating system key repeat rates and delays.
 
 Everything that is here should not be considered a final or optimal solution, but rather, a simple approach that can be morphed into a better solution. At this point the engine will become more specific to the game I am building, which is why I see this as the best time to open source it. Hopefully, it can be useful to others, either as a starting point, or as a reference of some things you can accomplish with SDL2.
 

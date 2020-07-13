@@ -10,15 +10,6 @@ bool map_char_is_not_tile_info(char char_to_check)
     return char_to_check == ' ' || char_to_check == '\0' || char_to_check == '\n' || char_to_check == ',';
 }
 
-#define map_memory_alloc(game)                                                    \
-    {                                                                             \
-        game->map.columns_in_row = (int*)calloc(game->map.rows, sizeof(int));     \
-        game->map.layout = (int**)calloc(game->map.rows, sizeof(int*));           \
-        for (int row = 0; row < game->map.rows; row++) {                          \
-            game->map.layout[row] = (int*)calloc(game->map.columns, sizeof(int)); \
-        }                                                                         \
-    }
-
 void read_map_layout(GameState* game)
 {
     game->map.layout_string = read_file(game->map.layout_file);
@@ -28,13 +19,14 @@ void read_map_layout(GameState* game)
         SDL_Log("Map layout is empty, exiting.\n");
         exit(EXIT_FAILURE);
     }
+
     int current_column = 0;
     game->map.rows = 0;
     game->map.columns = 0;
 
     // @Robustness:
     // See if there is a faster way to do this.
-    for (int i = 0; i < game->map.layout_string_length; i++) {
+    for (size_t i = 0; i < game->map.layout_string_length; i++) {
         if (game->map.layout_string[i] == '\n') {
             if (current_column > game->map.columns) {
                 game->map.columns = current_column;
@@ -46,12 +38,16 @@ void read_map_layout(GameState* game)
         }
     }
 
-    map_memory_alloc(game);
+    // Map memory allocation:
+    game->map.columns_in_row = (int*)calloc(game->map.rows, sizeof(int));
+    game->map.layout = (int**)calloc(game->map.rows, sizeof(int*));
+    for (int row = 0; row < game->map.rows; row++) {
+        game->map.layout[row] = (int*)calloc(game->map.columns, sizeof(int));
+    }
 }
 
 #define get_next_attribute(attribute, attribute_counter, tmp, tmp_counter) \
     {                                                                      \
-        attribute = (char*)calloc(1, sizeof(tmp));                         \
         attribute_counter = 0;                                             \
         tmp_counter++;                                                     \
         while (tmp[tmp_counter] != ',') {                                  \
@@ -59,50 +55,41 @@ void read_map_layout(GameState* game)
             attribute_counter++;                                           \
             tmp_counter++;                                                 \
         }                                                                  \
-        attribute[attribute_counter] = '\0';                               \
     }
 
 // This chops off the first character from the string
 // when it is a multiple (prefixed with *).
-char* get_multiplier(char* attribute)
-{
-
-    char* attribute_copy = (char*)calloc(strlen(attribute) + 1, sizeof(char));
-    if (attribute_copy != NULL) {
-#ifdef PLATFORM_IS_WINDOWS
-        strcpy_s(attribute_copy, sizeof(attribute), &attribute[1]);
-        strcpy_s(attribute, sizeof(attribute_copy), &attribute_copy[0]);
-#else
-        strcpy(attribute_copy, &attribute[1]);
-        strcpy(attribute, &attribute_copy[0]);
-#endif
-
-        free(attribute_copy);
-        return attribute;
+#define get_multiplier(attribute)                                                                                 \
+    {                                                                                                             \
+        for (size_t attribute_copy_index = 1; attribute_copy_index < sizeof(attribute); attribute_copy_index++) { \
+            attribute[attribute_copy_index - 1] = attribute[attribute_copy_index];                                \
+        }                                                                                                         \
     }
-
-    free(attribute_copy);
-    return "";
-}
 
 void read_map_attributes(GameState* game)
 {
     game->map.attributes_string = read_file(game->map.attributes_file);
     game->map.attributes_string_length = strlen(game->map.attributes_string);
-    game->map.tile_attributes = (Tile_Data*)calloc(game->map.attributes_string_length + 1, sizeof(char));
 
     // @Robustness:
     // See if there is a faster way to do this.
-    for (int i = 0; i < game->map.attributes_string_length; i++) {
+    for (size_t i = 0; i < game->map.attributes_string_length; i++) {
+
         // Store our starting point, for times when we reverse
         // through the string (comments, et cetera).
-        int original_i = i;
+        size_t original_i = i;
+
+        // Cheap boolean so that we can skip comment lines:
         int skip_line = 0;
+
         // Make this allocate less memory,
         // it is wasteful right now.
         char tmp[ATTRIBUTE_CHAR_LIMIT + 1] = { 0 };
         switch (game->map.attributes_string[i]) {
-
+        // case '\r': {
+        //     SDL_Log("Please convert your map_*.txt files to use LF line endings ... exiting.\n");
+        //     exit(EXIT_FAILURE);
+        // } break;
         case ':': {
             // Start of tile.
             char tile_string[TILE_CHAR_LIMIT + 1] = { 0 };
@@ -130,6 +117,9 @@ void read_map_attributes(GameState* game)
             }
             tile_string[tile_string_index] = '\0';
             int tile_index = atoi(tile_string);
+            if (tile_index > game->map.total_parsed_attributes) {
+                game->map.total_parsed_attributes = tile_index;
+            }
 
             // Advance twice here, because we are at the colon
             // and need to also go through the newline.
@@ -154,71 +144,42 @@ void read_map_attributes(GameState* game)
             tmp[attribute_index] = '\0';
             int tmp_counter = -1;
 
-            char* attribute = (char*)calloc(ATTRIBUTE_LENGTH, sizeof(char));
+            char attribute[ATTRIBUTE_LENGTH + 1] = { 0 };
             int attribute_counter = 0;
 
+            // X clip:
             get_next_attribute(attribute, attribute_counter, tmp, tmp_counter);
             int multiplier = 1;
-
-            if (attribute != NULL) {
-
-                if (attribute[0] == '*') {
-                    // @TODO:
-                    // Use the right amount of memory.
-                    attribute = get_multiplier(attribute);
-                    multiplier = TILE_SPRITE_WIDTH;
-                }
-
-                game->map.tile_attributes[tile_index].clip.x = multiplier * atoi(attribute);
-                free(attribute);
-            } else {
-                game->map.tile_attributes[tile_index].clip.x = 0;
+            if (attribute[0] == '*') {
+                multiplier = TILE_SPRITE_HEIGHT;
+                get_multiplier(attribute);
             }
+            game->map.tile_attributes[tile_index].clip.x = multiplier * atoi(attribute);
 
+            // Y clip:
             get_next_attribute(attribute, attribute_counter, tmp, tmp_counter);
-            if (attribute != NULL) {
-                multiplier = 1;
-                if (attribute[0] == '*') {
-                    attribute = get_multiplier(attribute);
-                    multiplier = TILE_SPRITE_HEIGHT;
-                }
-                game->map.tile_attributes[tile_index].clip.y = multiplier * atoi(attribute);
-                free(attribute);
-            } else {
-                game->map.tile_attributes[tile_index].clip.y = 0;
+            multiplier = 1;
+            if (attribute[0] == '*') {
+                multiplier = TILE_SPRITE_HEIGHT;
+                get_multiplier(attribute);
             }
+            game->map.tile_attributes[tile_index].clip.y = multiplier * atoi(attribute);
 
+            // North border:
             get_next_attribute(attribute, attribute_counter, tmp, tmp_counter);
-            if (attribute != NULL) {
-                game->map.tile_attributes[tile_index].border.north = atoi(attribute);
-                free(attribute);
-            } else {
-                game->map.tile_attributes[tile_index].border.north = 0;
-            }
+            game->map.tile_attributes[tile_index].border.north = atoi(attribute);
 
+            // East border:
             get_next_attribute(attribute, attribute_counter, tmp, tmp_counter);
-            if (attribute != NULL) {
-                game->map.tile_attributes[tile_index].border.east = atoi(attribute);
-                free(attribute);
-            } else {
-                game->map.tile_attributes[tile_index].border.east = 0;
-            }
+            game->map.tile_attributes[tile_index].border.east = atoi(attribute);
 
+            // South border:
             get_next_attribute(attribute, attribute_counter, tmp, tmp_counter);
-            if (attribute != NULL) {
-                game->map.tile_attributes[tile_index].border.south = atoi(attribute);
-                free(attribute);
-            } else {
-                game->map.tile_attributes[tile_index].border.south = 0;
-            }
+            game->map.tile_attributes[tile_index].border.south = atoi(attribute);
 
+            // West border:
             get_next_attribute(attribute, attribute_counter, tmp, tmp_counter);
-            if (attribute != NULL) {
-                game->map.tile_attributes[tile_index].border.west = atoi(attribute);
-                free(attribute);
-            } else {
-                game->map.tile_attributes[tile_index].border.west = 0;
-            }
+            game->map.tile_attributes[tile_index].border.west = atoi(attribute);
 
         } break;
 
@@ -229,35 +190,32 @@ void read_map_attributes(GameState* game)
     }
 }
 
-#define draw_edit_grid(app, game, background, map_tile)                                                                        \
-    {                                                                                                                          \
-        if (DEBUG_MODE && game->EDIT_MODE) {                                                                                   \
-            SDL_Rect text_clip;                                                                                                \
-            text_clip.x = 0;                                                                                                   \
-            text_clip.y = 0;                                                                                                   \
-            text_clip.h = TILE_SPRITE_HEIGHT;                                                                                  \
-            text_clip.w = TILE_SPRITE_WIDTH;                                                                                   \
-                                                                                                                               \
-            SDL_Rect text_dest;                                                                                                \
-            text_dest.x = (background.x + game->scroll.x) + 2;                                                                 \
-            text_dest.y = (background.y + game->scroll.y) + 2;                                                                 \
-            text_dest.h = EDITOR_FONT_DEST_SIZE_H;                                                                             \
-            text_dest.w = EDITOR_FONT_DEST_SIZE_W;                                                                             \
-                                                                                                                               \
-            SDL_Rect box;                                                                                                      \
-            box.x = background.x + game->scroll.x;                                                                             \
-            box.y = background.y + game->scroll.y;                                                                             \
-            box.h = TILE_SPRITE_HEIGHT;                                                                                        \
-            box.w = TILE_SPRITE_WIDTH;                                                                                         \
-                                                                                                                               \
-            SDL_SetRenderDrawBlendMode(app->renderer, SDL_BLENDMODE_BLEND);                                                    \
-            SDL_RenderDrawRect(app->renderer, &box);                                                                           \
-            if (map_tile < 0) {                                                                                                \
-                SDL_RenderCopy(app->renderer, game->editor.text_textures[NUMBER_OF_TILES + map_tile], &text_clip, &text_dest); \
-            } else {                                                                                                           \
-                SDL_RenderCopy(app->renderer, game->editor.text_textures[map_tile], &text_clip, &text_dest);                   \
-            }                                                                                                                  \
-        }                                                                                                                      \
+#define draw_edit_grid(app, game, background, map_tile)                                                                              \
+    {                                                                                                                                \
+        if (DEBUG_MODE && game->EDIT_MODE) {                                                                                         \
+            SDL_Rect text_clip;                                                                                                      \
+            text_clip.x = 0;                                                                                                         \
+            text_clip.y = 0;                                                                                                         \
+            text_clip.h = TILE_SPRITE_HEIGHT;                                                                                        \
+            text_clip.w = TILE_SPRITE_WIDTH;                                                                                         \
+            SDL_Rect text_dest;                                                                                                      \
+            text_dest.x = (background.x + game->scroll.x) + 2;                                                                       \
+            text_dest.y = (background.y + game->scroll.y) + 2;                                                                       \
+            text_dest.h = EDITOR_FONT_DEST_SIZE_H;                                                                                   \
+            text_dest.w = EDITOR_FONT_DEST_SIZE_W;                                                                                   \
+            SDL_Rect box;                                                                                                            \
+            box.x = background.x + game->scroll.x;                                                                                   \
+            box.y = background.y + game->scroll.y;                                                                                   \
+            box.h = TILE_SPRITE_HEIGHT;                                                                                              \
+            box.w = TILE_SPRITE_WIDTH;                                                                                               \
+            SDL_SetRenderDrawBlendMode(app->renderer, SDL_BLENDMODE_BLEND);                                                          \
+            SDL_RenderDrawRect(app->renderer, &box);                                                                                 \
+            if (map_tile < 0) {                                                                                                      \
+                SDL_RenderCopy(app->renderer, game->editor.text_textures[TILE_ATTRIBUTES_LIMIT + map_tile], &text_clip, &text_dest); \
+            } else {                                                                                                                 \
+                SDL_RenderCopy(app->renderer, game->editor.text_textures[map_tile], &text_clip, &text_dest);                         \
+            }                                                                                                                        \
+        }                                                                                                                            \
     }
 
 void generate_map(App* app, GameState* game)
@@ -281,6 +239,8 @@ void generate_map(App* app, GameState* game)
         read_map_layout(game);
     }
 
+    // Initially the time may not be set, so let's not
+    // be wasteful and read the attributes twice.
     if (game->map.attributes_modified_time == 0) {
         game->map.attributes_modified_time = read_file_time(game->map.attributes_file);
     }
@@ -293,15 +253,18 @@ void generate_map(App* app, GameState* game)
     // Set rectangle color for map grid:
     SDL_SetRenderDrawColor(app->renderer, 0, 0, 0, 0);
 
-    for (int i = 0; i < game->map.layout_string_length; i++) {
+    for (size_t i = 0; i < game->map.layout_string_length; i++) {
 
         // Stop if we are at the end of rows.
         if (current_row == game->map.rows) {
             break;
         }
         switch (game->map.layout_string[i]) {
+        // @Weirdness, for some reason this has to be first,
+        // otherwise underscores fall into the comma and
+        // spaces case. I should investigate that at
+        // some point.
         case '_': {
-
             // @Robustness:
             // Research ways to have two render pipes,
             // so we are not always switching back
@@ -321,6 +284,8 @@ void generate_map(App* app, GameState* game)
             last_char = game->map.layout_string[i];
         } break;
         case '\n': {
+            // Do not render a grid for the end of a row ...
+            // it is not useful data.
             // draw_edit_grid(app, game, background, END_OF_ROW);
 
             // Record row data to be used for the map editor:
@@ -373,8 +338,11 @@ void generate_map(App* app, GameState* game)
                         map_str_group[2] = game->map.layout_string[i + 2];
                     }
 
+                    // This shouldn't be needed with the zero initialization.
+                    // map_str_group[3] = '\0';
                     map_tile = atoi(map_str_group);
                 } else {
+                    // This converts a char to an integer:
                     map_tile = game->map.layout_string[i] - '0';
                 }
 
@@ -418,6 +386,7 @@ void generate_map(App* app, GameState* game)
         }
     }
 
+    // Reset positioning when the library is loaded so it appears in the upper left of the viewport.
     if (strcmp(game->map.layout_file, MAP_LIBRARY_FILE) == 0) {
         background.x = game->player.global.x - game->player.window.x;
         background.y = game->player.global.y - game->player.window.y;

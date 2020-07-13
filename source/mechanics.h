@@ -14,7 +14,7 @@ void load_music(GameState* game)
     int flags = MIX_INIT_OGG;
     int initted = Mix_Init(flags);
     if ((initted & flags) != flags) {
-        printf("Mix_Init: Failed to init required ogg support!\nMix_Init: %s\n", Mix_GetError());
+        printf("Mix_Init: %s\n", Mix_GetError());
         // We can still continue without audio. :^(
     } else {
 
@@ -101,38 +101,37 @@ int is_above_bound(int coordinate, int sprite_dimension, int bound)
     return (coordinate + sprite_dimension) > bound;
 }
 
+#define bounds_check(bounds_array, coordinate, sprite_dimension, is_within_bound, can_move_direction)                 \
+    {                                                                                                                 \
+        for (size_t bound_index = 0; bound_index < (sizeof(bounds_array) / sizeof(bounds_array[0])); bound_index++) { \
+            if (is_within_bound(coordinate, sprite_dimension, bounds_array[bound_index])) {                           \
+                can_move_direction = true;                                                                            \
+            } else {                                                                                                  \
+                can_move_direction = false;                                                                           \
+                break;                                                                                                \
+            }                                                                                                         \
+        }                                                                                                             \
+    }
+
 void handle_collisions(GameState* game)
 {
     if (DEBUG_MODE && game->EDIT_MODE) {
+
         game->player.can_move.north = true;
         game->player.can_move.east = true;
         game->player.can_move.south = true;
         game->player.can_move.west = true;
 
     } else {
-        game->player.can_move.north = false;
-        game->player.can_move.east = false;
-        game->player.can_move.south = false;
-        game->player.can_move.west = false;
-
-        if (is_above_bound(game->player.global.y - PLAYER_INCREMENT, PLAYER_SPRITE_ROW_HEIGHT / 2, game->player.bound.north)) {
-            game->player.can_move.north = true;
-        }
-        if (is_below_bound(game->player.global.x + PLAYER_INCREMENT, PLAYER_SPRITE_WIDTH, game->player.bound.east)) {
-            game->player.can_move.east = true;
-        }
-        if (is_below_bound(game->player.global.y + PLAYER_INCREMENT, PLAYER_SPRITE_ROW_HEIGHT, game->player.bound.south)) {
-            game->player.can_move.south = true;
-        }
-        if (is_above_bound(game->player.global.x - PLAYER_INCREMENT, 0, game->player.bound.west)) {
-            game->player.can_move.west = true;
-        }
+        bounds_check(game->player.bounds.north, game->player.global.y - PLAYER_INCREMENT, PLAYER_SPRITE_ROW_HEIGHT / 2, is_above_bound, game->player.can_move.north);
+        bounds_check(game->player.bounds.east, game->player.global.x + PLAYER_INCREMENT, PLAYER_SPRITE_WIDTH, is_below_bound, game->player.can_move.east);
+        bounds_check(game->player.bounds.south, game->player.global.y + PLAYER_INCREMENT, PLAYER_SPRITE_ROW_HEIGHT, is_below_bound, game->player.can_move.south);
+        bounds_check(game->player.bounds.west, game->player.global.x - PLAYER_INCREMENT, 0, is_above_bound, game->player.can_move.west);
     }
 }
 
 int write_map_layout(GameState* game)
 {
-
     if (file_exists(MAP_LOCK_FILE)) {
         // Do not write if there is a lock file, to avoid obliterating the map.
         // @TODO:
@@ -140,6 +139,7 @@ int write_map_layout(GameState* game)
         // SDL_SetRenderDrawColor(app->renderer, 250, 25, 0, 150);
         return 0;
     } else {
+
         char* new_map_layout_file = (char*)calloc(strlen(game->map.layout_file) + 4 + 1, sizeof(char));
         snprintf(new_map_layout_file, sizeof(char) * (strlen(game->map.layout_file) + 4), "%s_%i%s", game->map.layout_file_base, game->editor.layout_file_suffix, TXT_EXTENSION);
 
@@ -181,9 +181,9 @@ int write_map_layout(GameState* game)
                 } else {
                     snprintf(tmp, sizeof(tmp), "%3i", game->map.layout[row][column]);
                 }
-                int tmp_length = strlen(tmp);
+                size_t tmp_length = strlen(tmp);
 
-                for (int tmp_counter = 0; tmp_counter < tmp_length; tmp_counter++) {
+                for (size_t tmp_counter = 0; tmp_counter < tmp_length; tmp_counter++) {
                     new_map_str[new_map_str_counter] = tmp[tmp_counter];
                     new_map_str_counter++;
                 }
@@ -200,30 +200,24 @@ int write_map_layout(GameState* game)
             new_map_str_counter++;
         }
 
-        // @Bug:
-        // If the last three characters are not newlines, we get
-        // a corrupted size vs. prev size error here.
-        // This should be investigated, obviously
-        // the parser has a logical error.
-        int new_map_str_length = strlen(new_map_str);
-        // SDL_Log("%c %c %c %c \n", new_map_str[new_map_str_length - 3], new_map_str[new_map_str_length - 2], new_map_str[new_map_str_length - 1], new_map_str[new_map_str_length]);
+        size_t new_map_str_length = strlen(new_map_str);
 
-        int chars_written = fwrite(new_map_str, sizeof(char), new_map_str_length, new_map_layout);
-        if (chars_written != new_map_str_length) {
-            SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Only %i chars written out of: %i\n", chars_written, new_map_str_length);
+        size_t chars_written = fwrite(new_map_str, sizeof(char), new_map_str_length, new_map_layout);
+        // if (chars_written != new_map_str_length) {
+        //     SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Only %zu chars written out of: %zu\n", chars_written, new_map_str_length);
+        // } else {
+        if (game->editor.layout_file_suffix == MAP_LAYOUT_FILE_LIMIT) {
+            game->editor.layout_file_suffix = 0;
         } else {
-            if (game->editor.layout_file_suffix == MAP_LAYOUT_FILE_LIMIT) {
-                game->editor.layout_file_suffix = 0;
-            } else {
-                game->editor.layout_file_suffix++;
-            }
+            game->editor.layout_file_suffix++;
         }
+        // }
         fclose(new_map_layout);
 
         chars_written = fwrite(new_map_str, sizeof(char), new_map_str_length, old_map_layout);
-        if (chars_written != new_map_str_length) {
-            SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Only %i chars written out of: %i\n", chars_written, new_map_str_length);
-        }
+        // if (chars_written != new_map_str_length) {
+        //     SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Only %zu chars written out of: %zu\n", chars_written, new_map_str_length);
+        // }
         fclose(old_map_layout);
 
         free(new_map_str);
@@ -236,6 +230,21 @@ int write_map_layout(GameState* game)
         return 1;
     }
 }
+
+#define move_player(can_move_direction, window, window_increment, global, global_increment) \
+    {                                                                                       \
+        if (can_move_direction) {                                                           \
+            window = window + window_increment;                                             \
+            global = global + global_increment;                                             \
+        }                                                                                   \
+    }
+
+#define set_next_tile(next_tile, next_tile_attributes, game)                    \
+    {                                                                           \
+        if (next_tile >= 0 && next_tile <= game->map.total_parsed_attributes) { \
+            next_tile_attributes = game->map.tile_attributes[next_tile];        \
+        }                                                                       \
+    }
 
 void handle_input(App* app, GameState* game)
 {
@@ -252,40 +261,35 @@ void handle_input(App* app, GameState* game)
     int current_tile_x = 0;
     int current_tile = 0;
 
+    // TODO:
+    // If the player is very close to a tile split line (maybe within 2 pixels),
+    // we also need to look at the tile above and below where the player is
+    // when determining collisions.
+    /*
+       One idea is to see if the player's global coordinate remainder when
+       when divided by TILE_SPRITE_(HEIGHT/WIDTH) is 2 or less, then we
+       need to also include one more tile along the perpendicular axis.
+    */
+    int next_tile_north = 0;
+    int next_tile_east = 0;
+    int next_tile_south = 0;
+    int next_tile_west = 0;
+
+    int prev_time = 0;
+
     while (!game->done) {
         SDL_Event event;
-        int prev_time;
+
+        handle_collisions(game);
+
+        if (game->player.window.x < SCREEN_WIDTH) {
+            game->scroll.x = -(game->player.window.x * (int)INITIAL_SCALING);
+        }
+        if (game->player.window.y < SCREEN_HEIGHT) {
+            game->scroll.y = -(game->player.window.y * (int)INITIAL_SCALING);
+        }
 
         while (SDL_PollEvent(&event)) {
-            if (strcmp(game->map.layout_file, MAP_LAYOUT_FILE) == 0) {
-                handle_collisions(game);
-
-                current_tile_y = (game->player.global.y + PLAYER_SPRITE_HEIGHT) / TILE_SPRITE_HEIGHT;
-                current_tile_x = (game->player.global.x + (PLAYER_SPRITE_COLUMN_WIDTH / 2)) / TILE_SPRITE_WIDTH;
-
-                if (current_tile_y < 0) {
-                    current_tile_y = 0;
-                }
-                if (current_tile_x < 0) {
-                    current_tile_x = 0;
-                }
-
-                // @Robustness:
-                // Should we handle the exception case here where the current
-                // tile is not a valid tile?
-                if (game->map.layout[current_tile_y][current_tile_x] >= 0) {
-                    current_tile = game->map.layout[current_tile_y][current_tile_x];
-                } else {
-                    current_tile = 0;
-                }
-            } else {
-                current_tile = 0;
-            }
-            if (current_tile < 0) {
-                current_tile = 0;
-            }
-            Tile_Data current_tile_attributes = game->map.tile_attributes[current_tile];
-
             switch (event.type) {
             case SDL_QUIT: {
                 game->done = SDL_TRUE;
@@ -293,70 +297,8 @@ void handle_input(App* app, GameState* game)
             } break;
 
             case SDL_KEYDOWN: {
-                // SDL_Log("Global x: %i\n", game->player.global.x);
-                // SDL_Log("Player x: %i\n", game->player.window.x);
-                // SDL_Log("Global y: %i\n", game->player.global.y);
-                // SDL_Log("Player y: %i\n", game->player.window.y);
 
                 switch (event.key.keysym.sym) {
-
-                case SDLK_UP: {
-                    int tile_coordinate_y = current_tile_y * TILE_SPRITE_HEIGHT;
-                    game->player.bound.north = 0;
-                    if (current_tile_attributes.border.north > 0) {
-                        game->player.bound.north = tile_coordinate_y + current_tile_attributes.border.north;
-                    }
-                    if (game->player.can_move.north) {
-                        game->player.window.y = game->player.window.y - PLAYER_INCREMENT;
-                        game->player.global.y = game->player.global.y - GLOBAL_INCREMENT;
-                    }
-
-                    game->player.direction = NORTH;
-                } break;
-
-                case SDLK_RIGHT: {
-                    int tile_coordinate_x = (current_tile_x + 1) * TILE_SPRITE_WIDTH;
-                    game->player.bound.east = SCREEN_WIDTH;
-                    if (current_tile_attributes.border.east > 0) {
-                        game->player.bound.east = tile_coordinate_x - current_tile_attributes.border.east;
-                    }
-
-                    if (game->player.can_move.east) {
-                        game->player.window.x = game->player.window.x + PLAYER_INCREMENT;
-                        game->player.global.x = game->player.global.x + GLOBAL_INCREMENT;
-                    }
-
-                    game->player.direction = EAST;
-                } break;
-
-                case SDLK_DOWN: {
-                    int tile_coordinate_y = (current_tile_y + 1) * TILE_SPRITE_HEIGHT;
-                    game->player.bound.south = SCREEN_HEIGHT;
-                    if (current_tile_attributes.border.south > 0) {
-                        game->player.bound.south = tile_coordinate_y - current_tile_attributes.border.south;
-                    }
-
-                    if (game->player.can_move.south) {
-                        game->player.window.y = game->player.window.y + PLAYER_INCREMENT;
-                        game->player.global.y = game->player.global.y + GLOBAL_INCREMENT;
-                    }
-
-                    game->player.direction = SOUTH;
-                } break;
-
-                case SDLK_LEFT: {
-                    int tile_coordinate_x = current_tile_x * TILE_SPRITE_WIDTH;
-                    game->player.bound.west = 0;
-                    if (current_tile_attributes.border.west > 0) {
-                        game->player.bound.west = tile_coordinate_x + current_tile_attributes.border.west;
-                    }
-                    if (game->player.can_move.west) {
-                        game->player.window.x = game->player.window.x - PLAYER_INCREMENT;
-                        game->player.global.x = game->player.global.x - GLOBAL_INCREMENT;
-                    }
-
-                    game->player.direction = WEST;
-                } break;
 
                 case SDLK_q: {
                     game->done = SDL_TRUE;
@@ -383,55 +325,49 @@ void handle_input(App* app, GameState* game)
                         read_map_layout(game);
                     }
                 } break;
-                case SDLK_RETURN: {
 
-                    // @TODO:
-                    // Accept input of a number, which is the id
-                    // of the tile you want to place on left
-                    // mouse click.
+                    // case SDLK_p: {
+                    //     if (SCALING < 10.0) {
 
-                    // @Idea:
-                    // For now, we could just use enter,
-                    // to display a linearly increased
-                    // example of all available tiles.
-                    // Doing so, would allow us to
-                    // use the right mouse button
-                    // to select from all tiles.
+                    //         SCALING++;
+                    //         SDL_RenderSetScale(app->renderer, SCALING, SCALING);
+                    //     }
+                    // } break;
 
-                } break;
+                    // case SDLK_m: {
+                    //     if (SCALING > 1.0) {
+
+                    //         SCALING--;
+                    //         SDL_RenderSetScale(app->renderer, SCALING, SCALING);
+                    //     }
+                    // } break;
                 }
             } break;
 
             case SDL_MOUSEBUTTONDOWN: {
                 if (DEBUG_MODE && game->EDIT_MODE) {
 
-                    Axes mouse;
+                    Precise_Axes mouse;
                     // @Weirdness:
                     // Player x and y is not affected by scaling, but the mouse is.
                     // Why?!
                     if (strcmp(game->map.layout_file, MAP_LIBRARY_FILE) == 0) {
-                        mouse.x = event.button.x / SCALING;
-                        mouse.y = event.button.y / SCALING;
+                        mouse.x = (float)event.button.x / SCALING;
+                        mouse.y = (float)event.button.y / SCALING;
                     } else {
-                        mouse.x = (event.button.x / SCALING) + (game->player.global.x - game->player.window.x);
-                        mouse.y = (event.button.y / SCALING) + (game->player.global.y - game->player.window.y);
+                        mouse.x = ((float)event.button.x / SCALING) + (game->player.global.x - game->player.window.x);
+                        mouse.y = ((float)event.button.y / SCALING) + (game->player.global.y - game->player.window.y);
                     }
 
-                    // SDL_Log("Global x: %i\n", game->player.global.x);
-                    // SDL_Log("Player x: %i\n", game->player.window.x);
-                    // SDL_Log("Mouse x: %i\n", mouse.x);
-                    // SDL_Log("Global y: %i\n", game->player.global.y);
-                    // SDL_Log("Player y: %i\n", game->player.window.y);
-                    // SDL_Log("Mouse y: %i\n", mouse.y);
-
                     Axes mouse_tile;
-                    mouse_tile.x = mouse.x / TILE_SPRITE_WIDTH;
-                    mouse_tile.y = mouse.y / TILE_SPRITE_WIDTH;
+                    mouse_tile.x = (int)(mouse.x / TILE_SPRITE_WIDTH);
+                    mouse_tile.y = (int)(mouse.y / TILE_SPRITE_WIDTH);
                     int selected_tile = EMPTY_COLUMN;
 
                     if (mouse_tile.y >= 0 && mouse_tile.y < game->map.rows && mouse_tile.x >= 0 && mouse_tile.x < game->map.columns) {
                         selected_tile = game->map.layout[mouse_tile.y][mouse_tile.x];
                     }
+
                     // @HACK:
                     // This feels kludgy, improve it.
                     if (selected_tile < 0) {
@@ -447,7 +383,6 @@ void handle_input(App* app, GameState* game)
                                 // If the user clicks way out in space, just add one row, not several:
                                 mouse_tile.y = game->map.rows;
                                 game->map.rows = mouse_tile.y;
-
                                 game->map.columns_in_row[mouse_tile.y] = 0;
                             }
 
@@ -478,7 +413,6 @@ void handle_input(App* app, GameState* game)
                             if (game->map.columns_in_row[mouse_tile.y] > game->map.columns) {
                                 game->map.columns = game->map.columns_in_row[mouse_tile.y];
                             }
-                            // SDL_Log("Left click: %i\n", game->map.layout[mouse_tile.y][mouse_tile.x]);
                             if (write_map_layout(game)) {
                                 SDL_Log("Write %i successful.\n", game->editor.layout_file_suffix);
                             }
@@ -492,31 +426,165 @@ void handle_input(App* app, GameState* game)
                 }
             } break;
             }
-
-            if (game->player.window.x < SCREEN_WIDTH) {
-                game->scroll.x = -(game->player.window.x * SCALING);
-            }
-            if (game->player.window.y < SCREEN_HEIGHT) {
-                game->scroll.y = -(game->player.window.y * SCALING);
-            }
-
-            generate_map(app, game);
-            if (strcmp(game->map.layout_file, MAP_LAYOUT_FILE) == 0) {
-                sprite_blit(app, game->player_image, game->player.window.x, game->player.window.y, game->player.direction);
-            }
-
-            int curr_time = SDL_GetTicks();
-            int time_elapsed = curr_time - prev_time;
-
-            if (time_elapsed < MIN_FRAMETIME_MSECS) {
-                // Not enough time has elapsed. Let's limit the frame rate!
-                SDL_Delay(MIN_FRAMETIME_MSECS - time_elapsed);
-                curr_time = SDL_GetTicks();
-                time_elapsed = curr_time - prev_time;
-            }
-            prev_time = curr_time;
-
-            present_scene(app);
         }
+
+        int next_tile_north_y, next_tile_east_x, next_tile_south_y, next_tile_west_x;
+
+        if (strcmp(game->map.layout_file, MAP_LAYOUT_FILE) == 0) {
+
+            current_tile_y = (game->player.global.y + PLAYER_SPRITE_HEIGHT) / TILE_SPRITE_HEIGHT;
+            current_tile_x = (game->player.global.x + (PLAYER_SPRITE_COLUMN_WIDTH / 2)) / TILE_SPRITE_WIDTH;
+
+            next_tile_north_y = current_tile_y - 1;
+            next_tile_east_x = current_tile_x + 1;
+            next_tile_south_y = current_tile_y + 1;
+            next_tile_west_x = current_tile_x - 1;
+
+            if (current_tile_y < 0 || current_tile_y == 0) {
+                current_tile_y = 0;
+            }
+            if (current_tile_x < 0 || current_tile_x == 0) {
+                current_tile_x = 0;
+            }
+
+            // @Robustness:
+            // Should we handle the exception case here where the current
+            // tile is not a valid tile?
+            if (game->map.layout[current_tile_y][current_tile_x] >= 0) {
+                current_tile = game->map.layout[current_tile_y][current_tile_x];
+
+                next_tile_north = next_tile_north_y > 0 ? game->map.layout[next_tile_north_y][current_tile_x] : 0;
+                next_tile_east = next_tile_east_x > 0 ? game->map.layout[current_tile_y][next_tile_east_x] : 0;
+                next_tile_south = next_tile_south_y > 0 ? game->map.layout[next_tile_south_y][current_tile_x] : 0;
+                next_tile_west = next_tile_west_x > 0 ? game->map.layout[current_tile_y][next_tile_west_x] : 0;
+            } else {
+                current_tile = 0;
+            }
+        } else {
+            current_tile = 0;
+        }
+        if (current_tile < 0) {
+            current_tile = 0;
+        }
+
+        Tile_Data current_tile_attributes = game->map.tile_attributes[current_tile];
+
+        Tile_Data next_tile_north_attributes = game->map.tile_attributes[current_tile];
+        set_next_tile(next_tile_north, next_tile_north_attributes, game);
+
+        Tile_Data next_tile_east_attributes = game->map.tile_attributes[current_tile];
+        set_next_tile(next_tile_east, next_tile_east_attributes, game);
+
+        Tile_Data next_tile_south_attributes = game->map.tile_attributes[current_tile];
+        set_next_tile(next_tile_south, next_tile_south_attributes, game);
+
+        Tile_Data next_tile_west_attributes = game->map.tile_attributes[current_tile];
+        set_next_tile(next_tile_west, next_tile_west_attributes, game);
+
+        generate_map(app, game);
+        if (strcmp(game->map.layout_file, MAP_LAYOUT_FILE) == 0) {
+            sprite_blit(app, game->player_image, game->player.window.x, game->player.window.y, game->player.direction);
+        }
+
+        int curr_time = SDL_GetTicks();
+        int time_elapsed = curr_time - prev_time;
+
+        if (time_elapsed < MIN_FRAMETIME_MSECS) {
+            // Not enough time has elapsed. Let's limit the frame rate!
+            SDL_Delay(MIN_FRAMETIME_MSECS - time_elapsed);
+            curr_time = SDL_GetTicks();
+            time_elapsed = curr_time - prev_time;
+        }
+        prev_time = curr_time;
+
+        const Uint8* current_key_states = SDL_GetKeyboardState(NULL);
+
+        //
+        // NORTH:
+        //
+        if (current_key_states[SDL_SCANCODE_UP]) {
+            int tile_coordinate_y = current_tile_y * TILE_SPRITE_HEIGHT;
+            int next_tile_north_coordinate_y = next_tile_north_y * TILE_SPRITE_WIDTH;
+
+            array_fill(game->player.bounds.north, 0);
+
+            if (current_tile_attributes.border.north > 0) {
+                game->player.bounds.north[0] = tile_coordinate_y + current_tile_attributes.border.north;
+            }
+            if (next_tile_north_attributes.border.south > 0) {
+                game->player.bounds.north[1] = next_tile_north_coordinate_y + next_tile_north_attributes.border.north;
+            }
+
+            move_player(game->player.can_move.north, game->player.window.y, -PLAYER_INCREMENT, game->player.global.y, -GLOBAL_INCREMENT);
+            game->player.direction = NORTH;
+        }
+
+        //
+        // EAST:
+        //
+        if (current_key_states[SDL_SCANCODE_RIGHT]) {
+            int tile_coordinate_x = (current_tile_x + 1) * TILE_SPRITE_WIDTH;
+            int next_tile_east_coordinate_x = (next_tile_east_x + 1) * TILE_SPRITE_WIDTH;
+
+            array_fill(game->player.bounds.east, SCREEN_WIDTH);
+
+            if (current_tile_attributes.border.east > 0) {
+                game->player.bounds.east[0] = tile_coordinate_x - current_tile_attributes.border.east;
+            }
+
+            if (next_tile_east_attributes.border.east > 0) {
+                game->player.bounds.east[1] = next_tile_east_coordinate_x - next_tile_east_attributes.border.east;
+            }
+
+            move_player(game->player.can_move.east, game->player.window.x, PLAYER_INCREMENT, game->player.global.x, GLOBAL_INCREMENT);
+            game->player.direction = EAST;
+        }
+
+        //
+        // SOUTH:
+        //
+        if (current_key_states[SDL_SCANCODE_DOWN]) {
+            int tile_coordinate_y = (current_tile_y + 1) * TILE_SPRITE_HEIGHT;
+            int next_tile_south_coordinate_y = (next_tile_south_y + 1) * TILE_SPRITE_HEIGHT;
+
+            array_fill(game->player.bounds.south, SCREEN_HEIGHT);
+
+            if (current_tile_attributes.border.south > 0) {
+                game->player.bounds.south[0] = tile_coordinate_y - current_tile_attributes.border.south;
+            }
+            if (next_tile_south_attributes.border.south > 0) {
+                game->player.bounds.south[1] = next_tile_south_coordinate_y - next_tile_south_attributes.border.south;
+            }
+
+            move_player(game->player.can_move.south, game->player.window.y, PLAYER_INCREMENT, game->player.global.y, GLOBAL_INCREMENT);
+            game->player.direction = SOUTH;
+        }
+
+        //
+        // WEST:
+        //
+        if (current_key_states[SDL_SCANCODE_LEFT]) {
+            int tile_coordinate_x = current_tile_x * TILE_SPRITE_WIDTH;
+            int next_tile_west_coordinate_x = next_tile_west_x * TILE_SPRITE_WIDTH;
+
+            array_fill(game->player.bounds.west, 0);
+
+            if (current_tile_attributes.border.west > 0) {
+                game->player.bounds.west[0] = tile_coordinate_x + current_tile_attributes.border.west;
+            }
+            if (next_tile_west_attributes.border.west > 0) {
+                game->player.bounds.west[1] = next_tile_west_coordinate_x + next_tile_west_attributes.border.west;
+            }
+
+            move_player(game->player.can_move.west, game->player.window.x, -PLAYER_INCREMENT, game->player.global.x, -GLOBAL_INCREMENT);
+            game->player.direction = WEST;
+        }
+
+        // SDL_Log("Global x: %i\n", game->player.global.x);
+        // SDL_Log("Player x: %i\n", game->player.window.x);
+        // SDL_Log("Global y: %i\n", game->player.global.y);
+        // SDL_Log("Player y: %i\n", game->player.window.y);
+
+        present_scene(app);
     }
 }

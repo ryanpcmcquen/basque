@@ -14,6 +14,11 @@ typedef struct {
     int y;
 } Axes;
 
+typedef struct {
+    float x;
+    float y;
+} Precise_Axes;
+
 enum directions {
     NORTH = 0,
     EAST,
@@ -29,15 +34,25 @@ typedef struct {
 } Directions;
 
 typedef struct {
+    int north[2];
+    int east[2];
+    int south[2];
+    int west[2];
+} Direction_Bounds;
+
+typedef struct {
     Axes window;
     Axes global;
     Directions can_move;
-    Directions bound;
+
+    Direction_Bounds bounds;
+
     int direction;
 } Player;
 
 typedef struct {
     Axes clip;
+
     // This goes North, East, South, and West
     // (in increasing order by degree).
     Directions border;
@@ -53,18 +68,20 @@ typedef struct {
     char* layout_file;
     time_t layout_modified_time;
     char* layout_string;
-    int layout_string_length;
+    size_t layout_string_length;
 
     char* attributes_file;
     time_t attributes_modified_time;
     char* attributes_string;
-    int attributes_string_length;
-    Tile_Data* tile_attributes;
+    size_t attributes_string_length;
+    Tile_Data tile_attributes[TILE_ATTRIBUTES_LIMIT];
+
+    int total_parsed_attributes;
 } Map;
 
 typedef struct {
-    SDL_Surface* text_surfaces[NUMBER_OF_TILES];
-    SDL_Texture* text_textures[NUMBER_OF_TILES];
+    SDL_Surface text_surfaces[TILE_ATTRIBUTES_LIMIT];
+    SDL_Texture* text_textures[TILE_ATTRIBUTES_LIMIT];
     int layout_file_suffix;
     int selected_tile;
 } Editor;

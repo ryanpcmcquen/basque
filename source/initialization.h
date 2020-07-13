@@ -38,14 +38,12 @@ void cleanup(void)
 
 #define create_outlined_font(game, map_tile_str, font_outline_surface, font_surface, font_outline_color, font_color, font_rect) \
     {                                                                                                                           \
-                                                                                                                                \
         font_outline_surface = TTF_RenderText_Blended(game.font_outline, map_tile_str, font_outline_color);                     \
         font_surface = TTF_RenderText_Blended(game.font, map_tile_str, font_color);                                             \
         font_rect.x = EDITOR_FONT_OUTLINE;                                                                                      \
         font_rect.y = EDITOR_FONT_OUTLINE;                                                                                      \
         font_rect.w = font_surface->w;                                                                                          \
         font_rect.h = font_surface->h;                                                                                          \
-                                                                                                                                \
         SDL_SetSurfaceBlendMode(font_surface, SDL_BLENDMODE_BLEND);                                                             \
         SDL_BlitSurface(font_surface, NULL, font_outline_surface, &font_rect);                                                  \
     }
@@ -62,17 +60,19 @@ int init()
                     SCREEN_WIDTH = display_mode.w;
                     SCREEN_HEIGHT = display_mode.h;
                 } else {
-                    SCREEN_WIDTH = display_mode.w * 0.8;
-                    SCREEN_HEIGHT = display_mode.h * 0.8;
+                    SCREEN_WIDTH = (int)(display_mode.w * 0.8);
+                    SCREEN_HEIGHT = (int)(display_mode.h * 0.8);
                 }
             }
-            SDL_Log("Detected screen width: %i\nDetected screen height: %i\n", display_mode.w, display_mode.h);
+            SDL_Log("Detected resolution: %ix%i\n", display_mode.w, display_mode.h);
         }
 
         app.window = SDL_CreateWindow(GAME_TITLE, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, (int)SCREEN_WIDTH, (int)SCREEN_HEIGHT, SDL_WINDOW_RESIZABLE);
+        // SDL_WINDOW_ALLOW_HIGHDPI | SDL_WINDOW_RESIZABLE);
 
         if (app.window != NULL) {
             app.renderer = SDL_CreateRenderer(app.window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+            // app.renderer = SDL_CreateRenderer(app.window, -1, SDL_RENDERER_ACCELERATED);
 
             if (app.renderer != NULL) {
 
@@ -81,8 +81,9 @@ int init()
                     SDL_SetWindowFullscreen(app.window, SDL_WINDOW_FULLSCREEN);
                 }
 
-                SDL_RenderSetScale(app.renderer, SCALING, SCALING);
-                SDL_Log("Basque started with %ix scaling.", SCALING);
+                SDL_RenderSetIntegerScale(app.renderer, true);
+                SDL_RenderSetScale(app.renderer, INITIAL_SCALING, INITIAL_SCALING);
+                SDL_Log("%s started with %0.1fx scaling.", GAME_TITLE, INITIAL_SCALING);
                 // Set initial draw color:
                 SDL_SetRenderDrawColor(app.renderer, 0, 0, 0, 0);
 
@@ -98,19 +99,19 @@ int init()
                         game.font_outline = TTF_OpenFont(EDITOR_FONT, EDITOR_FONT_SIZE);
                         TTF_SetFontOutline(game.font_outline, EDITOR_FONT_OUTLINE);
 
-                        SDL_Color font_color = { 255, 255, 255, 230 };
-                        SDL_Color font_outline_color = { 10, 10, 10, 200 };
+                        SDL_Color font_color = { 255, 255, 255, 210 };
+                        SDL_Color font_outline_color = { 10, 10, 10, 180 };
                         SDL_Surface* font_outline_surface;
                         SDL_Surface* font_surface;
                         SDL_Rect font_rect;
 
                         char map_tile_str[TILE_CHAR_LIMIT] = { 0 };
-                        for (int tile_index = 0; tile_index < NUMBER_OF_TILES; tile_index++) {
+                        for (int tile_index = 0; tile_index < TILE_ATTRIBUTES_LIMIT; tile_index++) {
                             snprintf(map_tile_str, sizeof(char[TILE_CHAR_LIMIT]), "%-3i", tile_index);
                             create_outlined_font(game, map_tile_str, font_outline_surface, font_surface, font_outline_color, font_color, font_rect);
 
-                            game.editor.text_surfaces[tile_index] = font_outline_surface;
-                            game.editor.text_textures[tile_index] = SDL_CreateTextureFromSurface(app.renderer, game.editor.text_surfaces[tile_index]);
+                            game.editor.text_surfaces[tile_index] = *font_outline_surface;
+                            game.editor.text_textures[tile_index] = SDL_CreateTextureFromSurface(app.renderer, &game.editor.text_surfaces[tile_index]);
                         }
 
                         // Set empty column label:
@@ -118,11 +119,11 @@ int init()
                         create_outlined_font(game, map_tile_str, font_outline_surface, font_surface, font_outline_color, font_color, font_rect);
 
                         if (EMPTY_COLUMN < 0) {
-                            game.editor.text_surfaces[NUMBER_OF_TILES + EMPTY_COLUMN] = font_outline_surface;
-                            game.editor.text_textures[NUMBER_OF_TILES + EMPTY_COLUMN] = SDL_CreateTextureFromSurface(app.renderer, game.editor.text_surfaces[NUMBER_OF_TILES + EMPTY_COLUMN]);
+                            game.editor.text_surfaces[TILE_ATTRIBUTES_LIMIT + EMPTY_COLUMN] = *font_outline_surface;
+                            game.editor.text_textures[TILE_ATTRIBUTES_LIMIT + EMPTY_COLUMN] = SDL_CreateTextureFromSurface(app.renderer, &game.editor.text_surfaces[TILE_ATTRIBUTES_LIMIT + EMPTY_COLUMN]);
                         } else {
-                            game.editor.text_surfaces[EMPTY_COLUMN] = font_outline_surface;
-                            game.editor.text_textures[EMPTY_COLUMN] = SDL_CreateTextureFromSurface(app.renderer, game.editor.text_surfaces[EMPTY_COLUMN]);
+                            game.editor.text_surfaces[EMPTY_COLUMN] = *font_outline_surface;
+                            game.editor.text_textures[EMPTY_COLUMN] = SDL_CreateTextureFromSurface(app.renderer, &game.editor.text_surfaces[EMPTY_COLUMN]);
                         }
 
                         SDL_FreeSurface(font_surface);
@@ -137,13 +138,8 @@ int init()
 
                 game.map.layout_file_base = MAP_LAYOUT_FILE_BASE;
                 game.map.layout_file = MAP_LAYOUT_FILE;
-                // TODO:
-                // Try to figure out why this was being set twice, the same
-                // goes for attributes_modified_time.
-                // game.map.layout_modified_time = read_file_time(game.map.layout_file);
                 game.map.layout_modified_time = 0;
                 game.map.attributes_file = MAP_ATTRIBUTES_FILE;
-                // game.map.attributes_modified_time = read_file_time(game.map.attributes_file);
                 game.map.attributes_modified_time = 0;
 
                 read_map_layout(&game);
