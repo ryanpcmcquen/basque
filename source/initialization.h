@@ -81,7 +81,9 @@ int init()
                     SDL_SetWindowFullscreen(app.window, SDL_WINDOW_FULLSCREEN);
                 }
 
-                SDL_RenderSetIntegerScale(app.renderer, true);
+                // Comment this out because it only exists in newer SDLs, and limits the engine from
+                // compiling on esoteric platforms (like the Pocket CHIP).
+                // SDL_RenderSetIntegerScale(app.renderer, true);
                 SDL_RenderSetScale(app.renderer, INITIAL_SCALING, INITIAL_SCALING);
                 SDL_Log("%s started with %0.1fx scaling.", GAME_TITLE, INITIAL_SCALING);
                 // Set initial draw color:
