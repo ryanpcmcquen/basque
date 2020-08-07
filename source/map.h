@@ -136,6 +136,8 @@ void read_map_attributes(GameState* game)
             int tmp_counter = -1;
 
             char* attribute = (char*)calloc(ATTRIBUTE_LENGTH + 1, sizeof(char));
+            // void* original_attribute_pointer = &attribute;
+
             int attribute_counter = 0;
 
             // X clip:
@@ -143,7 +145,8 @@ void read_map_attributes(GameState* game)
             int multiplier = 1;
             if (attribute[0] == '*') {
                 multiplier = TILE_SPRITE_HEIGHT;
-                attribute = &attribute[1];
+                // attribute = &attribute[1];
+                memmove(attribute, &attribute[1], ATTRIBUTE_LENGTH);
             }
             game->map.tile_attributes[tile_index].clip.x = multiplier * atoi(attribute);
 
@@ -152,7 +155,8 @@ void read_map_attributes(GameState* game)
             multiplier = 1;
             if (attribute[0] == '*') {
                 multiplier = TILE_SPRITE_HEIGHT;
-                attribute = &attribute[1];
+                // attribute = &attribute[1];
+                memmove(attribute, &attribute[1], ATTRIBUTE_LENGTH);
             }
             game->map.tile_attributes[tile_index].clip.y = multiplier * atoi(attribute);
 
@@ -171,6 +175,8 @@ void read_map_attributes(GameState* game)
             // West border:
             get_next_attribute_MACRO(attribute, attribute_counter, tmp, tmp_counter);
             game->map.tile_attributes[tile_index].border.west = atoi(attribute);
+
+            free(attribute);
 
         } break;
 
