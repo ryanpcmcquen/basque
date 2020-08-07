@@ -36,16 +36,16 @@ void cleanup(void)
     SDL_Quit();
 }
 
-#define create_outlined_font(game, map_tile_str, font_outline_surface, font_surface, font_outline_color, font_color, font_rect) \
-    {                                                                                                                           \
-        font_outline_surface = TTF_RenderText_Blended(game.font_outline, map_tile_str, font_outline_color);                     \
-        font_surface = TTF_RenderText_Blended(game.font, map_tile_str, font_color);                                             \
-        font_rect.x = EDITOR_FONT_OUTLINE;                                                                                      \
-        font_rect.y = EDITOR_FONT_OUTLINE;                                                                                      \
-        font_rect.w = font_surface->w;                                                                                          \
-        font_rect.h = font_surface->h;                                                                                          \
-        SDL_SetSurfaceBlendMode(font_surface, SDL_BLENDMODE_BLEND);                                                             \
-        SDL_BlitSurface(font_surface, NULL, font_outline_surface, &font_rect);                                                  \
+#define create_outlined_font_MACRO(game, map_tile_str, font_outline_surface, font_surface, font_outline_color, font_color, font_rect) \
+    {                                                                                                                                 \
+        font_outline_surface = TTF_RenderText_Blended(game.font_outline, map_tile_str, font_outline_color);                           \
+        font_surface = TTF_RenderText_Blended(game.font, map_tile_str, font_color);                                                   \
+        font_rect.x = EDITOR_FONT_OUTLINE;                                                                                            \
+        font_rect.y = EDITOR_FONT_OUTLINE;                                                                                            \
+        font_rect.w = font_surface->w;                                                                                                \
+        font_rect.h = font_surface->h;                                                                                                \
+        SDL_SetSurfaceBlendMode(font_surface, SDL_BLENDMODE_BLEND);                                                                   \
+        SDL_BlitSurface(font_surface, NULL, font_outline_surface, &font_rect);                                                        \
     }
 
 int init()
@@ -110,7 +110,7 @@ int init()
                         char map_tile_str[TILE_CHAR_LIMIT] = { 0 };
                         for (int tile_index = 0; tile_index < TILE_ATTRIBUTES_LIMIT; tile_index++) {
                             snprintf(map_tile_str, sizeof(char[TILE_CHAR_LIMIT]), "%-3i", tile_index);
-                            create_outlined_font(game, map_tile_str, font_outline_surface, font_surface, font_outline_color, font_color, font_rect);
+                            create_outlined_font_MACRO(game, map_tile_str, font_outline_surface, font_surface, font_outline_color, font_color, font_rect);
 
                             game.editor.text_surfaces[tile_index] = *font_outline_surface;
                             game.editor.text_textures[tile_index] = SDL_CreateTextureFromSurface(app.renderer, &game.editor.text_surfaces[tile_index]);
@@ -118,7 +118,7 @@ int init()
 
                         // Set empty column label:
                         snprintf(map_tile_str, sizeof(char[TILE_CHAR_LIMIT]), "%-3i", EMPTY_COLUMN);
-                        create_outlined_font(game, map_tile_str, font_outline_surface, font_surface, font_outline_color, font_color, font_rect);
+                        create_outlined_font_MACRO(game, map_tile_str, font_outline_surface, font_surface, font_outline_color, font_color, font_rect);
 
                         if (EMPTY_COLUMN < 0) {
                             game.editor.text_surfaces[TILE_ATTRIBUTES_LIMIT + EMPTY_COLUMN] = *font_outline_surface;

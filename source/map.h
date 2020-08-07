@@ -24,7 +24,7 @@ void read_map_layout(GameState* game)
     game->map.rows = 0;
     game->map.columns = 0;
 
-    // @Robustness:
+    // @Fastness:
     // See if there is a faster way to do this.
     for (size_t i = 0; i < game->map.layout_string_length; i++) {
         if (game->map.layout_string[i] == '\n') {
@@ -46,24 +46,15 @@ void read_map_layout(GameState* game)
     }
 }
 
-#define get_next_attribute(attribute, attribute_counter, tmp, tmp_counter) \
-    {                                                                      \
-        attribute_counter = 0;                                             \
-        tmp_counter++;                                                     \
-        while (tmp[tmp_counter] != ',') {                                  \
-            attribute[attribute_counter] = tmp[tmp_counter];               \
-            attribute_counter++;                                           \
-            tmp_counter++;                                                 \
-        }                                                                  \
-    }
-
-// This chops off the first character from the string
-// when it is a multiple (prefixed with *).
-#define get_multiplier(attribute)                                                                                 \
-    {                                                                                                             \
-        for (size_t attribute_copy_index = 1; attribute_copy_index < sizeof(attribute); attribute_copy_index++) { \
-            attribute[attribute_copy_index - 1] = attribute[attribute_copy_index];                                \
-        }                                                                                                         \
+#define get_next_attribute_MACRO(attribute, attribute_counter, tmp, tmp_counter) \
+    {                                                                            \
+        attribute_counter = 0;                                                   \
+        tmp_counter++;                                                           \
+        while (tmp[tmp_counter] != ',') {                                        \
+            attribute[attribute_counter] = tmp[tmp_counter];                     \
+            attribute_counter++;                                                 \
+            tmp_counter++;                                                       \
+        }                                                                        \
     }
 
 void read_map_attributes(GameState* game)
@@ -71,7 +62,7 @@ void read_map_attributes(GameState* game)
     game->map.attributes_string = read_file(game->map.attributes_file);
     game->map.attributes_string_length = strlen(game->map.attributes_string);
 
-    // @Robustness:
+    // @Fastness:
     // See if there is a faster way to do this.
     for (size_t i = 0; i < game->map.attributes_string_length; i++) {
 
@@ -144,41 +135,41 @@ void read_map_attributes(GameState* game)
             tmp[attribute_index] = '\0';
             int tmp_counter = -1;
 
-            char attribute[ATTRIBUTE_LENGTH + 1] = { 0 };
+            char* attribute = (char*)calloc(ATTRIBUTE_LENGTH + 1, sizeof(char));
             int attribute_counter = 0;
 
             // X clip:
-            get_next_attribute(attribute, attribute_counter, tmp, tmp_counter);
+            get_next_attribute_MACRO(attribute, attribute_counter, tmp, tmp_counter);
             int multiplier = 1;
             if (attribute[0] == '*') {
                 multiplier = TILE_SPRITE_HEIGHT;
-                get_multiplier(attribute);
+                attribute = &attribute[1];
             }
             game->map.tile_attributes[tile_index].clip.x = multiplier * atoi(attribute);
 
             // Y clip:
-            get_next_attribute(attribute, attribute_counter, tmp, tmp_counter);
+            get_next_attribute_MACRO(attribute, attribute_counter, tmp, tmp_counter);
             multiplier = 1;
             if (attribute[0] == '*') {
                 multiplier = TILE_SPRITE_HEIGHT;
-                get_multiplier(attribute);
+                attribute = &attribute[1];
             }
             game->map.tile_attributes[tile_index].clip.y = multiplier * atoi(attribute);
 
             // North border:
-            get_next_attribute(attribute, attribute_counter, tmp, tmp_counter);
+            get_next_attribute_MACRO(attribute, attribute_counter, tmp, tmp_counter);
             game->map.tile_attributes[tile_index].border.north = atoi(attribute);
 
             // East border:
-            get_next_attribute(attribute, attribute_counter, tmp, tmp_counter);
+            get_next_attribute_MACRO(attribute, attribute_counter, tmp, tmp_counter);
             game->map.tile_attributes[tile_index].border.east = atoi(attribute);
 
             // South border:
-            get_next_attribute(attribute, attribute_counter, tmp, tmp_counter);
+            get_next_attribute_MACRO(attribute, attribute_counter, tmp, tmp_counter);
             game->map.tile_attributes[tile_index].border.south = atoi(attribute);
 
             // West border:
-            get_next_attribute(attribute, attribute_counter, tmp, tmp_counter);
+            get_next_attribute_MACRO(attribute, attribute_counter, tmp, tmp_counter);
             game->map.tile_attributes[tile_index].border.west = atoi(attribute);
 
         } break;
@@ -190,7 +181,7 @@ void read_map_attributes(GameState* game)
     }
 }
 
-#define draw_edit_grid(app, game, background, map_tile)                                                                              \
+#define draw_edit_grid_MACRO(app, game, background, map_tile)                                                                        \
     {                                                                                                                                \
         if (DEBUG_MODE && game->EDIT_MODE) {                                                                                         \
             SDL_Rect text_clip;                                                                                                      \
@@ -270,7 +261,7 @@ void generate_map(App* app, GameState* game)
             // so we are not always switching back
             // and forth between desired colors.
             SDL_SetRenderDrawColor(app->renderer, 255, 255, 255, 40);
-            draw_edit_grid(app, game, background, EMPTY_COLUMN);
+            draw_edit_grid_MACRO(app, game, background, EMPTY_COLUMN);
             SDL_SetRenderDrawColor(app->renderer, 0, 0, 0, 0);
 
             // This represents a blank column:
@@ -286,7 +277,7 @@ void generate_map(App* app, GameState* game)
         case '\n': {
             // Do not render a grid for the end of a row ...
             // it is not useful data.
-            // draw_edit_grid(app, game, background, END_OF_ROW);
+            // draw_edit_grid_MACRO(app, game, background, END_OF_ROW);
 
             // Record row data to be used for the map editor:
             game->map.columns_in_row[current_row] = current_column;
@@ -372,7 +363,7 @@ void generate_map(App* app, GameState* game)
                 SDL_RenderCopy(app->renderer, game->background_image, &clip, &dest);
 
                 SDL_SetRenderDrawColor(app->renderer, 255, 255, 255, 40);
-                draw_edit_grid(app, game, background, map_tile);
+                draw_edit_grid_MACRO(app, game, background, map_tile);
                 SDL_SetRenderDrawColor(app->renderer, 0, 0, 0, 0);
 
                 background.x += TILE_SPRITE_WIDTH;

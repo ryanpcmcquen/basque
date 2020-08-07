@@ -101,7 +101,7 @@ int is_above_bound(int coordinate, int sprite_dimension, int bound)
     return (coordinate + sprite_dimension) > bound;
 }
 
-#define bounds_check(bounds_array, coordinate, sprite_dimension, is_within_bound, can_move_direction)                 \
+#define bounds_check_MACRO(bounds_array, coordinate, sprite_dimension, is_within_bound, can_move_direction)           \
     {                                                                                                                 \
         for (size_t bound_index = 0; bound_index < (sizeof(bounds_array) / sizeof(bounds_array[0])); bound_index++) { \
             if (is_within_bound(coordinate, sprite_dimension, bounds_array[bound_index])) {                           \
@@ -123,10 +123,10 @@ void handle_collisions(GameState* game)
         game->player.can_move.west = true;
 
     } else {
-        bounds_check(game->player.bounds.north, game->player.global.y - PLAYER_INCREMENT, PLAYER_SPRITE_ROW_HEIGHT / 2, is_above_bound, game->player.can_move.north);
-        bounds_check(game->player.bounds.east, game->player.global.x + PLAYER_INCREMENT, PLAYER_SPRITE_WIDTH, is_below_bound, game->player.can_move.east);
-        bounds_check(game->player.bounds.south, game->player.global.y + PLAYER_INCREMENT, PLAYER_SPRITE_ROW_HEIGHT, is_below_bound, game->player.can_move.south);
-        bounds_check(game->player.bounds.west, game->player.global.x - PLAYER_INCREMENT, 0, is_above_bound, game->player.can_move.west);
+        bounds_check_MACRO(game->player.bounds.north, game->player.global.y - PLAYER_INCREMENT, PLAYER_SPRITE_ROW_HEIGHT / 2, is_above_bound, game->player.can_move.north);
+        bounds_check_MACRO(game->player.bounds.east, game->player.global.x + PLAYER_INCREMENT, PLAYER_SPRITE_WIDTH, is_below_bound, game->player.can_move.east);
+        bounds_check_MACRO(game->player.bounds.south, game->player.global.y + PLAYER_INCREMENT, PLAYER_SPRITE_ROW_HEIGHT, is_below_bound, game->player.can_move.south);
+        bounds_check_MACRO(game->player.bounds.west, game->player.global.x - PLAYER_INCREMENT, 0, is_above_bound, game->player.can_move.west);
     }
 }
 
@@ -231,15 +231,15 @@ int write_map_layout(GameState* game)
     }
 }
 
-#define move_player(can_move_direction, window, window_increment, global, global_increment) \
-    {                                                                                       \
-        if (can_move_direction) {                                                           \
-            window = window + window_increment;                                             \
-            global = global + global_increment;                                             \
-        }                                                                                   \
+#define move_player_MACRO(can_move_direction, window, window_increment, global, global_increment) \
+    {                                                                                             \
+        if (can_move_direction) {                                                                 \
+            window = window + window_increment;                                                   \
+            global = global + global_increment;                                                   \
+        }                                                                                         \
     }
 
-#define set_next_tile(next_tile, next_tile_attributes, game)                    \
+#define set_next_tile_MACRO(next_tile, next_tile_attributes, game)              \
     {                                                                           \
         if (next_tile >= 0 && next_tile <= game->map.total_parsed_attributes) { \
             next_tile_attributes = game->map.tile_attributes[next_tile];        \
@@ -270,10 +270,18 @@ void handle_input(App* app, GameState* game)
        when divided by TILE_SPRITE_(HEIGHT/WIDTH) is 2 or less, then we
        need to also include one more tile along the perpendicular axis.
     */
+
     int next_tile_north = 0;
+    int next_tile_north_y = 0;
+
     int next_tile_east = 0;
+    int next_tile_east_x = 0;
+
     int next_tile_south = 0;
+    int next_tile_south_y = 0;
+
     int next_tile_west = 0;
+    int next_tile_west_x = 0;
 
     int prev_time = 0;
 
@@ -428,8 +436,6 @@ void handle_input(App* app, GameState* game)
             }
         }
 
-        int next_tile_north_y, next_tile_east_x, next_tile_south_y, next_tile_west_x;
-
         if (strcmp(game->map.layout_file, MAP_LAYOUT_FILE) == 0) {
 
             current_tile_y = (game->player.global.y + PLAYER_SPRITE_HEIGHT) / TILE_SPRITE_HEIGHT;
@@ -470,16 +476,16 @@ void handle_input(App* app, GameState* game)
         Tile_Data current_tile_attributes = game->map.tile_attributes[current_tile];
 
         Tile_Data next_tile_north_attributes = game->map.tile_attributes[current_tile];
-        set_next_tile(next_tile_north, next_tile_north_attributes, game);
+        set_next_tile_MACRO(next_tile_north, next_tile_north_attributes, game);
 
         Tile_Data next_tile_east_attributes = game->map.tile_attributes[current_tile];
-        set_next_tile(next_tile_east, next_tile_east_attributes, game);
+        set_next_tile_MACRO(next_tile_east, next_tile_east_attributes, game);
 
         Tile_Data next_tile_south_attributes = game->map.tile_attributes[current_tile];
-        set_next_tile(next_tile_south, next_tile_south_attributes, game);
+        set_next_tile_MACRO(next_tile_south, next_tile_south_attributes, game);
 
         Tile_Data next_tile_west_attributes = game->map.tile_attributes[current_tile];
-        set_next_tile(next_tile_west, next_tile_west_attributes, game);
+        set_next_tile_MACRO(next_tile_west, next_tile_west_attributes, game);
 
         generate_map(app, game);
         if (strcmp(game->map.layout_file, MAP_LAYOUT_FILE) == 0) {
@@ -506,7 +512,7 @@ void handle_input(App* app, GameState* game)
             int tile_coordinate_y = current_tile_y * TILE_SPRITE_HEIGHT;
             int next_tile_north_coordinate_y = next_tile_north_y * TILE_SPRITE_WIDTH;
 
-            array_fill(game->player.bounds.north, 0);
+            array_fill_MACRO(game->player.bounds.north, 0);
 
             if (current_tile_attributes.border.north > 0) {
                 game->player.bounds.north[0] = tile_coordinate_y + current_tile_attributes.border.north;
@@ -515,7 +521,7 @@ void handle_input(App* app, GameState* game)
                 game->player.bounds.north[1] = next_tile_north_coordinate_y + next_tile_north_attributes.border.north;
             }
 
-            move_player(game->player.can_move.north, game->player.window.y, -PLAYER_INCREMENT, game->player.global.y, -GLOBAL_INCREMENT);
+            move_player_MACRO(game->player.can_move.north, game->player.window.y, -PLAYER_INCREMENT, game->player.global.y, -GLOBAL_INCREMENT);
             game->player.direction = NORTH;
         }
 
@@ -526,7 +532,7 @@ void handle_input(App* app, GameState* game)
             int tile_coordinate_x = (current_tile_x + 1) * TILE_SPRITE_WIDTH;
             int next_tile_east_coordinate_x = (next_tile_east_x + 1) * TILE_SPRITE_WIDTH;
 
-            array_fill(game->player.bounds.east, game->map.columns * TILE_SPRITE_WIDTH);
+            array_fill_MACRO(game->player.bounds.east, game->map.columns * TILE_SPRITE_WIDTH);
 
             if (current_tile_attributes.border.east > 0) {
                 game->player.bounds.east[0] = tile_coordinate_x - current_tile_attributes.border.east;
@@ -536,7 +542,7 @@ void handle_input(App* app, GameState* game)
                 game->player.bounds.east[1] = next_tile_east_coordinate_x - next_tile_east_attributes.border.east;
             }
 
-            move_player(game->player.can_move.east, game->player.window.x, PLAYER_INCREMENT, game->player.global.x, GLOBAL_INCREMENT);
+            move_player_MACRO(game->player.can_move.east, game->player.window.x, PLAYER_INCREMENT, game->player.global.x, GLOBAL_INCREMENT);
             game->player.direction = EAST;
         }
 
@@ -547,7 +553,7 @@ void handle_input(App* app, GameState* game)
             int tile_coordinate_y = (current_tile_y + 1) * TILE_SPRITE_HEIGHT;
             int next_tile_south_coordinate_y = (next_tile_south_y + 1) * TILE_SPRITE_HEIGHT;
 
-            array_fill(game->player.bounds.south, game->map.rows * TILE_SPRITE_HEIGHT);
+            array_fill_MACRO(game->player.bounds.south, game->map.rows * TILE_SPRITE_HEIGHT);
 
             if (current_tile_attributes.border.south > 0) {
                 game->player.bounds.south[0] = tile_coordinate_y - current_tile_attributes.border.south;
@@ -556,7 +562,7 @@ void handle_input(App* app, GameState* game)
                 game->player.bounds.south[1] = next_tile_south_coordinate_y - next_tile_south_attributes.border.south;
             }
 
-            move_player(game->player.can_move.south, game->player.window.y, PLAYER_INCREMENT, game->player.global.y, GLOBAL_INCREMENT);
+            move_player_MACRO(game->player.can_move.south, game->player.window.y, PLAYER_INCREMENT, game->player.global.y, GLOBAL_INCREMENT);
             game->player.direction = SOUTH;
         }
 
@@ -567,7 +573,7 @@ void handle_input(App* app, GameState* game)
             int tile_coordinate_x = current_tile_x * TILE_SPRITE_WIDTH;
             int next_tile_west_coordinate_x = next_tile_west_x * TILE_SPRITE_WIDTH;
 
-            array_fill(game->player.bounds.west, 0);
+            array_fill_MACRO(game->player.bounds.west, 0);
 
             if (current_tile_attributes.border.west > 0) {
                 game->player.bounds.west[0] = tile_coordinate_x + current_tile_attributes.border.west;
@@ -576,7 +582,7 @@ void handle_input(App* app, GameState* game)
                 game->player.bounds.west[1] = next_tile_west_coordinate_x + next_tile_west_attributes.border.west;
             }
 
-            move_player(game->player.can_move.west, game->player.window.x, -PLAYER_INCREMENT, game->player.global.x, -GLOBAL_INCREMENT);
+            move_player_MACRO(game->player.can_move.west, game->player.window.x, -PLAYER_INCREMENT, game->player.global.x, -GLOBAL_INCREMENT);
             game->player.direction = WEST;
         }
 

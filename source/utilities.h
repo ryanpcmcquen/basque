@@ -38,15 +38,19 @@ char* read_file(char* path)
 
         char* file_contents = (char*)calloc(file_size + 1, sizeof(char));
 
-        fread(file_contents, 1, file_size, file_to_read);
+        size_t chars_read = fread(file_contents, 1, file_size, file_to_read);
+        if (chars_read < 1) {
+            SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Failed to read file: %s\n", path);
+        }
         fclose(file_to_read);
 
         return file_contents;
     }
-    return "";
+
+    return (char*)calloc(1, sizeof(char));
 }
 
-#define array_fill(arr, val)                                                                  \
+#define array_fill_MACRO(arr, val)                                                            \
     {                                                                                         \
         for (size_t arr_index = 0; arr_index < (sizeof(arr) / sizeof(arr[0])); arr_index++) { \
             arr[arr_index] = val;                                                             \
