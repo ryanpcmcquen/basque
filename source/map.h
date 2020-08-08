@@ -13,6 +13,7 @@ bool map_char_is_not_tile_info(char char_to_check)
 void read_map_layout(GameState* game)
 {
     game->map.layout_string = read_file(game->map.layout_file);
+    // TODO: Return string length when file is read.
     game->map.layout_string_length = strlen(game->map.layout_string);
 
     if (game->map.layout_string_length < 1) {
@@ -21,8 +22,7 @@ void read_map_layout(GameState* game)
     }
 
     int current_column = 0;
-    game->map.rows = 0;
-    game->map.columns = 0;
+    game->map.rows = 0, game->map.columns = 0;
 
     // @Fastness:
     // See if there is a faster way to do this.
@@ -73,8 +73,6 @@ void read_map_attributes(GameState* game)
         // Cheap boolean so that we can skip comment lines:
         int skip_line = 0;
 
-        // Make this allocate less memory,
-        // it is wasteful right now.
         char tmp[ATTRIBUTE_CHAR_LIMIT + 1] = { 0 };
         switch (game->map.attributes_string[i]) {
         // case '\r': {
@@ -135,8 +133,7 @@ void read_map_attributes(GameState* game)
             tmp[attribute_index] = '\0';
             int tmp_counter = -1;
 
-            char* attribute = (char*)calloc(ATTRIBUTE_LENGTH + 1, sizeof(char));
-            // void* original_attribute_pointer = &attribute;
+            char attribute[ATTRIBUTE_LENGTH + 1] = { 0 };
 
             int attribute_counter = 0;
 
@@ -145,7 +142,6 @@ void read_map_attributes(GameState* game)
             int multiplier = 1;
             if (attribute[0] == '*') {
                 multiplier = TILE_SPRITE_HEIGHT;
-                // attribute = &attribute[1];
                 memmove(attribute, &attribute[1], ATTRIBUTE_LENGTH);
             }
             game->map.tile_attributes[tile_index].clip.x = multiplier * atoi(attribute);
@@ -155,7 +151,6 @@ void read_map_attributes(GameState* game)
             multiplier = 1;
             if (attribute[0] == '*') {
                 multiplier = TILE_SPRITE_HEIGHT;
-                // attribute = &attribute[1];
                 memmove(attribute, &attribute[1], ATTRIBUTE_LENGTH);
             }
             game->map.tile_attributes[tile_index].clip.y = multiplier * atoi(attribute);
@@ -175,8 +170,6 @@ void read_map_attributes(GameState* game)
             // West border:
             get_next_attribute_MACRO(attribute, attribute_counter, tmp, tmp_counter);
             game->map.tile_attributes[tile_index].border.west = atoi(attribute);
-
-            free(attribute);
 
         } break;
 
@@ -215,6 +208,13 @@ void read_map_attributes(GameState* game)
         }                                                                                                                            \
     }
 
+#define done_generating_map_MACRO()          \
+    {                                        \
+        if (current_row == game->map.rows) { \
+            break;                           \
+        }                                    \
+    }
+
 void generate_map(App* app, GameState* game)
 {
     Axes background;
@@ -228,8 +228,7 @@ void generate_map(App* app, GameState* game)
     }
 
     char last_char = ',';
-    int current_row = 0;
-    int current_column = 0;
+    int current_row = 0, current_column = 0;
 
     if (DEBUG_MODE && read_file_time(game->map.layout_file) > game->map.layout_modified_time) {
         game->map.layout_modified_time = read_file_time(game->map.layout_file);
@@ -253,14 +252,9 @@ void generate_map(App* app, GameState* game)
     for (size_t i = 0; i < game->map.layout_string_length; i++) {
 
         // Stop if we are at the end of rows.
-        if (current_row == game->map.rows) {
-            break;
-        }
+        done_generating_map_MACRO();
+
         switch (game->map.layout_string[i]) {
-        // @Weirdness, for some reason this has to be first,
-        // otherwise underscores fall into the comma and
-        // spaces case. I should investigate that at
-        // some point.
         case '_': {
             // @Robustness:
             // Research ways to have two render pipes,
@@ -281,9 +275,6 @@ void generate_map(App* app, GameState* game)
             last_char = game->map.layout_string[i];
         } break;
         case '\n': {
-            // Do not render a grid for the end of a row ...
-            // it is not useful data.
-            // draw_edit_grid_MACRO(app, game, background, END_OF_ROW);
 
             // Record row data to be used for the map editor:
             game->map.columns_in_row[current_row] = current_column;
@@ -300,16 +291,14 @@ void generate_map(App* app, GameState* game)
             current_row++;
 
             // Stop if we are at the end of rows.
-            if (current_row == game->map.rows) {
-                break;
-            }
+            done_generating_map_MACRO();
+
             last_char = game->map.layout_string[i];
         } break;
         default: {
             // Stop if we are at the end of rows.
-            if (current_row == game->map.rows) {
-                break;
-            }
+            done_generating_map_MACRO();
+
             // Actual tiles!
             // We make sure the last character is not
             // tile info (an integer), because if it
@@ -329,14 +318,21 @@ void generate_map(App* app, GameState* game)
                     // up in the map layout files.
                     char map_str_group[TILE_CHAR_LIMIT] = { 0 };
 
-                    map_str_group[0] = game->map.layout_string[i];
-                    map_str_group[1] = game->map.layout_string[i + 1];
-                    if (map_char_is_tile_info(game->map.layout_string[i + 2])) {
-                        map_str_group[2] = game->map.layout_string[i + 2];
-                    }
+                    // map_str_group[0] = game->map.layout_string[i];
+                    // map_str_group[1] = game->map.layout_string[i + 1];
+                    // if (map_char_is_tile_info(game->map.layout_string[i + 2])) {
+                    //     map_str_group[2] = game->map.layout_string[i + 2];
+                    // }
+                    // memcpy(map_str_group, &game->map.layout_string[i], TILE_CHAR_LIMIT - map_char_is_tile_info(game->map.layout_string[i + 2]));
 
-                    // This shouldn't be needed with the zero initialization.
-                    // map_str_group[3] = '\0';
+                    // TODO:
+                    // Maybe use memcpy here instead of this unrolled loop?
+                    // if (map_char_is_tile_info(game->map.layout_string[i + 2])) {
+                    // chars_to_copy++;
+                    // }
+                    size_t chars_to_copy = TILE_CHAR_LIMIT - ((map_char_is_tile_info(game->map.layout_string[i + 2])) ? 1 : 2);
+                    memcpy(map_str_group, &game->map.layout_string[i], chars_to_copy);
+
                     map_tile = atoi(map_str_group);
                 } else {
                     // This converts a char to an integer:

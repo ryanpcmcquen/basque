@@ -29,6 +29,11 @@ void cleanup(void)
     // Good to clean this up if we have a bad exit.
     remove(MAP_LOCK_FILE);
 
+    free(game.map.columns_in_row);
+    free(game.map.layout);
+    free(game.map.layout_string);
+    free(game.map.attributes_string);
+
     IMG_Quit();
     Mix_CloseAudio();
     Mix_Quit();

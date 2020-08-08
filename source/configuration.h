@@ -47,6 +47,7 @@ float SCALING = INITIAL_SCALING;
 
 #define MUSIC_INTRO_FILE AUDIO_DIR "Basque_sample_music.ogg"
 #define MUSIC_VOLUME (MIX_MAX_VOLUME / 4)
+// #define MUSIC_VOLUME (MIX_MAX_VOLUME / 20)
 // #define MUSIC_VOLUME 0
 
 #define EDITOR_FONT FONT_DIR "BPtypewrite.ttf"

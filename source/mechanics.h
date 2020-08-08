@@ -220,10 +220,10 @@ int write_map_layout(GameState* game)
         // }
         fclose(old_map_layout);
 
-        free(new_map_str);
         free(new_map_layout_file);
+        free(new_map_str);
 
-        // If all was successful, remove lock file:
+        // If all was successful, remove the lock file:
         fclose(map_lock);
         remove(MAP_LOCK_FILE);
 
@@ -250,16 +250,10 @@ void handle_input(App* app, GameState* game)
 {
     game->done = SDL_FALSE;
 
-    game->player.window.x = 0;
-    game->player.window.y = 0;
-    game->player.global.x = 0;
-    game->player.global.y = 0;
-
+    game->player.window.x = 0, game->player.window.y = 0, game->player.global.x = 0, game->player.global.y = 0;
     game->player.direction = SOUTH;
 
-    int current_tile_y = 0;
-    int current_tile_x = 0;
-    int current_tile = 0;
+    int current_tile_y = 0, current_tile_x = 0, current_tile = 0;
 
     // TODO:
     // If the player is very close to a tile split line (maybe within 2 pixels),
@@ -271,17 +265,7 @@ void handle_input(App* app, GameState* game)
        need to also include one more tile along the perpendicular axis.
     */
 
-    int next_tile_north = 0;
-    int next_tile_north_y = 0;
-
-    int next_tile_east = 0;
-    int next_tile_east_x = 0;
-
-    int next_tile_south = 0;
-    int next_tile_south_y = 0;
-
-    int next_tile_west = 0;
-    int next_tile_west_x = 0;
+    int next_tile_north = 0, next_tile_north_y = 0, next_tile_east = 0, next_tile_east_x = 0, next_tile_south = 0, next_tile_south_y = 0, next_tile_west = 0, next_tile_west_x = 0;
 
     int prev_time = 0;
 
