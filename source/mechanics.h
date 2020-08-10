@@ -135,7 +135,7 @@ int write_map_layout(GameState* game)
     if (file_exists(MAP_LOCK_FILE)) {
         // Do not write if there is a lock file, to avoid obliterating the map.
         // @TODO:
-        // Would be nice to give the user some feedback, if there was a lock.
+        // It would be nice to give the user some feedback, if there was a lock.
         // SDL_SetRenderDrawColor(app->renderer, 250, 25, 0, 150);
         return 0;
     } else {
@@ -172,12 +172,10 @@ int write_map_layout(GameState* game)
             }
             for (int column = 0; column < game->map.columns_in_row[row]; column++) {
 
-                char tmp[TILE_CHAR_LIMIT] = { 0 };
+                char tmp[TILE_CHAR_LIMIT + 1] = { 0 };
                 // Convert integer to string:
                 if (game->map.layout[row][column] == EMPTY_COLUMN) {
-                    tmp[0] = ' ';
-                    tmp[1] = ' ';
-                    tmp[2] = '_';
+                    memcpy(tmp, BLANK_TILE_PADDED, sizeof(tmp));
                 } else {
                     snprintf(tmp, sizeof(tmp), "%3i", game->map.layout[row][column]);
                 }
@@ -489,6 +487,8 @@ void handle_input(App* app, GameState* game)
 
         const Uint8* current_key_states = SDL_GetKeyboardState(NULL);
 
+        int bound_index = 0;
+
         //
         // NORTH:
         //
@@ -497,12 +497,15 @@ void handle_input(App* app, GameState* game)
             int next_tile_north_coordinate_y = next_tile_north_y * TILE_SPRITE_WIDTH;
 
             array_fill_MACRO(game->player.bounds.north, 0);
+            bound_index = 0;
 
             if (current_tile_attributes.border.north > 0) {
-                game->player.bounds.north[0] = tile_coordinate_y + current_tile_attributes.border.north;
+                game->player.bounds.north[bound_index] = tile_coordinate_y + current_tile_attributes.border.north;
+                bound_index++;
             }
             if (next_tile_north_attributes.border.south > 0) {
-                game->player.bounds.north[1] = next_tile_north_coordinate_y + next_tile_north_attributes.border.north;
+                game->player.bounds.north[bound_index] = next_tile_north_coordinate_y + next_tile_north_attributes.border.north;
+                bound_index++;
             }
 
             move_player_MACRO(game->player.can_move.north, game->player.window.y, -PLAYER_INCREMENT, game->player.global.y, -GLOBAL_INCREMENT);
@@ -517,13 +520,16 @@ void handle_input(App* app, GameState* game)
             int next_tile_east_coordinate_x = (next_tile_east_x + 1) * TILE_SPRITE_WIDTH;
 
             array_fill_MACRO(game->player.bounds.east, game->map.columns * TILE_SPRITE_WIDTH);
+            bound_index = 0;
 
             if (current_tile_attributes.border.east > 0) {
-                game->player.bounds.east[0] = tile_coordinate_x - current_tile_attributes.border.east;
+                game->player.bounds.east[bound_index] = tile_coordinate_x - current_tile_attributes.border.east;
+                bound_index++;
             }
 
             if (next_tile_east_attributes.border.east > 0) {
-                game->player.bounds.east[1] = next_tile_east_coordinate_x - next_tile_east_attributes.border.east;
+                game->player.bounds.east[bound_index] = next_tile_east_coordinate_x - next_tile_east_attributes.border.east;
+                bound_index++;
             }
 
             move_player_MACRO(game->player.can_move.east, game->player.window.x, PLAYER_INCREMENT, game->player.global.x, GLOBAL_INCREMENT);
@@ -538,12 +544,15 @@ void handle_input(App* app, GameState* game)
             int next_tile_south_coordinate_y = (next_tile_south_y + 1) * TILE_SPRITE_HEIGHT;
 
             array_fill_MACRO(game->player.bounds.south, game->map.rows * TILE_SPRITE_HEIGHT);
+            bound_index = 0;
 
             if (current_tile_attributes.border.south > 0) {
-                game->player.bounds.south[0] = tile_coordinate_y - current_tile_attributes.border.south;
+                game->player.bounds.south[bound_index] = tile_coordinate_y - current_tile_attributes.border.south;
+                bound_index++;
             }
             if (next_tile_south_attributes.border.south > 0) {
-                game->player.bounds.south[1] = next_tile_south_coordinate_y - next_tile_south_attributes.border.south;
+                game->player.bounds.south[bound_index] = next_tile_south_coordinate_y - next_tile_south_attributes.border.south;
+                bound_index++;
             }
 
             move_player_MACRO(game->player.can_move.south, game->player.window.y, PLAYER_INCREMENT, game->player.global.y, GLOBAL_INCREMENT);
@@ -558,12 +567,15 @@ void handle_input(App* app, GameState* game)
             int next_tile_west_coordinate_x = next_tile_west_x * TILE_SPRITE_WIDTH;
 
             array_fill_MACRO(game->player.bounds.west, 0);
+            bound_index = 0;
 
             if (current_tile_attributes.border.west > 0) {
-                game->player.bounds.west[0] = tile_coordinate_x + current_tile_attributes.border.west;
+                game->player.bounds.west[bound_index] = tile_coordinate_x + current_tile_attributes.border.west;
+                bound_index++;
             }
             if (next_tile_west_attributes.border.west > 0) {
-                game->player.bounds.west[1] = next_tile_west_coordinate_x + next_tile_west_attributes.border.west;
+                game->player.bounds.west[bound_index] = next_tile_west_coordinate_x + next_tile_west_attributes.border.west;
+                bound_index++;
             }
 
             move_player_MACRO(game->player.can_move.west, game->player.window.x, -PLAYER_INCREMENT, game->player.global.x, -GLOBAL_INCREMENT);

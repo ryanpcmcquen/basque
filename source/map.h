@@ -255,7 +255,7 @@ void generate_map(App* app, GameState* game)
         done_generating_map_MACRO();
 
         switch (game->map.layout_string[i]) {
-        case '_': {
+        case BLANK_TILE: {
             // @Robustness:
             // Research ways to have two render pipes,
             // so we are not always switching back
@@ -316,21 +316,9 @@ void generate_map(App* app, GameState* game)
                     // Initialize this array with zeros, so we can
                     // guarantee weird characters do not end
                     // up in the map layout files.
-                    char map_str_group[TILE_CHAR_LIMIT] = { 0 };
+                    char map_str_group[TILE_CHAR_LIMIT + 1] = { 0 };
 
-                    // map_str_group[0] = game->map.layout_string[i];
-                    // map_str_group[1] = game->map.layout_string[i + 1];
-                    // if (map_char_is_tile_info(game->map.layout_string[i + 2])) {
-                    //     map_str_group[2] = game->map.layout_string[i + 2];
-                    // }
-                    // memcpy(map_str_group, &game->map.layout_string[i], TILE_CHAR_LIMIT - map_char_is_tile_info(game->map.layout_string[i + 2]));
-
-                    // TODO:
-                    // Maybe use memcpy here instead of this unrolled loop?
-                    // if (map_char_is_tile_info(game->map.layout_string[i + 2])) {
-                    // chars_to_copy++;
-                    // }
-                    size_t chars_to_copy = TILE_CHAR_LIMIT - ((map_char_is_tile_info(game->map.layout_string[i + 2])) ? 1 : 2);
+                    size_t chars_to_copy = TILE_CHAR_LIMIT - ((map_char_is_tile_info(game->map.layout_string[i + 2])) ? 0 : 1);
                     memcpy(map_str_group, &game->map.layout_string[i], chars_to_copy);
 
                     map_tile = atoi(map_str_group);

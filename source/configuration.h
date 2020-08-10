@@ -1,3 +1,4 @@
+
 #define GAME_TITLE "Basque"
 #define DEBUG_MODE 1
 
@@ -22,7 +23,10 @@ int FULLSCREEN_MODE = 0;
 
 #define TILE_SPRITE_HEIGHT 16
 #define TILE_SPRITE_WIDTH 16
-#define TILE_CHAR_LIMIT 4
+#define TILE_ATTRIBUTES_LIMIT 500
+#define TILE_CHAR_LIMIT 3
+#define BLANK_TILE '_'
+#define BLANK_TILE_PADDED "  _"
 
 // This is a float, but we enforce integers
 // with SDL_RenderSetIntegerScale().
@@ -46,8 +50,8 @@ float SCALING = INITIAL_SCALING;
 #define BACKGROUND_IMAGE IMAGE_DIR "tiles_packed.png"
 
 #define MUSIC_INTRO_FILE AUDIO_DIR "Basque_sample_music.ogg"
-#define MUSIC_VOLUME (MIX_MAX_VOLUME / 4)
-// #define MUSIC_VOLUME (MIX_MAX_VOLUME / 20)
+#define MUSIC_VOLUME (MIX_MAX_VOLUME / 5)
+// #define MUSIC_VOLUME (MIX_MAX_VOLUME / 10)
 // #define MUSIC_VOLUME 0
 
 #define EDITOR_FONT FONT_DIR "BPtypewrite.ttf"
@@ -55,8 +59,6 @@ float SCALING = INITIAL_SCALING;
 #define EDITOR_FONT_OUTLINE 2
 #define EDITOR_FONT_DEST_SIZE_H 9
 #define EDITOR_FONT_DEST_SIZE_W 10
-
-#define TILE_ATTRIBUTES_LIMIT 500
 
 #define EMPTY_COLUMN -1
 #define END_OF_ROW -2

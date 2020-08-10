@@ -112,9 +112,9 @@ int init()
                         SDL_Surface* font_surface;
                         SDL_Rect font_rect;
 
-                        char map_tile_str[TILE_CHAR_LIMIT] = { 0 };
+                        char map_tile_str[TILE_CHAR_LIMIT + 1] = { 0 };
                         for (int tile_index = 0; tile_index < TILE_ATTRIBUTES_LIMIT; tile_index++) {
-                            snprintf(map_tile_str, sizeof(char[TILE_CHAR_LIMIT]), "%-3i", tile_index);
+                            snprintf(map_tile_str, sizeof(char[TILE_CHAR_LIMIT + 1]), "%-3i", tile_index);
                             create_outlined_font_MACRO(game, map_tile_str, font_outline_surface, font_surface, font_outline_color, font_color, font_rect);
 
                             game.editor.text_surfaces[tile_index] = *font_outline_surface;
@@ -122,7 +122,7 @@ int init()
                         }
 
                         // Set empty column label:
-                        snprintf(map_tile_str, sizeof(char[TILE_CHAR_LIMIT]), "%-3i", EMPTY_COLUMN);
+                        snprintf(map_tile_str, sizeof(char[TILE_CHAR_LIMIT + 1]), "%-3i", EMPTY_COLUMN);
                         create_outlined_font_MACRO(game, map_tile_str, font_outline_surface, font_surface, font_outline_color, font_color, font_rect);
 
                         if (EMPTY_COLUMN < 0) {
