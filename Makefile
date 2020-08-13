@@ -16,7 +16,12 @@ COMPILE=rc.exe /nologo windows\$(TITLE).rc && $(CC) $(FLAGS) $(SOURCE) $(LIBS) #
 CP=cp -f
 MV=mv -f
 RM=rm -f
-CC:=$(or $(CC), $(clang))
+# CC:=$(or $(CC), clang)
+# CC:=$(or ${CC}, ${CC}, clang)
+# CC?=clang
+ifeq ($(origin CC), default)
+CC=clang
+endif
 SDL2_FLAGS=`$$(which sdl2-config) --cflags --libs`
 SOURCE=source/$(TITLE).c
 LIBS='-Wl,-rpath,$$ORIGIN' $(SDL2_FLAGS) -l SDL2_image -l SDL2_mixer -l SDL2_ttf

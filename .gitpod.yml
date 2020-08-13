@@ -1,5 +1,5 @@
 tasks:
-    - init: CC=clang-11 make -B && exec ./basque
+    - init: make -B && exec ./basque
 image:
     file: .gitpod.Dockerfile
 ports:
