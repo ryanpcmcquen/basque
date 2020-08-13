@@ -201,21 +201,21 @@ int write_map_layout(GameState* game)
         size_t new_map_str_length = strlen(new_map_str);
 
         size_t chars_written = fwrite(new_map_str, sizeof(char), new_map_str_length, new_map_layout);
-        // if (chars_written != new_map_str_length) {
-        //     SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Only %zu chars written out of: %zu\n", chars_written, new_map_str_length);
-        // } else {
+        if (chars_written != new_map_str_length) {
+            SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Only %zu chars written out of: %zu\n", chars_written, new_map_str_length);
+        }
         if (game->editor.layout_file_suffix == MAP_LAYOUT_FILE_LIMIT) {
             game->editor.layout_file_suffix = 0;
         } else {
             game->editor.layout_file_suffix++;
         }
-        // }
+
         fclose(new_map_layout);
 
         chars_written = fwrite(new_map_str, sizeof(char), new_map_str_length, old_map_layout);
-        // if (chars_written != new_map_str_length) {
-        //     SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Only %zu chars written out of: %zu\n", chars_written, new_map_str_length);
-        // }
+        if (chars_written != new_map_str_length) {
+            SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Only %zu chars written out of: %zu\n", chars_written, new_map_str_length);
+        }
         fclose(old_map_layout);
 
         free(new_map_layout_file);
@@ -306,12 +306,7 @@ void handle_input(App* app, GameState* game)
 
                 case SDLK_l: {
                     if (DEBUG_MODE && game->EDIT_MODE) {
-                        if (strcmp(game->map.layout_file, MAP_LIBRARY_FILE) != 0) {
-                            // Load map_library.txt:
-                            game->map.layout_file = MAP_LIBRARY_FILE;
-                        } else {
-                            game->map.layout_file = MAP_LAYOUT_FILE;
-                        }
+                        game->map.layout_file = (strcmp(game->map.layout_file, MAP_LIBRARY_FILE) != 0) ? MAP_LIBRARY_FILE : MAP_LAYOUT_FILE;
                         read_map_layout(game);
                     }
                 } break;
