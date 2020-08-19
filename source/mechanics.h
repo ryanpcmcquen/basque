@@ -353,8 +353,6 @@ void handle_input(App* app, GameState* game)
                         selected_tile = game->map.layout[mouse_tile.y][mouse_tile.x];
                     }
 
-                    // @HACK:
-                    // This feels kludgy, improve it.
                     if (selected_tile < 0) {
                         selected_tile = EMPTY_COLUMN;
                     }

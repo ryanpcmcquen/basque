@@ -182,35 +182,33 @@ void read_map_attributes(GameState* game)
     }
 }
 
-// TODO:
-// This may not need to be a macro!
-#define draw_edit_grid_MACRO(app, game, background, map_tile)                                                                        \
-    {                                                                                                                                \
-        if (DEBUG_MODE && game->EDIT_MODE) {                                                                                         \
-            SDL_Rect text_clip;                                                                                                      \
-            text_clip.x = 0;                                                                                                         \
-            text_clip.y = 0;                                                                                                         \
-            text_clip.h = TILE_SPRITE_HEIGHT;                                                                                        \
-            text_clip.w = TILE_SPRITE_WIDTH;                                                                                         \
-            SDL_Rect text_dest;                                                                                                      \
-            text_dest.x = (background.x + game->scroll.x) + 2;                                                                       \
-            text_dest.y = (background.y + game->scroll.y) + 2;                                                                       \
-            text_dest.h = EDITOR_FONT_DEST_SIZE_H;                                                                                   \
-            text_dest.w = EDITOR_FONT_DEST_SIZE_W;                                                                                   \
-            SDL_Rect box;                                                                                                            \
-            box.x = background.x + game->scroll.x;                                                                                   \
-            box.y = background.y + game->scroll.y;                                                                                   \
-            box.h = TILE_SPRITE_HEIGHT;                                                                                              \
-            box.w = TILE_SPRITE_WIDTH;                                                                                               \
-            SDL_SetRenderDrawBlendMode(app->renderer, SDL_BLENDMODE_BLEND);                                                          \
-            SDL_RenderDrawRect(app->renderer, &box);                                                                                 \
-            if (map_tile < 0) {                                                                                                      \
-                SDL_RenderCopy(app->renderer, game->editor.text_textures[TILE_ATTRIBUTES_LIMIT + map_tile], &text_clip, &text_dest); \
-            } else {                                                                                                                 \
-                SDL_RenderCopy(app->renderer, game->editor.text_textures[map_tile], &text_clip, &text_dest);                         \
-            }                                                                                                                        \
-        }                                                                                                                            \
+void draw_edit_grid(App* app, GameState* game, Axes background, int map_tile)
+{
+    if (DEBUG_MODE && game->EDIT_MODE) {
+        SDL_Rect text_clip;
+        text_clip.x = 0;
+        text_clip.y = 0;
+        text_clip.h = TILE_SPRITE_HEIGHT;
+        text_clip.w = TILE_SPRITE_WIDTH;
+        SDL_Rect text_dest;
+        text_dest.x = (background.x + game->scroll.x) + 2;
+        text_dest.y = (background.y + game->scroll.y) + 2;
+        text_dest.h = EDITOR_FONT_DEST_SIZE_H;
+        text_dest.w = EDITOR_FONT_DEST_SIZE_W;
+        SDL_Rect box;
+        box.x = background.x + game->scroll.x;
+        box.y = background.y + game->scroll.y;
+        box.h = TILE_SPRITE_HEIGHT;
+        box.w = TILE_SPRITE_WIDTH;
+        SDL_SetRenderDrawBlendMode(app->renderer, SDL_BLENDMODE_BLEND);
+        SDL_RenderDrawRect(app->renderer, &box);
+        if (map_tile < 0) {
+            SDL_RenderCopy(app->renderer, game->editor.text_textures[TILE_ATTRIBUTES_LIMIT + map_tile], &text_clip, &text_dest);
+        } else {
+            SDL_RenderCopy(app->renderer, game->editor.text_textures[map_tile], &text_clip, &text_dest);
+        }
     }
+}
 
 #define done_generating_map_MACRO()          \
     {                                        \
@@ -265,7 +263,7 @@ void generate_map(App* app, GameState* game)
             // so we are not always switching back
             // and forth between desired colors.
             SDL_SetRenderDrawColor(app->renderer, 255, 255, 255, 40);
-            draw_edit_grid_MACRO(app, game, background, EMPTY_COLUMN);
+            draw_edit_grid(app, game, background, EMPTY_COLUMN);
             SDL_SetRenderDrawColor(app->renderer, 0, 0, 0, 0);
 
             // This represents a blank column:
@@ -357,7 +355,7 @@ void generate_map(App* app, GameState* game)
                 SDL_RenderCopy(app->renderer, game->background_image, &clip, &dest);
 
                 SDL_SetRenderDrawColor(app->renderer, 255, 255, 255, 40);
-                draw_edit_grid_MACRO(app, game, background, map_tile);
+                draw_edit_grid(app, game, background, map_tile);
                 SDL_SetRenderDrawColor(app->renderer, 0, 0, 0, 0);
 
                 background.x += TILE_SPRITE_WIDTH;

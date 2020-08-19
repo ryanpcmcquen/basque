@@ -41,21 +41,6 @@ void cleanup(void)
     SDL_Quit();
 }
 
-// TODO:
-// This may not need to be a macro!
-// #define create_outlined_font_MACRO(game, map_tile_str, font_outline_surface, font_surface, font_outline_color, font_color, font_rect) \
-//     {                                                                                                                                 \
-//         font_outline_surface = TTF_RenderText_Blended(game.font_outline, map_tile_str, font_outline_color);                           \
-//         font_surface = TTF_RenderText_Blended(game.font, map_tile_str, font_color);                                                   \
-//         font_rect.x = EDITOR_FONT_OUTLINE;                                                                                            \
-//         font_rect.y = EDITOR_FONT_OUTLINE;                                                                                            \
-//         font_rect.w = font_surface->w;                                                                                                \
-//         font_rect.h = font_surface->h;                                                                                                \
-//         SDL_SetSurfaceBlendMode(font_surface, SDL_BLENDMODE_BLEND);                                                                   \
-//         SDL_BlitSurface(font_surface, NULL, font_outline_surface, &font_rect);                                                        \
-//     }
-
-// Some of the variables are initalized here, which is why it was a macro, but maybe we can get around that?
 void create_outlined_font(GameState* game, char* map_tile_str)
 {
     game->font.outline_surface = TTF_RenderText_Blended(game->font.outline, map_tile_str, game->font.outline_color);
@@ -127,28 +112,17 @@ int init()
                     if (TTF_Init() == 0) {
                         game.font.face = TTF_OpenFont(EDITOR_FONT, EDITOR_FONT_SIZE);
                         // HACK:
-                        // This looks like it can be removed ...
+                        // This looks like it can be removed ... but maybe it cannot
+                        // because they end up with different attributes?
                         game.font.outline = TTF_OpenFont(EDITOR_FONT, EDITOR_FONT_SIZE);
                         TTF_SetFontOutline(game.font.outline, EDITOR_FONT_OUTLINE);
 
                         assign_color(&game.font.color, 255, 255, 255, 210);
                         assign_color(&game.font.outline_color, 10, 10, 10, 180);
 
-                        // game.font.color.r = 255;
-                        // game.font.color.g = 255;
-                        // game.font.color.b = 255;
-                        // game.font.color.a = 210;
-
-                        // game.font.outline_color.r = 10;
-                        // game.font.outline_color.g = 10;
-                        // game.font.outline_color.b = 10;
-                        // game.font.outline_color.a = 180;
-
                         char map_tile_str[TILE_CHAR_LIMIT + 1] = { 0 };
                         for (int tile_index = 0; tile_index < TILE_ATTRIBUTES_LIMIT; tile_index++) {
                             snprintf(map_tile_str, sizeof(char[TILE_CHAR_LIMIT + 1]), "%-3i", tile_index);
-                            // create_outlined_font_MACRO(game, map_tile_str, font_outline_surface, font_surface, font_outline_color, font_color, font_rect);
-                            // create_outlined_font(&game, map_tile_str, font_outline_surface, font_surface, font_outline_color, font_color, font_rect);
                             create_outlined_font(&game, map_tile_str);
 
                             game.editor.text_surfaces[tile_index] = *game.font.outline_surface;
@@ -157,8 +131,6 @@ int init()
 
                         // Set empty column label:
                         snprintf(map_tile_str, sizeof(char[TILE_CHAR_LIMIT + 1]), "%-3i", EMPTY_COLUMN);
-                        // create_outlined_font_MACRO(game, map_tile_str, font_outline_surface, font_surface, font_outline_color, font_color, font_rect);
-                        // create_outlined_font(&game, map_tile_str, font_outline_surface, font_surface, font_outline_color, font_color, font_rect);
                         create_outlined_font(&game, map_tile_str);
 
                         if (EMPTY_COLUMN < 0) {
