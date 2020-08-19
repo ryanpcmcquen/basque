@@ -41,19 +41,15 @@ void prepare_scene(App* app, GameState* game)
 void sprite_blit(App* app, SDL_Texture* texture, int x, int y, int direction)
 {
     SDL_Rect src;
-    src.x = x;
-    src.y = y;
+    src.x = x, src.y = y;
 
     SDL_Rect dest;
 
-    dest.x = x;
-    dest.y = y;
-    dest.h = PLAYER_SPRITE_HEIGHT;
-    dest.w = PLAYER_SPRITE_WIDTH;
+    dest.x = x, dest.y = y;
+    dest.h = PLAYER_SPRITE_HEIGHT, dest.w = PLAYER_SPRITE_WIDTH;
 
     SDL_Rect clip;
-    clip.x = x;
-    clip.y = y;
+    clip.x = x, clip.y = y;
     x = abs(x % 4);
     y = abs(y % 4);
     switch (direction) {
@@ -117,10 +113,7 @@ void handle_collisions(GameState* game)
 {
     if (DEBUG_MODE && game->EDIT_MODE) {
 
-        game->player.can_move.north = true;
-        game->player.can_move.east = true;
-        game->player.can_move.south = true;
-        game->player.can_move.west = true;
+        game->player.can_move.north = true, game->player.can_move.east = true, game->player.can_move.south = true, game->player.can_move.west = true;
 
     } else {
         bounds_check_MACRO(game->player.bounds.north, game->player.global.y - PLAYER_INCREMENT, PLAYER_SPRITE_ROW_HEIGHT / 2, is_above_bound, game->player.can_move.north);

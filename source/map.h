@@ -47,7 +47,7 @@ void read_map_layout(GameState* game)
 }
 
 // TODO:
-// This may not need to be a macro!
+// Ask @strager if this makes sense as a macro.
 #define get_next_attribute_MACRO(attribute, attribute_counter, tmp, tmp_counter) \
     {                                                                            \
         attribute_counter = 0;                                                   \
@@ -225,8 +225,7 @@ void generate_map(App* app, GameState* game)
         background.x = game->player.global.x - game->player.window.x;
         background.y = game->player.global.y - game->player.window.y;
     } else {
-        background.x = 0;
-        background.y = 0;
+        background.x = 0, background.y = 0;
     }
 
     char last_char = ',';
@@ -334,22 +333,18 @@ void generate_map(App* app, GameState* game)
                 tile.y = game->map.tile_attributes[map_tile].clip.y;
 
                 SDL_Rect src;
-                src.x = background.x;
-                src.y = background.y;
+                src.x = background.x, src.y = background.y;
 
                 SDL_Rect clip;
 
-                clip.x = tile.x;
-                clip.y = tile.y;
-                clip.h = TILE_SPRITE_HEIGHT;
-                clip.w = TILE_SPRITE_WIDTH;
+                clip.x = tile.x, clip.y = tile.y;
+                clip.h = TILE_SPRITE_HEIGHT, clip.w = TILE_SPRITE_WIDTH;
 
                 SDL_Rect dest;
 
                 dest.x = background.x + game->scroll.x;
                 dest.y = background.y + game->scroll.y;
-                dest.h = TILE_SPRITE_HEIGHT;
-                dest.w = TILE_SPRITE_WIDTH;
+                dest.h = TILE_SPRITE_HEIGHT, dest.w = TILE_SPRITE_WIDTH;
 
                 SDL_QueryTexture(game->background_image, NULL, NULL, &src.w, &src.h);
                 SDL_RenderCopy(app->renderer, game->background_image, &clip, &dest);
