@@ -87,6 +87,18 @@ typedef struct {
 } Editor;
 
 typedef struct {
+    TTF_Font* face;
+    TTF_Font* outline;
+
+    SDL_Color color;
+    SDL_Color outline_color;
+
+    SDL_Surface* outline_surface;
+    SDL_Surface* surface;
+    SDL_Rect rect;
+} Font;
+
+typedef struct {
     Axes scroll;
 
     SDL_bool done;
@@ -100,9 +112,7 @@ typedef struct {
 
     Mix_Music* music;
 
-    TTF_Font* font;
-    TTF_Font* font_outline;
-
+    Font font;
     bool EDIT_MODE;
 
     Editor editor;

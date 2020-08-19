@@ -46,6 +46,8 @@ void read_map_layout(GameState* game)
     }
 }
 
+// TODO:
+// This may not need to be a macro!
 #define get_next_attribute_MACRO(attribute, attribute_counter, tmp, tmp_counter) \
     {                                                                            \
         attribute_counter = 0;                                                   \
@@ -180,6 +182,8 @@ void read_map_attributes(GameState* game)
     }
 }
 
+// TODO:
+// This may not need to be a macro!
 #define draw_edit_grid_MACRO(app, game, background, map_tile)                                                                        \
     {                                                                                                                                \
         if (DEBUG_MODE && game->EDIT_MODE) {                                                                                         \
