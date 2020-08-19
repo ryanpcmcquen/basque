@@ -55,10 +55,7 @@ void create_outlined_font(GameState* game, char* map_tile_str)
 
 void assign_color(SDL_Color* color, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 {
-    color->r = r;
-    color->g = g;
-    color->b = b;
-    color->a = a;
+    color->r = r, color->g = g, color->b = b, color->a = a;
 }
 
 int init()
