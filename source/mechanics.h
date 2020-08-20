@@ -9,7 +9,7 @@ SDL_Texture* load_texture(App* app, char* file)
     return texture;
 }
 
-void load_music(GameState* game)
+void load_music(Game* game)
 {
     int flags = MIX_INIT_OGG;
     int initted = Mix_Init(flags);
@@ -31,7 +31,7 @@ void load_music(GameState* game)
     }
 }
 
-void prepare_scene(App* app, GameState* game)
+void prepare_scene(App* app, Game* game)
 {
     game->player_image = load_texture(app, PLAYER_IMAGE);
     game->background_image = load_texture(app, BACKGROUND_IMAGE);
@@ -109,7 +109,7 @@ int is_above_bound(int coordinate, int sprite_dimension, int bound)
         }                                                                                                             \
     }
 
-void handle_collisions(GameState* game)
+void handle_collisions(Game* game)
 {
     if (DEBUG_MODE && game->EDIT_MODE) {
 
@@ -123,7 +123,7 @@ void handle_collisions(GameState* game)
     }
 }
 
-int write_map_layout(GameState* game)
+int write_map_layout(Game* game)
 {
     if (file_exists(MAP_LOCK_FILE)) {
         // Do not write if there is a lock file, to avoid obliterating the map.
@@ -237,7 +237,7 @@ int write_map_layout(GameState* game)
         }                                                                       \
     }
 
-void handle_input(App* app, GameState* game)
+void handle_input(App* app, Game* game)
 {
     game->done = SDL_FALSE;
 

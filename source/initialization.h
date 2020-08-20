@@ -1,6 +1,6 @@
 #include "mechanics.h"
 
-GameState game;
+Game game;
 App app;
 
 void cleanup(void)
@@ -41,7 +41,7 @@ void cleanup(void)
     SDL_Quit();
 }
 
-void create_outlined_font(GameState* game, char* map_tile_str)
+void create_outlined_font(Game* game, char* map_tile_str)
 {
     game->font.outline_surface = TTF_RenderText_Blended(game->font.outline, map_tile_str, game->font.outline_color);
     game->font.surface = TTF_RenderText_Blended(game->font.face, map_tile_str, game->font.color);

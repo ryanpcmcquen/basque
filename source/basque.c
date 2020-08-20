@@ -10,7 +10,7 @@ int main(int argc, char* argv[])
     }
 
     memset(&app, 0, sizeof(App));
-    memset(&game, 0, sizeof(GameState));
+    memset(&game, 0, sizeof(Game));
 
     init();
 

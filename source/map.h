@@ -10,7 +10,7 @@ bool map_char_is_not_tile_info(char char_to_check)
     return char_to_check == ' ' || char_to_check == '\0' || char_to_check == '\n' || char_to_check == ',';
 }
 
-void read_map_layout(GameState* game)
+void read_map_layout(Game* game)
 {
     game->map.layout_string = read_file(game->map.layout_file);
     // TODO: Return string length when file is read.
@@ -59,7 +59,7 @@ void read_map_layout(GameState* game)
         }                                                                        \
     }
 
-void read_map_attributes(GameState* game)
+void read_map_attributes(Game* game)
 {
     game->map.attributes_string = read_file(game->map.attributes_file);
     game->map.attributes_string_length = strlen(game->map.attributes_string);
@@ -182,7 +182,7 @@ void read_map_attributes(GameState* game)
     }
 }
 
-void draw_edit_grid(App* app, GameState* game, Axes background, int map_tile)
+void draw_edit_grid(App* app, Game* game, Axes background, int map_tile)
 {
     if (DEBUG_MODE && game->EDIT_MODE) {
         SDL_Rect text_clip;
@@ -217,7 +217,7 @@ void draw_edit_grid(App* app, GameState* game, Axes background, int map_tile)
         }                                    \
     }
 
-void generate_map(App* app, GameState* game)
+void generate_map(App* app, Game* game)
 {
     Axes background;
 

@@ -116,4 +116,4 @@ typedef struct {
     bool EDIT_MODE;
 
     Editor editor;
-} GameState;
+} Game;
