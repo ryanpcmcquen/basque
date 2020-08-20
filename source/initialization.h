@@ -43,8 +43,15 @@ void cleanup(void)
 
 void create_outlined_font(Game* game, char* map_tile_str)
 {
-    game->font.outline_surface = TTF_RenderText_Blended(game->font.outline, map_tile_str, game->font.outline_color);
     game->font.surface = TTF_RenderText_Blended(game->font.face, map_tile_str, game->font.color);
+
+    // The font outline has to set/reset with each creation call,
+    // but this saves us from loading the same font twice!
+    TTF_SetFontOutline(game->font.face, EDITOR_FONT_OUTLINE);
+    game->font.outline_surface = TTF_RenderText_Blended(game->font.face, map_tile_str, game->font.outline_color);
+    // Reset the font outline so we don't get crazy fonts.
+    TTF_SetFontOutline(game->font.face, 0);
+
     game->font.rect.x = EDITOR_FONT_OUTLINE;
     game->font.rect.y = EDITOR_FONT_OUTLINE;
     game->font.rect.w = game->font.surface->w;
@@ -108,11 +115,6 @@ int init()
 
                     if (TTF_Init() == 0) {
                         game.font.face = TTF_OpenFont(EDITOR_FONT, EDITOR_FONT_SIZE);
-                        // HACK:
-                        // This looks like it can be removed ... but maybe it cannot
-                        // because they end up with different attributes?
-                        game.font.outline = TTF_OpenFont(EDITOR_FONT, EDITOR_FONT_SIZE);
-                        TTF_SetFontOutline(game.font.outline, EDITOR_FONT_OUTLINE);
 
                         assign_color(&game.font.color, 255, 255, 255, 210);
                         assign_color(&game.font.outline_color, 10, 10, 10, 180);
