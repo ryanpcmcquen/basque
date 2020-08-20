@@ -17,7 +17,8 @@ CP=cp -f
 MV=mv -f
 RM=rm -f
 # If this fancy syntax doesn't work with your version of `make`,
-# just the conditional wrapper (ifeq and endif).
+# just remove the conditional wrapper (ifeq and endif).
+# It works here on Linux and Mac OS.
 ifeq ($(origin CC), default)
 CC=clang
 endif
