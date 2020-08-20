@@ -16,9 +16,8 @@ COMPILE=rc.exe /nologo windows\$(TITLE).rc && $(CC) $(FLAGS) $(SOURCE) $(LIBS) #
 CP=cp -f
 MV=mv -f
 RM=rm -f
-# CC:=$(or $(CC), clang)
-# CC:=$(or ${CC}, ${CC}, clang)
-# CC?=clang
+# If this fancy syntax doesn't work with your version of `make`,
+# just the conditional wrapper (ifeq and endif).
 ifeq ($(origin CC), default)
 CC=clang
 endif
