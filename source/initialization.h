@@ -60,9 +60,9 @@ void create_outlined_font(Game* game, char* map_tile_str)
     SDL_BlitSurface(game->font.surface, NULL, game->font.outline_surface, &game->font.rect);
 }
 
-void assign_color(SDL_Color* color, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
+void assign_color(SDL_Color* color, Uint8 red, Uint8 green, Uint8 blue, Uint8 alpha)
 {
-    color->r = r, color->g = g, color->b = b, color->a = a;
+    color->r = red, color->g = green, color->b = blue, color->a = alpha;
 }
 
 int init()
