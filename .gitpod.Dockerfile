@@ -1,4 +1,6 @@
-FROM gitpod/workspace-full-vnc
+# Temporary fix for a broken clang package:
+# https://github.com/gitpod-io/gitpod/issues/1694
+FROM gitpod/workspace-full:branch-jx-explicitly-install-clang
 
 USER gitpod
 
@@ -7,4 +9,4 @@ RUN sudo apt-get -q update && \
 
 # Temporary fix for a broken clang package:
 # https://github.com/gitpod-io/gitpod/issues/1694
-ENV CC=clang-11
+#ENV CC=clang-11
