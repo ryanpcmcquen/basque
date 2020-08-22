@@ -31,8 +31,8 @@ void cleanup(void)
 
     free(game.map.columns_in_row);
     free(game.map.layout);
-    free(game.map.layout_string);
-    free(game.map.attributes_string);
+    free(game.map.layout_string.contents);
+    free(game.map.attributes_string.contents);
 
     IMG_Quit();
     Mix_CloseAudio();
@@ -60,11 +60,6 @@ void create_outlined_font(Game* game, char* map_tile_str)
     SDL_BlitSurface(game->font.surface, NULL, game->font.outline_surface, &game->font.rect);
 }
 
-void assign_color(SDL_Color* color, Uint8 red, Uint8 green, Uint8 blue, Uint8 alpha)
-{
-    color->r = red, color->g = green, color->b = blue, color->a = alpha;
-}
-
 int init()
 {
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) == 0) {
@@ -88,8 +83,12 @@ int init()
         // SDL_WINDOW_ALLOW_HIGHDPI | SDL_WINDOW_RESIZABLE);
 
         if (app.window != NULL) {
-            app.renderer = SDL_CreateRenderer(app.window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+            app.renderer = SDL_CreateRenderer(app.window, -1, SDL_RENDERER_PRESENTVSYNC);
+            // TODO:
+            // Look into ways to check for the ability to use hardware acceleration, vsync, et cetera.
+            // app.renderer = SDL_CreateRenderer(app.window, -1, 0);
             // app.renderer = SDL_CreateRenderer(app.window, -1, SDL_RENDERER_ACCELERATED);
+            // app.renderer = SDL_CreateRenderer(app.window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 
             if (app.renderer != NULL) {
 
@@ -116,8 +115,9 @@ int init()
                     if (TTF_Init() == 0) {
                         game.font.face = TTF_OpenFont(EDITOR_FONT, EDITOR_FONT_SIZE);
 
-                        assign_color(&game.font.color, 255, 255, 255, 210);
-                        assign_color(&game.font.outline_color, 10, 10, 10, 180);
+                        // These are compound literals!
+                        game.font.color = (SDL_Color) { 255, 255, 255, 210 };
+                        game.font.outline_color = (SDL_Color) { 10, 10, 10, 180 };
 
                         char map_tile_str[TILE_CHAR_LIMIT + 1] = { 0 };
                         for (int tile_index = 0; tile_index < TILE_ATTRIBUTES_LIMIT; tile_index++) {

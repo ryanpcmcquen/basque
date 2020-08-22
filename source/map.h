@@ -1,4 +1,4 @@
-#include "types.h"
+#include "utilities.h"
 
 bool map_char_is_tile_info(char char_to_check)
 {
@@ -13,10 +13,8 @@ bool map_char_is_not_tile_info(char char_to_check)
 void read_map_layout(Game* game)
 {
     game->map.layout_string = read_file(game->map.layout_file);
-    // TODO: Return string length when file is read.
-    game->map.layout_string_length = strlen(game->map.layout_string);
 
-    if (game->map.layout_string_length < 1) {
+    if (game->map.layout_string.length < 1) {
         SDL_Log("Map layout is empty, exiting.\n");
         exit(EXIT_FAILURE);
     }
@@ -26,8 +24,8 @@ void read_map_layout(Game* game)
 
     // @Fastness:
     // See if there is a faster way to do this.
-    for (size_t i = 0; i < game->map.layout_string_length; i++) {
-        if (game->map.layout_string[i] == '\n') {
+    for (size_t i = 0; i < game->map.layout_string.length; i++) {
+        if (game->map.layout_string.contents[i] == '\n') {
             if (current_column > game->map.columns) {
                 game->map.columns = current_column;
             }
@@ -62,11 +60,10 @@ void read_map_layout(Game* game)
 void read_map_attributes(Game* game)
 {
     game->map.attributes_string = read_file(game->map.attributes_file);
-    game->map.attributes_string_length = strlen(game->map.attributes_string);
 
     // @Fastness:
     // See if there is a faster way to do this.
-    for (size_t i = 0; i < game->map.attributes_string_length; i++) {
+    for (size_t i = 0; i < game->map.attributes_string.length; i++) {
 
         // Store our starting point, for times when we reverse
         // through the string (comments, et cetera).
@@ -76,7 +73,7 @@ void read_map_attributes(Game* game)
         int skip_line = 0;
 
         char tmp[ATTRIBUTE_CHAR_LIMIT + 1] = { 0 };
-        switch (game->map.attributes_string[i]) {
+        switch (game->map.attributes_string.contents[i]) {
         // case '\r': {
         //     SDL_Log("Please convert your map_*.txt files to use LF line endings ... exiting.\n");
         //     exit(EXIT_FAILURE);
@@ -85,8 +82,8 @@ void read_map_attributes(Game* game)
             // Start of tile.
             char tile_string[TILE_CHAR_LIMIT + 1] = { 0 };
 
-            while (game->map.attributes_string[i] != '\n') {
-                if (game->map.attributes_string[i] == '/') {
+            while (game->map.attributes_string.contents[i] != '\n') {
+                if (game->map.attributes_string.contents[i] == '/') {
                     // Reset the counter!
                     i = original_i;
                     skip_line = 1;
@@ -101,8 +98,8 @@ void read_map_attributes(Game* game)
             i++;
 
             int tile_string_index = 0;
-            while (game->map.attributes_string[i] != ':') {
-                tile_string[tile_string_index] = game->map.attributes_string[i];
+            while (game->map.attributes_string.contents[i] != ':') {
+                tile_string[tile_string_index] = game->map.attributes_string.contents[i];
                 tile_string_index++;
                 i++;
             }
@@ -117,15 +114,15 @@ void read_map_attributes(Game* game)
             i = i + 2;
             int attribute_index = 0;
 
-            while (game->map.attributes_string[i] != '\n') {
-                switch (game->map.attributes_string[i]) {
+            while (game->map.attributes_string.contents[i] != '\n') {
+                switch (game->map.attributes_string.contents[i]) {
                 case ' ':
                 case '{':
                 case '}': {
                     // Ignore.
                 } break;
                 default: {
-                    tmp[attribute_index] = game->map.attributes_string[i];
+                    tmp[attribute_index] = game->map.attributes_string.contents[i];
                     attribute_index++;
                 } break;
                 }
@@ -250,12 +247,12 @@ void generate_map(App* app, Game* game)
     // Set rectangle color for map grid:
     SDL_SetRenderDrawColor(app->renderer, 0, 0, 0, 0);
 
-    for (size_t i = 0; i < game->map.layout_string_length; i++) {
+    for (size_t i = 0; i < game->map.layout_string.length; i++) {
 
         // Stop if we are at the end of rows.
         done_generating_map_MACRO();
 
-        switch (game->map.layout_string[i]) {
+        switch (game->map.layout_string.contents[i]) {
         case BLANK_TILE: {
             // @Robustness:
             // Research ways to have two render pipes,
@@ -269,11 +266,11 @@ void generate_map(App* app, Game* game)
             background.x += TILE_SPRITE_WIDTH;
             game->map.layout[current_row][current_column] = EMPTY_COLUMN;
             current_column++;
-            last_char = game->map.layout_string[i];
+            last_char = game->map.layout_string.contents[i];
         } break;
         case ',':
         case ' ': {
-            last_char = game->map.layout_string[i];
+            last_char = game->map.layout_string.contents[i];
         } break;
         case '\n': {
 
@@ -294,7 +291,7 @@ void generate_map(App* app, Game* game)
             // Stop if we are at the end of rows.
             done_generating_map_MACRO();
 
-            last_char = game->map.layout_string[i];
+            last_char = game->map.layout_string.contents[i];
         } break;
         default: {
             // Stop if we are at the end of rows.
@@ -308,24 +305,24 @@ void generate_map(App* app, Game* game)
             // data.
             if (map_char_is_not_tile_info(last_char)) {
                 // We skip processing unless the last char is fluff.
-                last_char = game->map.layout_string[i];
+                last_char = game->map.layout_string.contents[i];
 
                 int map_tile;
 
                 // @Robustness: this feels kinda sloppy, it can probably be improved later.
-                if (map_char_is_tile_info(game->map.layout_string[i + 1])) {
+                if (map_char_is_tile_info(game->map.layout_string.contents[i + 1])) {
                     // Initialize this array with zeros, so we can
                     // guarantee weird characters do not end
                     // up in the map layout files.
                     char map_str_group[TILE_CHAR_LIMIT + 1] = { 0 };
 
-                    size_t chars_to_copy = TILE_CHAR_LIMIT - ((map_char_is_tile_info(game->map.layout_string[i + 2])) ? 0 : 1);
-                    memcpy(map_str_group, &game->map.layout_string[i], chars_to_copy);
+                    size_t chars_to_copy = TILE_CHAR_LIMIT - ((map_char_is_tile_info(game->map.layout_string.contents[i + 2])) ? 0 : 1);
+                    memcpy(map_str_group, &game->map.layout_string.contents[i], chars_to_copy);
 
                     map_tile = atoi(map_str_group);
                 } else {
                     // This converts a char to an integer:
-                    map_tile = game->map.layout_string[i] - '0';
+                    map_tile = game->map.layout_string.contents[i] - '0';
                 }
 
                 Axes tile;

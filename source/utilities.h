@@ -1,4 +1,6 @@
+#include "types.h"
 #include <SDL2/SDL.h>
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -23,7 +25,7 @@ time_t read_file_time(char* path)
     return filestat.st_mtime;
 }
 
-char* read_file(char* path)
+File_Data read_file(char* path)
 {
     FILE* file_to_read;
 #ifdef PLATFORM_IS_WINDOWS
@@ -33,21 +35,26 @@ char* read_file(char* path)
 #endif
     if (file_to_read != NULL) {
         fseek(file_to_read, 0, SEEK_END);
-        int file_size = ftell(file_to_read);
+        size_t file_size = ftell(file_to_read);
         fseek(file_to_read, 0, SEEK_SET);
 
-        char* file_contents = (char*)calloc(file_size + 1, sizeof(char));
+        char* file_contents = (char*)malloc(file_size + 1);
 
-        size_t chars_read = fread(file_contents, 1, file_size, file_to_read);
-        if (chars_read < 1) {
-            SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Failed to read file: %s\n", path);
-        }
+        size_t read_size = fread(file_contents, 1, file_size, file_to_read);
+        assert(read_size <= file_size);
+        file_contents[read_size] = '\0';
         fclose(file_to_read);
 
-        return file_contents;
+        return (File_Data) {
+            file_contents,
+            file_size
+        };
     }
 
-    return (char*)calloc(1, sizeof(char));
+    return (File_Data) {
+        (char*)calloc(1, sizeof(char)),
+        1
+    };
 }
 
 #define array_fill_MACRO(arr, val)                                                            \
