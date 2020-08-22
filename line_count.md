@@ -1,9 +1,9 @@
-cloc|github.com/AlDanial/cloc v 1.82  T=0.02 s (364.7 files/s, 72217.7 lines/s)
+cloc|github.com/AlDanial/cloc v 1.86  T=0.16 s (45.2 files/s, 8978.9 lines/s)
 --- | ---
 
 Language|files|blank|comment|code
 :-------|-------:|-------:|-------:|-------:
-C/C++ Header|6|247|139|980
+C/C++ Header|6|247|143|982
 C|1|6|0|14
 --------|--------|--------|--------|--------
-SUM:|7|253|139|994
+SUM:|7|253|143|996
