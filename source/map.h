@@ -187,18 +187,22 @@ void draw_edit_grid(App* app, Game* game, Axes background, int map_tile)
         text_clip.y = 0;
         text_clip.h = TILE_SPRITE_HEIGHT;
         text_clip.w = TILE_SPRITE_WIDTH;
+
         SDL_Rect text_dest;
         text_dest.x = (background.x + game->scroll.x) + 2;
         text_dest.y = (background.y + game->scroll.y) + 2;
         text_dest.h = EDITOR_FONT_DEST_SIZE_H;
         text_dest.w = EDITOR_FONT_DEST_SIZE_W;
+
         SDL_Rect box;
         box.x = background.x + game->scroll.x;
         box.y = background.y + game->scroll.y;
         box.h = TILE_SPRITE_HEIGHT;
         box.w = TILE_SPRITE_WIDTH;
+
         SDL_SetRenderDrawBlendMode(app->renderer, SDL_BLENDMODE_BLEND);
         SDL_RenderDrawRect(app->renderer, &box);
+
         if (map_tile < 0) {
             SDL_RenderCopy(app->renderer, game->editor.text_textures[TILE_ATTRIBUTES_LIMIT + map_tile], &text_clip, &text_dest);
         } else {
