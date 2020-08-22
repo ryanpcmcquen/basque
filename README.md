@@ -145,6 +145,12 @@ sudo dnf install SDL2-devel SDL2_image-devel SDL2_mixer-devel SDL2_ttf-devel
 sudo eopkg install sdl2-devel sdl2-image-devel sdl2-mixer-devel sdl2-ttf-devel
 ```
 
+##### nix:
+
+```
+nix-env --install SDL2 SDL2_image SDL2_mixer SDL2_ttf
+```
+
 Or whatever the equivalent package is for your distro.
 
 #### Mac:
