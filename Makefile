@@ -22,6 +22,10 @@ RM=rm -f
 ifeq ($(origin CC), default)
 CC=clang
 endif
+# Calling which here seems wrong, but somehow, in
+# certain enviros, it breaks without the full
+# path ... even though the binary is in
+# the calling path.
 SDL2_FLAGS=`$$(which sdl2-config) --cflags --libs`
 SOURCE=source/$(TITLE).c
 LIBS='-Wl,-rpath,$$ORIGIN' $(SDL2_FLAGS) -l SDL2_image -l SDL2_mixer -l SDL2_ttf
