@@ -196,12 +196,12 @@ int write_map_layout(Game* game)
         size_t chars_written = fwrite(new_map_str, sizeof(char), new_map_str_length, new_map_layout);
         if (chars_written != new_map_str_length) {
             SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Only %zu chars written out of: %zu\n", chars_written, new_map_str_length);
+        }
+
+        if (game->editor.layout_file_suffix == MAP_LAYOUT_FILE_LIMIT) {
+            game->editor.layout_file_suffix = 0;
         } else {
-            if (game->editor.layout_file_suffix == MAP_LAYOUT_FILE_LIMIT) {
-                game->editor.layout_file_suffix = 0;
-            } else {
-                game->editor.layout_file_suffix++;
-            }
+            game->editor.layout_file_suffix++;
         }
 
         fclose(new_map_layout);
