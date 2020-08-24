@@ -279,9 +279,11 @@ After [compiling](#compiling) for your platform, you can launch with `./basque` 
 ### Esoteric ports:
 
 Basque has been run on BSD:
+
 ![Basque on BSD](https://user-images.githubusercontent.com/772937/91080734-f26c7400-e5fa-11ea-91bd-a1b00f589326.jpg 'Basque on BSD')
 
 Basque has been run on a Pocketchip:
+
 ![Basque on a PocketCHIP](https://user-images.githubusercontent.com/772937/91081932-bf2ae480-e5fc-11ea-8f92-d393e08b007a.gif 'Basque on a PocketCHIP')
 
 #### In progress:
