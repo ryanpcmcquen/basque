@@ -61,7 +61,7 @@ Too lazy to do local setup? You can give it a spin using Gitpod, the only downfa
 
 Why not just use Godot/Unity/et cetera? Basque has a very different priority list than these engines. It is _not_ a generic engine. There isn't much here, but it is a good starting point if you are looking to roll your own engine, here is what it does:
 
--   Compiles cross platform (Linux/Mac/Windows, should work on BSD or Haiku as well).
+-   Compiles cross platform (Linux/Mac/Windows, see [Esoteric ports](#esoteric-ports) for other platforms).
 -   Visual map editing (with an easy to understand plain text format).
 -   Spritesheet animation.
 -   Background music.
@@ -249,9 +249,8 @@ nmake
 
 To produce a zip containing the binary and all assets, run the below commands.
 
-Note that this will only run on a system with SDL2 globally
-installed, in the future, we will statically link SDL2
-to make this an easily distributable package.
+This should run on any system, as it includes SDL2 and the like,
+but every system is different, so nothing is guaranteed.
 
 #### Linux:
 
@@ -276,3 +275,18 @@ nmake && nmake /a windows
 ### Running:
 
 After [compiling](#compiling) for your platform, you can launch with `./basque` (or `basque.exe` on Windows). Passing `-f` or `--fullscreen` will launch the app in fullscreen, rather than the resolution specified in [configuration.h](source/configuration.h).
+
+### Esoteric ports:
+
+Basque has been run on BSD:
+![Basque on BSD](https://usercontent.irccloud-cdn.com/file/SgOAPfzE/IMG_2448.jpg 'Basque on BSD')
+
+Basque has been run on a Pocketchip:
+![Basque on a PocketCHIP](https://usercontent.irccloud-cdn.com/file/YZVGFPcE/basque_on_pocketchip__320.gif 'Basque on a PocketCHIP')
+
+#### In progress:
+
+-   Haiku
+-   ReactOS
+-   Solaris
+-   TempleOS
