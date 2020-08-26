@@ -79,6 +79,9 @@ int init()
             SDL_Log("Detected resolution: %ix%i\n", display_mode.w, display_mode.h);
         }
 
+        // Fix for multi-montior setups:
+        SDL_SetHint(SDL_HINT_VIDEO_MINIMIZE_ON_FOCUS_LOSS, 0);
+
         app.window = SDL_CreateWindow(GAME_TITLE, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, (int)SCREEN_WIDTH, (int)SCREEN_HEIGHT, SDL_WINDOW_RESIZABLE);
         // SDL_WINDOW_ALLOW_HIGHDPI | SDL_WINDOW_RESIZABLE);
 

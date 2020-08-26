@@ -222,12 +222,19 @@ void generate_map(App* app, Game* game)
 {
     Axes background;
 
+    int initial_background_x;
+    int initial_background_y;
+
     if (strcmp(game->map.layout_file, MAP_LIBRARY_FILE) == 0) {
-        background.x = game->player.global.x - game->player.window.x;
-        background.y = game->player.global.y - game->player.window.y;
+        initial_background_x = game->player.global.x - game->player.window.x;
+        initial_background_y = game->player.global.y - game->player.window.y;
     } else {
-        background.x = 0, background.y = 0;
+        initial_background_x = 0;
+        initial_background_y = 0;
     }
+
+    background.x = initial_background_x;
+    background.y = initial_background_y;
 
     char last_char = ',';
     int current_row = 0, current_column = 0;
@@ -281,11 +288,8 @@ void generate_map(App* app, Game* game)
             // Record row data to be used for the map editor:
             game->map.columns_in_row[current_row] = current_column;
 
-            if (strcmp(game->map.layout_file, MAP_LIBRARY_FILE) == 0) {
-                background.x = game->player.global.x - game->player.window.x;
-            } else {
-                background.x = 0;
-            }
+            background.x = initial_background_x;
+
             current_column = 0;
 
             // Y axis increases!
@@ -366,8 +370,6 @@ void generate_map(App* app, Game* game)
     }
 
     // Reset positioning when the library is loaded so it appears in the upper left of the viewport.
-    if (strcmp(game->map.layout_file, MAP_LIBRARY_FILE) == 0) {
-        background.x = game->player.global.x - game->player.window.x;
-        background.y = game->player.global.y - game->player.window.y;
-    }
+    background.x = initial_background_x;
+    background.y = initial_background_y;
 }
