@@ -1,5 +1,11 @@
 TITLE=basque
 
+# This is a cross platform Makefile, it has been tested on Linux,
+# Mac OS, and Windows (using make and nmake).
+#
+# The section under '!ifndef' is for Windows, and the
+# section under '!else' is for everything else.
+
 # \
 !ifndef 0 # \
 # nmake: \
