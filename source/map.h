@@ -221,20 +221,18 @@ void draw_edit_grid(App* app, Game* game, Axes background, int map_tile)
 void generate_map(App* app, Game* game)
 {
     Axes background;
-
-    int initial_background_x;
-    int initial_background_y;
+    Axes initial_background;
 
     if (strcmp(game->map.layout_file, MAP_LIBRARY_FILE) == 0) {
-        initial_background_x = game->player.global.x - game->player.window.x;
-        initial_background_y = game->player.global.y - game->player.window.y;
+        initial_background.x = game->player.global.x - game->player.window.x;
+        initial_background.y = game->player.global.y - game->player.window.y;
     } else {
-        initial_background_x = 0;
-        initial_background_y = 0;
+        initial_background.x = 0;
+        initial_background.y = 0;
     }
 
-    background.x = initial_background_x;
-    background.y = initial_background_y;
+    background.x = initial_background.x;
+    background.y = initial_background.y;
 
     char last_char = ',';
     int current_row = 0, current_column = 0;
@@ -288,7 +286,7 @@ void generate_map(App* app, Game* game)
             // Record row data to be used for the map editor:
             game->map.columns_in_row[current_row] = current_column;
 
-            background.x = initial_background_x;
+            background.x = initial_background.x;
 
             current_column = 0;
 
@@ -370,6 +368,6 @@ void generate_map(App* app, Game* game)
     }
 
     // Reset positioning when the library is loaded so it appears in the upper left of the viewport.
-    background.x = initial_background_x;
-    background.y = initial_background_y;
+    background.x = initial_background.x;
+    background.y = initial_background.y;
 }
