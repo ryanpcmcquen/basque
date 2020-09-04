@@ -259,7 +259,7 @@ void handle_input(App* app, Game* game)
 
     int next_tile_north = 0, next_tile_north_y = 0, next_tile_east = 0, next_tile_east_x = 0, next_tile_south = 0, next_tile_south_y = 0, next_tile_west = 0, next_tile_west_x = 0;
 
-    int prev_time = 0;
+    int previous_time = 0;
 
     while (!game->done) {
         SDL_Event event;
@@ -461,16 +461,16 @@ void handle_input(App* app, Game* game)
             sprite_blit(app, game->player_image, game->player.window.x, game->player.window.y, game->player.direction);
         }
 
-        int curr_time = SDL_GetTicks();
-        int time_elapsed = curr_time - prev_time;
+        int current_time = SDL_GetTicks();
+        int time_elapsed = current_time - previous_time;
 
         if (time_elapsed < MIN_FRAMETIME_MSECS) {
             // Not enough time has elapsed. Let's limit the frame rate!
             SDL_Delay(MIN_FRAMETIME_MSECS - time_elapsed);
-            curr_time = SDL_GetTicks();
-            time_elapsed = curr_time - prev_time;
+            current_time = SDL_GetTicks();
+            time_elapsed = current_time - previous_time;
         }
-        prev_time = curr_time;
+        previous_time = current_time;
 
         const Uint8* current_key_states = SDL_GetKeyboardState(NULL);
 
