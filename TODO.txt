@@ -39,9 +39,9 @@ x ) Lock file writing in the map editor, so we don't get race conditions if the 
 x ) Improve scrolling, it doesn't move at the right pace (build out a larger map to demo the issue).
 x ) Improve frame rate limiting.
 x ) Add dynamic window sizing.
+x ) Decide whether to look around all tiles for collisions or to expand border attributes for tiles.
 
 ) Expand the map.
-) Decide whether to look around all tiles for collisions or to expand border attributes for tiles.
 
 
 ----------------------------------------------------------
