@@ -39,6 +39,7 @@ void read_map_layout(Game* game)
     // Map memory allocation:
     game->map.columns_in_row = (int*)calloc(game->map.rows, sizeof(int));
     game->map.layout = (int**)calloc(game->map.rows, sizeof(int*));
+    assert(game->map.layout != NULL);
     for (int row = 0; row < game->map.rows; row++) {
         game->map.layout[row] = (int*)calloc(game->map.columns, sizeof(int));
     }
@@ -183,22 +184,18 @@ void draw_edit_grid(App* app, Game* game, Axes background, int map_tile)
 {
     if (DEBUG_MODE && game->EDIT_MODE) {
         SDL_Rect text_clip;
-        text_clip.x = 0;
-        text_clip.y = 0;
-        text_clip.h = TILE_SPRITE_HEIGHT;
-        text_clip.w = TILE_SPRITE_WIDTH;
+        text_clip.x = 0, text_clip.y = 0;
+        text_clip.h = TILE_SPRITE_HEIGHT, text_clip.w = TILE_SPRITE_WIDTH;
 
         SDL_Rect text_dest;
         text_dest.x = (background.x + game->scroll.x) + 2;
         text_dest.y = (background.y + game->scroll.y) + 2;
-        text_dest.h = EDITOR_FONT_DEST_SIZE_H;
-        text_dest.w = EDITOR_FONT_DEST_SIZE_W;
+        text_dest.h = EDITOR_FONT_DEST_SIZE_H, text_dest.w = EDITOR_FONT_DEST_SIZE_W;
 
         SDL_Rect box;
         box.x = background.x + game->scroll.x;
         box.y = background.y + game->scroll.y;
-        box.h = TILE_SPRITE_HEIGHT;
-        box.w = TILE_SPRITE_WIDTH;
+        box.h = TILE_SPRITE_HEIGHT, box.w = TILE_SPRITE_WIDTH;
 
         SDL_SetRenderDrawBlendMode(app->renderer, SDL_BLENDMODE_BLEND);
         SDL_RenderDrawRect(app->renderer, &box);
@@ -322,7 +319,7 @@ void generate_map(App* app, Game* game)
                     // up in the map layout files.
                     char map_str_group[TILE_CHAR_LIMIT + 1] = { 0 };
 
-                    size_t chars_to_copy = TILE_CHAR_LIMIT - ((map_char_is_tile_info(game->map.layout_string.contents[i + 2])) ? 0 : 1);
+                    size_t chars_to_copy = (size_t)TILE_CHAR_LIMIT - ((map_char_is_tile_info(game->map.layout_string.contents[i + 2])) ? 0 : 1);
                     memcpy(map_str_group, &game->map.layout_string.contents[i], chars_to_copy);
 
                     map_tile = atoi(map_str_group);

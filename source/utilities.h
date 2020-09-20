@@ -40,10 +40,12 @@ File_Data read_file(char* path)
 
         char* file_contents = (char*)malloc(file_size + 1);
 
-        size_t read_size = fread(file_contents, 1, file_size, file_to_read);
-        assert(read_size <= file_size);
-        file_contents[read_size] = '\0';
-        fclose(file_to_read);
+        if (file_contents != NULL) {
+            size_t read_size = fread(file_contents, 1, file_size, file_to_read);
+            assert(read_size <= file_size);
+            file_contents[read_size] = '\0';
+            fclose(file_to_read);
+        }
 
         return (File_Data) {
             file_contents,

@@ -135,13 +135,14 @@ int init()
                         snprintf(map_tile_str, sizeof(char[TILE_CHAR_LIMIT + 1]), "%-3i", EMPTY_COLUMN);
                         create_outlined_font(&game, map_tile_str);
 
+                        int calculated_empty_column;
                         if (EMPTY_COLUMN < 0) {
-                            game.editor.text_surfaces[TILE_ATTRIBUTES_LIMIT + EMPTY_COLUMN] = *game.font.outline_surface;
-                            game.editor.text_textures[TILE_ATTRIBUTES_LIMIT + EMPTY_COLUMN] = SDL_CreateTextureFromSurface(app.renderer, &game.editor.text_surfaces[TILE_ATTRIBUTES_LIMIT + EMPTY_COLUMN]);
+                            calculated_empty_column = TILE_ATTRIBUTES_LIMIT + EMPTY_COLUMN;
                         } else {
-                            game.editor.text_surfaces[EMPTY_COLUMN] = *game.font.outline_surface;
-                            game.editor.text_textures[EMPTY_COLUMN] = SDL_CreateTextureFromSurface(app.renderer, &game.editor.text_surfaces[EMPTY_COLUMN]);
+                            calculated_empty_column = EMPTY_COLUMN;
                         }
+                        game.editor.text_surfaces[calculated_empty_column] = *game.font.outline_surface;
+                        game.editor.text_textures[calculated_empty_column] = SDL_CreateTextureFromSurface(app.renderer, &game.editor.text_surfaces[calculated_empty_column]);
 
                         SDL_FreeSurface(game.font.surface);
                         SDL_FreeSurface(game.font.outline_surface);
