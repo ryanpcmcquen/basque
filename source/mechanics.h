@@ -242,9 +242,6 @@ void handle_input(App* app, Game* game)
 {
     game->done = SDL_FALSE;
 
-    game->player.window.x = 0, game->player.window.y = 0, game->player.global.x = 0, game->player.global.y = 0;
-    game->player.direction = SOUTH;
-
     int current_tile_y = 0, current_tile_x = 0, current_tile = 0;
 
     // TODO:

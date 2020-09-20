@@ -163,6 +163,9 @@ int init()
                 read_map_layout(&game);
                 read_map_attributes(&game);
 
+                game.player.window.x = 0, game.player.window.y = 0, game.player.global.x = 0, game.player.global.y = 0;
+                game.player.direction = SOUTH;
+
                 prepare_scene(&app, &game);
                 generate_map(&app, &game);
                 handle_input(&app, &game);
