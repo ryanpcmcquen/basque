@@ -9,7 +9,7 @@ SDL_Texture* load_texture(App* app, char* file)
     return texture;
 }
 
-void load_background_music(Game* game)
+void load_and_play_music(Game* game)
 {
     int flags = MIX_INIT_OGG;
     int initted = Mix_Init(flags);
@@ -35,7 +35,7 @@ void prepare_scene(App* app, Game* game)
 {
     game->player_image = load_texture(app, PLAYER_IMAGE);
     game->background_image = load_texture(app, BACKGROUND_IMAGE);
-    load_background_music(game);
+    load_and_play_music(game);
 }
 
 void sprite_blit(App* app, SDL_Texture* texture, int x, int y, int direction)
