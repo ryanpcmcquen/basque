@@ -240,7 +240,7 @@ int write_map_layout(Game* game)
 
 void handle_input(App* app, Game* game)
 {
-    game->done = SDL_FALSE;
+    // game->done = SDL_FALSE;
 
     int current_tile_y = 0, current_tile_x = 0, current_tile = 0;
 
@@ -258,319 +258,326 @@ void handle_input(App* app, Game* game)
 
     int previous_time = 0;
 
-    while (!game->done) {
-        SDL_Event event;
+    // while (!game->done) {
+    SDL_Event event;
 
-        handle_collisions(game);
+    handle_collisions(game);
 
-        if (game->player.window.x < SCREEN_WIDTH) {
-            game->scroll.x = -(game->player.window.x * (int)INITIAL_SCALING);
-        }
-        if (game->player.window.y < SCREEN_HEIGHT) {
-            game->scroll.y = -(game->player.window.y * (int)INITIAL_SCALING);
-        }
+    if (game->player.window.x < SCREEN_WIDTH) {
+        game->scroll.x = -(game->player.window.x * (int)INITIAL_SCALING);
+    }
+    if (game->player.window.y < SCREEN_HEIGHT) {
+        game->scroll.y = -(game->player.window.y * (int)INITIAL_SCALING);
+    }
 
-        while (SDL_PollEvent(&event)) {
-            switch (event.type) {
-            case SDL_QUIT: {
+    while (SDL_PollEvent(&event)) {
+        switch (event.type) {
+        case SDL_QUIT: {
+            game->done = SDL_TRUE;
+
+        } break;
+
+        case SDL_KEYDOWN: {
+
+            switch (event.key.keysym.sym) {
+
+            case SDLK_q: {
                 game->done = SDL_TRUE;
-
             } break;
 
-            case SDL_KEYDOWN: {
-
-                switch (event.key.keysym.sym) {
-
-                case SDLK_q: {
-                    game->done = SDL_TRUE;
-                } break;
-
-                case SDLK_e: {
-                    if (DEBUG_MODE) {
-                        if (game->EDIT_MODE) {
-                            game->EDIT_MODE = false;
-                        } else {
-                            game->EDIT_MODE = true;
-                        }
-                    }
-                } break;
-
-                case SDLK_l: {
-                    if (DEBUG_MODE && game->EDIT_MODE) {
-                        game->map.layout_file = (strcmp(game->map.layout_file, MAP_LIBRARY_FILE) != 0) ? MAP_LIBRARY_FILE : MAP_LAYOUT_FILE;
-                        read_map_layout(game);
-                    }
-                } break;
-
-                    // case SDLK_p: {
-                    //     if (SCALING < 10.0) {
-
-                    //         SCALING++;
-                    //         SDL_RenderSetScale(app->renderer, SCALING, SCALING);
-                    //     }
-                    // } break;
-
-                    // case SDLK_m: {
-                    //     if (SCALING > 1.0) {
-
-                    //         SCALING--;
-                    //         SDL_RenderSetScale(app->renderer, SCALING, SCALING);
-                    //     }
-                    // } break;
-                }
-            } break;
-
-            case SDL_MOUSEBUTTONDOWN: {
-                if (DEBUG_MODE && game->EDIT_MODE) {
-
-                    Precise_Axes mouse;
-                    // @Weirdness:
-                    // Player x and y is not affected by scaling, but the mouse is.
-                    // Why?!
-                    if (strcmp(game->map.layout_file, MAP_LIBRARY_FILE) == 0) {
-                        mouse.x = (float)event.button.x / SCALING;
-                        mouse.y = (float)event.button.y / SCALING;
+            case SDLK_e: {
+                if (DEBUG_MODE) {
+                    if (game->EDIT_MODE) {
+                        game->EDIT_MODE = false;
                     } else {
-                        mouse.x = ((float)event.button.x / SCALING) + (game->player.global.x - game->player.window.x);
-                        mouse.y = ((float)event.button.y / SCALING) + (game->player.global.y - game->player.window.y);
-                    }
-
-                    Axes mouse_tile;
-                    mouse_tile.x = (int)(mouse.x / TILE_SPRITE_WIDTH);
-                    mouse_tile.y = (int)(mouse.y / TILE_SPRITE_WIDTH);
-                    int selected_tile = EMPTY_COLUMN;
-
-                    if (mouse_tile.y >= 0 && mouse_tile.y < game->map.rows && mouse_tile.x >= 0 && mouse_tile.x < game->map.columns) {
-                        selected_tile = game->map.layout[mouse_tile.y][mouse_tile.x];
-                    }
-
-                    if (selected_tile < 0) {
-                        selected_tile = EMPTY_COLUMN;
-                    }
-
-                    switch (event.button.button) {
-                    case SDL_BUTTON_LEFT: {
-                        if (strcmp(game->map.layout_file, MAP_LAYOUT_FILE) == 0) {
-                            // If we are trying to increase beyond the current
-                            // allocated vertical space ...
-                            if (mouse_tile.y >= game->map.rows) {
-                                // If the user clicks way out in space, just add one row, not several:
-                                mouse_tile.y = game->map.rows;
-                                game->map.rows = mouse_tile.y;
-                                game->map.columns_in_row[mouse_tile.y] = 0;
-                            }
-
-                            // If the row is completely empty, fill everything up to
-                            // mouse_tile.x with EMPTY_COLUMN.
-                            if (game->map.columns_in_row[mouse_tile.y] == 0) {
-                                for (int columns_to_fill = 0; columns_to_fill < mouse_tile.x; columns_to_fill++) {
-                                    game->map.layout[mouse_tile.y][columns_to_fill] = EMPTY_COLUMN;
-                                }
-                            }
-
-                            game->map.layout[mouse_tile.y][mouse_tile.x] = game->editor.selected_tile;
-                            // Add a newline if this is the only column in the row ...
-                            // or the last column, in the row.
-                            if ((mouse_tile.x + 1) >= game->map.columns_in_row[mouse_tile.y]) {
-                                // While the columns in the row are less than where the mouse clicked,
-                                // fill those columns with the selected tile.
-                                while (game->map.columns_in_row[mouse_tile.y] < (mouse_tile.x + 1)) {
-                                    game->map.layout[mouse_tile.y][game->map.columns_in_row[mouse_tile.y]] = game->editor.selected_tile;
-                                    game->map.columns_in_row[mouse_tile.y] = game->map.columns_in_row[mouse_tile.y] + 1;
-                                }
-
-                                game->map.layout[mouse_tile.y][mouse_tile.x + 1] = '\n';
-                                game->map.columns_in_row[mouse_tile.y] = mouse_tile.x + 1;
-                            }
-                            // If this row has more columns than any other column, increase
-                            // the global column count.
-                            if (game->map.columns_in_row[mouse_tile.y] > game->map.columns) {
-                                game->map.columns = game->map.columns_in_row[mouse_tile.y];
-                            }
-                            if (write_map_layout(game)) {
-                                SDL_Log("Write %i successful.\n", game->editor.layout_file_suffix);
-                            }
-                        }
-                    } break;
-                    case SDL_BUTTON_RIGHT: {
-                        game->editor.selected_tile = selected_tile;
-                        SDL_Log("Selected tile: %i\n", selected_tile);
-                    } break;
+                        game->EDIT_MODE = true;
                     }
                 }
             } break;
+
+            case SDLK_l: {
+                if (DEBUG_MODE && game->EDIT_MODE) {
+                    game->map.layout_file = (strcmp(game->map.layout_file, MAP_LIBRARY_FILE) != 0) ? MAP_LIBRARY_FILE : MAP_LAYOUT_FILE;
+                    read_map_layout(game);
+                }
+            } break;
+
+                // case SDLK_p: {
+                //     if (SCALING < 10.0) {
+
+                //         SCALING++;
+                //         SDL_RenderSetScale(app->renderer, SCALING, SCALING);
+                //     }
+                // } break;
+
+                // case SDLK_m: {
+                //     if (SCALING > 1.0) {
+
+                //         SCALING--;
+                //         SDL_RenderSetScale(app->renderer, SCALING, SCALING);
+                //     }
+                // } break;
             }
+        } break;
+
+        case SDL_MOUSEBUTTONDOWN: {
+            if (DEBUG_MODE && game->EDIT_MODE) {
+
+                Precise_Axes mouse;
+                // @Weirdness:
+                // Player x and y is not affected by scaling, but the mouse is.
+                // Why?!
+                if (strcmp(game->map.layout_file, MAP_LIBRARY_FILE) == 0) {
+                    mouse.x = (float)event.button.x / SCALING;
+                    mouse.y = (float)event.button.y / SCALING;
+                } else {
+                    mouse.x = ((float)event.button.x / SCALING) + (game->player.global.x - game->player.window.x);
+                    mouse.y = ((float)event.button.y / SCALING) + (game->player.global.y - game->player.window.y);
+                }
+
+                Axes mouse_tile;
+                mouse_tile.x = (int)(mouse.x / TILE_SPRITE_WIDTH);
+                mouse_tile.y = (int)(mouse.y / TILE_SPRITE_WIDTH);
+                int selected_tile = EMPTY_COLUMN;
+
+                if (mouse_tile.y >= 0 && mouse_tile.y < game->map.rows && mouse_tile.x >= 0 && mouse_tile.x < game->map.columns) {
+                    selected_tile = game->map.layout[mouse_tile.y][mouse_tile.x];
+                }
+
+                if (selected_tile < 0) {
+                    selected_tile = EMPTY_COLUMN;
+                }
+
+                switch (event.button.button) {
+                case SDL_BUTTON_LEFT: {
+                    if (strcmp(game->map.layout_file, MAP_LAYOUT_FILE) == 0) {
+                        // If we are trying to increase beyond the current
+                        // allocated vertical space ...
+                        if (mouse_tile.y >= game->map.rows) {
+                            // If the user clicks way out in space, just add one row, not several:
+                            mouse_tile.y = game->map.rows;
+                            game->map.rows = mouse_tile.y;
+                            game->map.columns_in_row[mouse_tile.y] = 0;
+                        }
+
+                        // If the row is completely empty, fill everything up to
+                        // mouse_tile.x with EMPTY_COLUMN.
+                        if (game->map.columns_in_row[mouse_tile.y] == 0) {
+                            for (int columns_to_fill = 0; columns_to_fill < mouse_tile.x; columns_to_fill++) {
+                                game->map.layout[mouse_tile.y][columns_to_fill] = EMPTY_COLUMN;
+                            }
+                        }
+
+                        game->map.layout[mouse_tile.y][mouse_tile.x] = game->editor.selected_tile;
+                        // Add a newline if this is the only column in the row ...
+                        // or the last column, in the row.
+                        if ((mouse_tile.x + 1) >= game->map.columns_in_row[mouse_tile.y]) {
+                            // While the columns in the row are less than where the mouse clicked,
+                            // fill those columns with the selected tile.
+                            while (game->map.columns_in_row[mouse_tile.y] < (mouse_tile.x + 1)) {
+                                game->map.layout[mouse_tile.y][game->map.columns_in_row[mouse_tile.y]] = game->editor.selected_tile;
+                                game->map.columns_in_row[mouse_tile.y] = game->map.columns_in_row[mouse_tile.y] + 1;
+                            }
+
+                            game->map.layout[mouse_tile.y][mouse_tile.x + 1] = '\n';
+                            game->map.columns_in_row[mouse_tile.y] = mouse_tile.x + 1;
+                        }
+                        // If this row has more columns than any other column, increase
+                        // the global column count.
+                        if (game->map.columns_in_row[mouse_tile.y] > game->map.columns) {
+                            game->map.columns = game->map.columns_in_row[mouse_tile.y];
+                        }
+                        if (write_map_layout(game)) {
+                            SDL_Log("Write %i successful.\n", game->editor.layout_file_suffix);
+                        }
+                    }
+                } break;
+                case SDL_BUTTON_RIGHT: {
+                    game->editor.selected_tile = selected_tile;
+                    SDL_Log("Selected tile: %i\n", selected_tile);
+                } break;
+                }
+            }
+        } break;
+        }
+    }
+
+    if (strcmp(game->map.layout_file, MAP_LAYOUT_FILE) == 0) {
+
+        current_tile_y = (game->player.global.y + PLAYER_SPRITE_HEIGHT) / TILE_SPRITE_HEIGHT;
+        current_tile_x = (game->player.global.x + (PLAYER_SPRITE_COLUMN_WIDTH / 2)) / TILE_SPRITE_WIDTH;
+
+        next_tile_north_y = current_tile_y - 1;
+        next_tile_east_x = current_tile_x + 1;
+        next_tile_south_y = current_tile_y + 1;
+        next_tile_west_x = current_tile_x - 1;
+
+        if (current_tile_y < 0 || current_tile_y == 0) {
+            current_tile_y = 0;
+        }
+        if (current_tile_x < 0 || current_tile_x == 0) {
+            current_tile_x = 0;
         }
 
-        if (strcmp(game->map.layout_file, MAP_LAYOUT_FILE) == 0) {
+        // @Robustness:
+        // Should we handle the exception case here where the current
+        // tile is not a valid tile?
+        if (game->map.layout[current_tile_y][current_tile_x] >= 0) {
+            current_tile = game->map.layout[current_tile_y][current_tile_x];
 
-            current_tile_y = (game->player.global.y + PLAYER_SPRITE_HEIGHT) / TILE_SPRITE_HEIGHT;
-            current_tile_x = (game->player.global.x + (PLAYER_SPRITE_COLUMN_WIDTH / 2)) / TILE_SPRITE_WIDTH;
-
-            next_tile_north_y = current_tile_y - 1;
-            next_tile_east_x = current_tile_x + 1;
-            next_tile_south_y = current_tile_y + 1;
-            next_tile_west_x = current_tile_x - 1;
-
-            if (current_tile_y < 0 || current_tile_y == 0) {
-                current_tile_y = 0;
-            }
-            if (current_tile_x < 0 || current_tile_x == 0) {
-                current_tile_x = 0;
-            }
-
-            // @Robustness:
-            // Should we handle the exception case here where the current
-            // tile is not a valid tile?
-            if (game->map.layout[current_tile_y][current_tile_x] >= 0) {
-                current_tile = game->map.layout[current_tile_y][current_tile_x];
-
-                next_tile_north = next_tile_north_y > 0 ? game->map.layout[next_tile_north_y][current_tile_x] : 0;
-                next_tile_east = next_tile_east_x > 0 ? game->map.layout[current_tile_y][next_tile_east_x] : 0;
-                next_tile_south = next_tile_south_y > 0 ? game->map.layout[next_tile_south_y][current_tile_x] : 0;
-                next_tile_west = next_tile_west_x > 0 ? game->map.layout[current_tile_y][next_tile_west_x] : 0;
-            } else {
-                current_tile = 0;
-            }
+            next_tile_north = next_tile_north_y > 0 ? game->map.layout[next_tile_north_y][current_tile_x] : 0;
+            next_tile_east = next_tile_east_x > 0 ? game->map.layout[current_tile_y][next_tile_east_x] : 0;
+            next_tile_south = next_tile_south_y > 0 ? game->map.layout[next_tile_south_y][current_tile_x] : 0;
+            next_tile_west = next_tile_west_x > 0 ? game->map.layout[current_tile_y][next_tile_west_x] : 0;
         } else {
             current_tile = 0;
         }
-        if (current_tile < 0) {
-            current_tile = 0;
-        }
-
-        Tile_Data current_tile_attributes = game->map.tile_attributes[current_tile];
-
-        Tile_Data next_tile_north_attributes = game->map.tile_attributes[current_tile];
-        set_next_tile_MACRO(next_tile_north, next_tile_north_attributes, game);
-
-        Tile_Data next_tile_east_attributes = game->map.tile_attributes[current_tile];
-        set_next_tile_MACRO(next_tile_east, next_tile_east_attributes, game);
-
-        Tile_Data next_tile_south_attributes = game->map.tile_attributes[current_tile];
-        set_next_tile_MACRO(next_tile_south, next_tile_south_attributes, game);
-
-        Tile_Data next_tile_west_attributes = game->map.tile_attributes[current_tile];
-        set_next_tile_MACRO(next_tile_west, next_tile_west_attributes, game);
-
-        generate_map(app, game);
-        if (strcmp(game->map.layout_file, MAP_LAYOUT_FILE) == 0) {
-            sprite_blit(app, game->player_image, game->player.window.x, game->player.window.y, game->player.direction);
-        }
-
-        int current_time = SDL_GetTicks();
-        int time_elapsed = current_time - previous_time;
-
-        if (time_elapsed < MIN_FRAMETIME_MSECS) {
-            // Not enough time has elapsed. Let's limit the frame rate!
-            SDL_Delay(MIN_FRAMETIME_MSECS - time_elapsed);
-            current_time = SDL_GetTicks();
-            time_elapsed = current_time - previous_time;
-        }
-        previous_time = current_time;
-
-        const Uint8* current_key_states = SDL_GetKeyboardState(NULL);
-
-        int bound_index = 0;
-
-        //
-        // NORTH:
-        //
-        if (current_key_states[SDL_SCANCODE_UP]) {
-            int tile_coordinate_y = current_tile_y * TILE_SPRITE_HEIGHT;
-            int next_tile_north_coordinate_y = next_tile_north_y * TILE_SPRITE_WIDTH;
-
-            array_fill_MACRO(game->player.bounds.north, 0);
-            bound_index = 0;
-
-            if (current_tile_attributes.border.north > 0) {
-                game->player.bounds.north[bound_index] = tile_coordinate_y + current_tile_attributes.border.north;
-                bound_index++;
-            }
-            if (next_tile_north_attributes.border.south > 0) {
-                game->player.bounds.north[bound_index] = next_tile_north_coordinate_y + next_tile_north_attributes.border.north;
-                bound_index++;
-            }
-
-            move_player_MACRO(game->player.can_move.north, game->player.window.y, -PLAYER_INCREMENT, game->player.global.y, -GLOBAL_INCREMENT);
-            game->player.direction = NORTH;
-        }
-
-        //
-        // EAST:
-        //
-        if (current_key_states[SDL_SCANCODE_RIGHT]) {
-            int tile_coordinate_x = (current_tile_x + 1) * TILE_SPRITE_WIDTH;
-            int next_tile_east_coordinate_x = (next_tile_east_x + 1) * TILE_SPRITE_WIDTH;
-
-            array_fill_MACRO(game->player.bounds.east, game->map.columns * TILE_SPRITE_WIDTH);
-            bound_index = 0;
-
-            if (current_tile_attributes.border.east > 0) {
-                game->player.bounds.east[bound_index] = tile_coordinate_x - current_tile_attributes.border.east;
-                bound_index++;
-            }
-
-            if (next_tile_east_attributes.border.east > 0) {
-                game->player.bounds.east[bound_index] = next_tile_east_coordinate_x - next_tile_east_attributes.border.east;
-                bound_index++;
-            }
-
-            move_player_MACRO(game->player.can_move.east, game->player.window.x, PLAYER_INCREMENT, game->player.global.x, GLOBAL_INCREMENT);
-            game->player.direction = EAST;
-        }
-
-        //
-        // SOUTH:
-        //
-        if (current_key_states[SDL_SCANCODE_DOWN]) {
-            int tile_coordinate_y = (current_tile_y + 1) * TILE_SPRITE_HEIGHT;
-            int next_tile_south_coordinate_y = (next_tile_south_y + 1) * TILE_SPRITE_HEIGHT;
-
-            array_fill_MACRO(game->player.bounds.south, game->map.rows * TILE_SPRITE_HEIGHT);
-            bound_index = 0;
-
-            if (current_tile_attributes.border.south > 0) {
-                game->player.bounds.south[bound_index] = tile_coordinate_y - current_tile_attributes.border.south;
-                bound_index++;
-            }
-            if (next_tile_south_attributes.border.south > 0) {
-                game->player.bounds.south[bound_index] = next_tile_south_coordinate_y - next_tile_south_attributes.border.south;
-                bound_index++;
-            }
-
-            move_player_MACRO(game->player.can_move.south, game->player.window.y, PLAYER_INCREMENT, game->player.global.y, GLOBAL_INCREMENT);
-            game->player.direction = SOUTH;
-        }
-
-        //
-        // WEST:
-        //
-        if (current_key_states[SDL_SCANCODE_LEFT]) {
-            int tile_coordinate_x = current_tile_x * TILE_SPRITE_WIDTH;
-            int next_tile_west_coordinate_x = next_tile_west_x * TILE_SPRITE_WIDTH;
-
-            array_fill_MACRO(game->player.bounds.west, 0);
-            bound_index = 0;
-
-            if (current_tile_attributes.border.west > 0) {
-                game->player.bounds.west[bound_index] = tile_coordinate_x + current_tile_attributes.border.west;
-                bound_index++;
-            }
-            if (next_tile_west_attributes.border.west > 0) {
-                game->player.bounds.west[bound_index] = next_tile_west_coordinate_x + next_tile_west_attributes.border.west;
-                bound_index++;
-            }
-
-            move_player_MACRO(game->player.can_move.west, game->player.window.x, -PLAYER_INCREMENT, game->player.global.x, -GLOBAL_INCREMENT);
-            game->player.direction = WEST;
-        }
-
-        // SDL_Log("Global x: %i\n", game->player.global.x);
-        // SDL_Log("Player x: %i\n", game->player.window.x);
-        // SDL_Log("Global y: %i\n", game->player.global.y);
-        // SDL_Log("Player y: %i\n", game->player.window.y);
-
-        present_scene(app);
+    } else {
+        current_tile = 0;
     }
+    if (current_tile < 0) {
+        current_tile = 0;
+    }
+
+    Tile_Data current_tile_attributes = game->map.tile_attributes[current_tile];
+
+    Tile_Data next_tile_north_attributes = game->map.tile_attributes[current_tile];
+    set_next_tile_MACRO(next_tile_north, next_tile_north_attributes, game);
+
+    Tile_Data next_tile_east_attributes = game->map.tile_attributes[current_tile];
+    set_next_tile_MACRO(next_tile_east, next_tile_east_attributes, game);
+
+    Tile_Data next_tile_south_attributes = game->map.tile_attributes[current_tile];
+    set_next_tile_MACRO(next_tile_south, next_tile_south_attributes, game);
+
+    Tile_Data next_tile_west_attributes = game->map.tile_attributes[current_tile];
+    set_next_tile_MACRO(next_tile_west, next_tile_west_attributes, game);
+
+    generate_map(app, game);
+    if (strcmp(game->map.layout_file, MAP_LAYOUT_FILE) == 0) {
+        sprite_blit(app, game->player_image, game->player.window.x, game->player.window.y, game->player.direction);
+    }
+
+    int current_time = SDL_GetTicks();
+    int time_elapsed = current_time - previous_time;
+
+    if (time_elapsed < MIN_FRAMETIME_MSECS) {
+        // Not enough time has elapsed. Let's limit the frame rate!
+        SDL_Delay(MIN_FRAMETIME_MSECS - time_elapsed);
+        current_time = SDL_GetTicks();
+        time_elapsed = current_time - previous_time;
+    }
+    previous_time = current_time;
+
+    const Uint8* current_key_states = SDL_GetKeyboardState(NULL);
+
+    int bound_index = 0;
+
+    //
+    // NORTH:
+    //
+    if (current_key_states[SDL_SCANCODE_UP]) {
+        int tile_coordinate_y = current_tile_y * TILE_SPRITE_HEIGHT;
+        int next_tile_north_coordinate_y = next_tile_north_y * TILE_SPRITE_WIDTH;
+
+        array_fill_MACRO(game->player.bounds.north, 0);
+        bound_index = 0;
+
+        if (current_tile_attributes.border.north > 0) {
+            game->player.bounds.north[bound_index] = tile_coordinate_y + current_tile_attributes.border.north;
+            bound_index++;
+        }
+        if (next_tile_north_attributes.border.south > 0) {
+            game->player.bounds.north[bound_index] = next_tile_north_coordinate_y + next_tile_north_attributes.border.north;
+            bound_index++;
+        }
+
+        move_player_MACRO(game->player.can_move.north, game->player.window.y, -PLAYER_INCREMENT, game->player.global.y, -GLOBAL_INCREMENT);
+        game->player.direction = NORTH;
+    }
+
+    //
+    // EAST:
+    //
+    if (current_key_states[SDL_SCANCODE_RIGHT]) {
+        int tile_coordinate_x = (current_tile_x + 1) * TILE_SPRITE_WIDTH;
+        int next_tile_east_coordinate_x = (next_tile_east_x + 1) * TILE_SPRITE_WIDTH;
+
+        array_fill_MACRO(game->player.bounds.east, game->map.columns * TILE_SPRITE_WIDTH);
+        bound_index = 0;
+
+        if (current_tile_attributes.border.east > 0) {
+            game->player.bounds.east[bound_index] = tile_coordinate_x - current_tile_attributes.border.east;
+            bound_index++;
+        }
+
+        if (next_tile_east_attributes.border.east > 0) {
+            game->player.bounds.east[bound_index] = next_tile_east_coordinate_x - next_tile_east_attributes.border.east;
+            bound_index++;
+        }
+
+        move_player_MACRO(game->player.can_move.east, game->player.window.x, PLAYER_INCREMENT, game->player.global.x, GLOBAL_INCREMENT);
+        game->player.direction = EAST;
+    }
+
+    //
+    // SOUTH:
+    //
+    if (current_key_states[SDL_SCANCODE_DOWN]) {
+        int tile_coordinate_y = (current_tile_y + 1) * TILE_SPRITE_HEIGHT;
+        int next_tile_south_coordinate_y = (next_tile_south_y + 1) * TILE_SPRITE_HEIGHT;
+
+        array_fill_MACRO(game->player.bounds.south, game->map.rows * TILE_SPRITE_HEIGHT);
+        bound_index = 0;
+
+        if (current_tile_attributes.border.south > 0) {
+            game->player.bounds.south[bound_index] = tile_coordinate_y - current_tile_attributes.border.south;
+            bound_index++;
+        }
+        if (next_tile_south_attributes.border.south > 0) {
+            game->player.bounds.south[bound_index] = next_tile_south_coordinate_y - next_tile_south_attributes.border.south;
+            bound_index++;
+        }
+
+        move_player_MACRO(game->player.can_move.south, game->player.window.y, PLAYER_INCREMENT, game->player.global.y, GLOBAL_INCREMENT);
+        game->player.direction = SOUTH;
+    }
+
+    //
+    // WEST:
+    //
+    if (current_key_states[SDL_SCANCODE_LEFT]) {
+        int tile_coordinate_x = current_tile_x * TILE_SPRITE_WIDTH;
+        int next_tile_west_coordinate_x = next_tile_west_x * TILE_SPRITE_WIDTH;
+
+        array_fill_MACRO(game->player.bounds.west, 0);
+        bound_index = 0;
+
+        if (current_tile_attributes.border.west > 0) {
+            game->player.bounds.west[bound_index] = tile_coordinate_x + current_tile_attributes.border.west;
+            bound_index++;
+        }
+        if (next_tile_west_attributes.border.west > 0) {
+            game->player.bounds.west[bound_index] = next_tile_west_coordinate_x + next_tile_west_attributes.border.west;
+            bound_index++;
+        }
+
+        move_player_MACRO(game->player.can_move.west, game->player.window.x, -PLAYER_INCREMENT, game->player.global.x, -GLOBAL_INCREMENT);
+        game->player.direction = WEST;
+    }
+
+    // SDL_Log("Global x: %i\n", game->player.global.x);
+    // SDL_Log("Player x: %i\n", game->player.window.x);
+    // SDL_Log("Global y: %i\n", game->player.global.y);
+    // SDL_Log("Player y: %i\n", game->player.window.y);
+
+    present_scene(app);
+    // }
+}
+
+void main_game_loop()
+{
+    extern App app;
+    extern Game game;
+    handle_input(&app, &game);
 }

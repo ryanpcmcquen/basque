@@ -81,3 +81,7 @@ windows:
 	robocopy assets\ windows\assets\ /e &
 	robocopy C:\INCLUDE\SDL2\ windows\ *.dll &
 	powershell Compress-Archive -Force windows\* $(TITLE).windows.zip
+
+wasm:
+	emcc -s USE_SDL=2 -s USE_SDL_IMAGE=2 -s SDL2_IMAGE_FORMATS='["png"]' -s USE_SDL_MIXER=2 -s SDL2_MIXER_FORMATS='["ogg"]' -l SDL2_mixer_ogg -s USE_SDL_TTF=2 -s ALLOW_MEMORY_GROWTH=1 -s INITIAL_MEMORY=1536MB -s TOTAL_STACK=1024MB -s WASM=1 --preload-file assets -O3 --closure=1 $(FLAGS) -I $${HOME}/code/emsdk/upstream/emscripten/system/include/ source/$(TITLE).c -o $(TITLE).html
+# 	emcc -s USE_SDL=2 -s USE_SDL_IMAGE=2 -s SDL2_IMAGE_FORMATS='["png"]' -s USE_SDL_MIXER=2 -s SDL2_MIXER_FORMATS='["ogg"]' -s USE_SDL_TTF=2 -s ALLOW_MEMORY_GROWTH=1 -s INITIAL_MEMORY=1536MB -s TOTAL_STACK=1024MB -s OFFSCREEN_FRAMEBUFFER=1 -s OFFSCREENCANVAS_SUPPORT=1 -s WASM=1 -s EXCEPTION_DEBUG=1 -s GL_ASSERTIONS=1 -s GL_DEBUG=1 -s ASSERTIONS=2 --preload-file assets/ -g -fsanitize=address -fsanitize=undefined $(FLAGS) -I $${HOME}/code/emsdk/upstream/emscripten/system/include/ source/$(TITLE).c -o $(TITLE).html

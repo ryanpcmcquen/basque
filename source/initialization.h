@@ -1,4 +1,7 @@
 #include "mechanics.h"
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+#endif
 
 Game game;
 App app;
@@ -168,7 +171,18 @@ int init()
 
                 prepare_scene(&app, &game);
                 generate_map(&app, &game);
-                handle_input(&app, &game);
+
+                game.done = SDL_FALSE;
+
+#ifdef __EMSCRIPTEN__
+                emscripten_set_main_loop(main_game_loop, 0, 1);
+#endif
+
+#ifndef __EMSCRIPTEN__
+                while (!game.done) {
+                    main_game_loop();
+                }
+#endif
             }
         }
     } else {
