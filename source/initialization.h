@@ -63,6 +63,11 @@ void create_outlined_font(Game* game, char* map_tile_str)
     SDL_BlitSurface(game->font.surface, NULL, game->font.outline_surface, &game->font.rect);
 }
 
+void main_game_loop()
+{
+    handle_input(&app, &game);
+}
+
 int init()
 {
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) == 0) {

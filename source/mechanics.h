@@ -240,7 +240,6 @@ int write_map_layout(Game* game)
 
 void handle_input(App* app, Game* game)
 {
-    // game->done = SDL_FALSE;
 
     int current_tile_y = 0, current_tile_x = 0, current_tile = 0;
 
@@ -258,7 +257,6 @@ void handle_input(App* app, Game* game)
 
     int previous_time = 0;
 
-    // while (!game->done) {
     SDL_Event event;
 
     handle_collisions(game);
@@ -572,12 +570,4 @@ void handle_input(App* app, Game* game)
     // SDL_Log("Player y: %i\n", game->player.window.y);
 
     present_scene(app);
-    // }
-}
-
-void main_game_loop()
-{
-    extern App app;
-    extern Game game;
-    handle_input(&app, &game);
 }
