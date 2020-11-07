@@ -11,23 +11,17 @@ SDL_Texture* load_texture(App* app, char* file)
 
 void load_and_play_music(Game* game)
 {
-    int flags = MIX_INIT_OGG;
-    int initted = Mix_Init(flags);
-    if ((initted & flags) != flags) {
-        printf("Mix_Init: %s\n", Mix_GetError());
-        // We can still continue without audio. :^(
-    } else {
-
-        if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) == 0) {
-            Mix_VolumeMusic(MUSIC_VOLUME);
-            game->music = Mix_LoadMUS(MUSIC_INTRO_FILE);
-            if (!Mix_PlayingMusic()) {
-                Mix_PlayMusic(game->music, -1);
-            }
-        } else {
-            SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Error initializing SDL_mixer: %s\n", Mix_GetError());
-            // No need to exit, we just play without sound.
+    if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) == 0) {
+        int flags = MIX_INIT_OGG;
+        Mix_Init(flags);
+        Mix_VolumeMusic(MUSIC_VOLUME);
+        game->music = Mix_LoadMUS(MUSIC_INTRO_FILE);
+        if (!Mix_PlayingMusic()) {
+            Mix_PlayMusic(game->music, -1);
         }
+    } else {
+        SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Error initializing SDL_mixer: %s\n", Mix_GetError());
+        // No need to exit, we just play without sound.
     }
 }
 
