@@ -6,6 +6,7 @@
 *.so.*
 ./basque
 ./basque.exe
+./basque.*.zip
 
 linux/assets/**
 linux/basque

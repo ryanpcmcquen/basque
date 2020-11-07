@@ -65,7 +65,7 @@ jobs:
               run: git clone https://github.com/emscripten-core/emsdk.git && cd emsdk && ./emsdk install latest && ./emsdk activate latest && cd ..
 
             - name: Compile!
-              run: source "${HOME}/work/basque/basque/emsdk/emsdk_env.sh" && make wasm
+              run: source "${HOME}/work/basque/basque/emsdk/emsdk_env.sh" && make --always-make wasm
 
             - uses: actions/upload-artifact@v1
               with:
