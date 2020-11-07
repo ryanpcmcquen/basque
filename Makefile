@@ -13,6 +13,7 @@ CP=copy # \
 MV=move # \
 RM=del # \
 CC=clang # \
+EMCC=%UserProfile%\code\emsdk\upstream\emscripten\emcc # \
 SOURCE=source\$(TITLE).c # \
 LIBS=-I C:\INCLUDE\ -L C:\INCLUDE\SDL2\ -Xlinker windows\$(TITLE).res -l Shell32 -l C:\INCLUDE\SDL2\SDL2.lib -l C:\INCLUDE\SDL2\SDL2main.lib -l C:\INCLUDE\SDL2\SDL2_image.lib -l C:\INCLUDE\SDL2\SDL2_mixer.lib -l C:\INCLUDE\SDL2\SDL2_ttf.lib -Xlinker /SUBSYSTEM:WINDOWS # \
 TARGET=-o $(TITLE).exe && mt.exe -nologo -manifest windows\$(TITLE).manifest -outputresource:$(TITLE).exe # \
@@ -28,6 +29,7 @@ RM=rm -f
 ifeq ($(origin CC), default)
 CC=clang
 endif
+EMCC=emcc
 # Calling which here seems wrong, but somehow, in
 # certain enviros, it breaks without the full
 # path ... even though the binary is in
@@ -45,7 +47,7 @@ RELEASE=$(COMPILE) $(TARGET)
 DEBUG=$(COMPILE) -g $(TARGET)
 MEMDEBUG=$(COMPILE) -g -fsanitize=address $(TARGET)
 
-$(TITLE): source/*.c source/*.h
+$(TITLE): source/*
 	$(RELEASE)
 # Windows will automatically overwrite
 # the binary when using `nmake`, but
@@ -58,26 +60,30 @@ clean:
 force:
 	$(RELEASE)
 
-debug: source/*.c source/*.h
+debug: source/*
 	$(DEBUG)
-memdebug: source/*.c source/*.h
+memdebug: source/*
 	$(MEMDEBUG)
 
-linux:
+linux: source/*
 	cp $(TITLE) linux/
 	cp -r assets linux/
 	find /usr/lib -type f -iname "*sdl2*.so.*" -exec cp {} linux/ \;
 	# for FILE in $$(ldd $(TITLE) | awk '{print $$3}'); do cp $$(readlink -e $$FILE) linux/; done
 	for FILE in $$(find linux/ -type f -iname "*.so.0.*"); do ln -sfv $$(basename $${FILE}) $$(echo $${FILE} | sed 's/.so.0.*/.so.0/'); done
 	zip -r $(TITLE).linux.zip linux/*
-mac:
+mac: source/*
 	mkdir -p mac/$(TITLE).app/Contents/Resources/
 	cp $(TITLE) mac/$(TITLE).app/Contents/Resources/
 	cp -r assets mac/$(TITLE).app/Contents/Resources/
 	find /usr/local/Cellar -type f -iname "*sdl2*.dylib" -exec cp {} mac/$(TITLE).app/Contents/Resources/ \;
 	zip -r $(TITLE).mac.zip mac/$(TITLE).app
-windows:
+windows: source/*
 	copy $(TITLE).exe windows\ &
 	robocopy assets\ windows\assets\ /e &
 	robocopy C:\INCLUDE\SDL2\ windows\ *.dll &
 	powershell Compress-Archive -Force windows\* $(TITLE).windows.zip
+
+wasm: source/*
+	$(EMCC) -O3 --closure 1 -s USE_SDL=2 -s USE_SDL_IMAGE=2 -s SDL2_IMAGE_FORMATS='["png"]' -s USE_SDL_MIXER=2 -s SDL2_MIXER_FORMATS='["ogg"]' -s USE_SDL_TTF=2 -s ALLOW_MEMORY_GROWTH=1 -s INITIAL_MEMORY=512MB -s TOTAL_STACK=256MB -s WASM=2 --preload-file assets $(FLAGS) -I $${HOME}/code/emsdk/upstream/emscripten/system/include/ -I $${HOME}/work/$(TITLE)/$(TITLE)/emsdk/upstream/emscripten/system/include/ source/$(TITLE).c -o wasm/$(TITLE).html
+	zip -r $(TITLE).wasm.zip wasm/*

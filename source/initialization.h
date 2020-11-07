@@ -1,5 +1,9 @@
 #include "mechanics.h"
 
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+#endif
+
 Game game;
 App app;
 
@@ -52,12 +56,16 @@ void create_outlined_font(Game* game, char* map_tile_str)
     // Reset the font outline so we don't get crazy fonts.
     TTF_SetFontOutline(game->font.face, 0);
 
-    game->font.rect.x = EDITOR_FONT_OUTLINE;
-    game->font.rect.y = EDITOR_FONT_OUTLINE;
-    game->font.rect.w = game->font.surface->w;
-    game->font.rect.h = game->font.surface->h;
+    game->font.rect.x = EDITOR_FONT_OUTLINE, game->font.rect.y = EDITOR_FONT_OUTLINE;
+    game->font.rect.w = game->font.surface->w, game->font.rect.h = game->font.surface->h;
+
     SDL_SetSurfaceBlendMode(game->font.surface, SDL_BLENDMODE_BLEND);
     SDL_BlitSurface(game->font.surface, NULL, game->font.outline_surface, &game->font.rect);
+}
+
+void main_game_loop()
+{
+    handle_input(&app, &game);
 }
 
 int init()
@@ -69,8 +77,7 @@ int init()
                 SDL_Log("SDL_GetDesktopDisplayMode failed: %s\nWe will use the default resolution instead.", SDL_GetError());
             } else {
                 if (FULLSCREEN_MODE) {
-                    SCREEN_WIDTH = display_mode.w;
-                    SCREEN_HEIGHT = display_mode.h;
+                    SCREEN_WIDTH = display_mode.w, SCREEN_HEIGHT = display_mode.h;
                 } else {
                     SCREEN_WIDTH = (int)(display_mode.w * 0.8);
                     SCREEN_HEIGHT = (int)(display_mode.h * 0.8);
@@ -168,7 +175,18 @@ int init()
 
                 prepare_scene(&app, &game);
                 generate_map(&app, &game);
-                handle_input(&app, &game);
+
+                game.done = SDL_FALSE;
+
+#ifdef __EMSCRIPTEN__
+                emscripten_set_main_loop(main_game_loop, 0, 1);
+#endif
+
+#ifndef __EMSCRIPTEN__
+                while (!game.done) {
+                    main_game_loop();
+                }
+#endif
             }
         }
     } else {

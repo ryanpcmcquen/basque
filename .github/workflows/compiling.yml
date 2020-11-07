@@ -55,3 +55,19 @@ jobs:
               with:
                   name: basque.windows.zip
                   path: basque.windows.zip
+
+    wasm:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v2
+
+            - name: Install dependencies.
+              run: git clone https://github.com/emscripten-core/emsdk.git && cd emsdk && ./emsdk install latest && ./emsdk activate latest && cd ..
+
+            - name: Compile!
+              run: source "${HOME}/work/basque/basque/emsdk/emsdk_env.sh" && make --always-make wasm
+
+            - uses: actions/upload-artifact@v1
+              with:
+                  name: basque.wasm.zip
+                  path: basque.wasm.zip

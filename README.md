@@ -15,6 +15,10 @@ Running on Linux:
 
 ![Basque Linux demo](demos/basque_linux_demo.gif 'Basque Linux demo')
 
+Running in your browser (thanks to WebAssembly and Emscripten):
+
+[WASM ME](https://htmlpreview.github.io/?https://cdn.jsdelivr.net/gh/ryanpcmcquen/basque/wasm/basque.html)
+
 ---
 
 Packages for all platforms are available under the GitHub Action here:
@@ -61,7 +65,7 @@ Too lazy to do local setup? You can give it a spin using Gitpod, the only downfa
 
 Why not just use Godot/Unity/et cetera? Basque has a very different priority list than these engines. It is _not_ a generic engine. There isn't much here, but it is a good starting point if you are looking to roll your own engine, here is what it does:
 
--   Compiles cross platform (Linux/Mac/Windows, see [Esoteric ports](#esoteric-ports) for other platforms).
+-   Compiles cross platform (Linux/Mac/Windows/WebAssembly, see [Esoteric ports](#esoteric-ports) for other platforms).
 -   Visual map editing (with an easy to understand plain text format).
 -   Spritesheet animation.
 -   Background music.
@@ -268,6 +272,12 @@ make && make --always-make mac
 
 ```
 nmake && nmake /a windows
+```
+
+#### WebAssembly
+
+```
+make --always-make wasm
 ```
 
 ---

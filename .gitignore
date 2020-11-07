@@ -6,6 +6,7 @@
 *.so.*
 ./basque
 ./basque.exe
+./basque.*.zip
 
 linux/assets/**
 linux/basque
@@ -17,3 +18,4 @@ mac/basque.app.zip
 windows/assets/**
 windows/basque.exe
 windows/basque.exe.zip
+
