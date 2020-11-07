@@ -31,7 +31,7 @@ wasm:
     image: gcc
     stage: build
     before_script:
-        - git clone https://github.com/emscripten-core/emsdk.git && cd emsdk && ./emsdk install latest && ./emsdk activate latest && cd ..
+        - apt-get update && apt-get install -y zip && git clone https://github.com/emscripten-core/emsdk.git && cd emsdk && ./emsdk install latest && ./emsdk activate latest && cd ..
     script: source "/builds/ryanpcmcquen/basque/emsdk/emsdk_env.sh" && make --always-make wasm
     artifacts:
         name: basque.wasm
