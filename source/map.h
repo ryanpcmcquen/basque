@@ -224,12 +224,10 @@ void generate_map(App* app, Game* game)
         initial_background.x = game->player.global.x - game->player.window.x;
         initial_background.y = game->player.global.y - game->player.window.y;
     } else {
-        initial_background.x = 0;
-        initial_background.y = 0;
+        initial_background.x = 0, initial_background.y = 0;
     }
 
-    background.x = initial_background.x;
-    background.y = initial_background.y;
+    background.x = initial_background.x, background.y = initial_background.y;
 
     char last_char = ',';
     int current_row = 0, current_column = 0;

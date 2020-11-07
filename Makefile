@@ -29,9 +29,7 @@ RM=rm -f
 ifeq ($(origin CC), default)
 CC=clang
 endif
-# ifeq ($(origin EMCC), default)
 EMCC=emcc
-# endif
 # Calling which here seems wrong, but somehow, in
 # certain enviros, it breaks without the full
 # path ... even though the binary is in
@@ -49,7 +47,7 @@ RELEASE=$(COMPILE) $(TARGET)
 DEBUG=$(COMPILE) -g $(TARGET)
 MEMDEBUG=$(COMPILE) -g -fsanitize=address $(TARGET)
 
-$(TITLE): source/*.c source/*.h
+$(TITLE): source/*
 	$(RELEASE)
 # Windows will automatically overwrite
 # the binary when using `nmake`, but
@@ -62,25 +60,25 @@ clean:
 force:
 	$(RELEASE)
 
-debug: source/*.c source/*.h
+debug: source/*
 	$(DEBUG)
-memdebug: source/*.c source/*.h
+memdebug: source/*
 	$(MEMDEBUG)
 
-linux:
+linux: source/*
 	cp $(TITLE) linux/
 	cp -r assets linux/
 	find /usr/lib -type f -iname "*sdl2*.so.*" -exec cp {} linux/ \;
 	# for FILE in $$(ldd $(TITLE) | awk '{print $$3}'); do cp $$(readlink -e $$FILE) linux/; done
 	for FILE in $$(find linux/ -type f -iname "*.so.0.*"); do ln -sfv $$(basename $${FILE}) $$(echo $${FILE} | sed 's/.so.0.*/.so.0/'); done
 	zip -r $(TITLE).linux.zip linux/*
-mac:
+mac: source/*
 	mkdir -p mac/$(TITLE).app/Contents/Resources/
 	cp $(TITLE) mac/$(TITLE).app/Contents/Resources/
 	cp -r assets mac/$(TITLE).app/Contents/Resources/
 	find /usr/local/Cellar -type f -iname "*sdl2*.dylib" -exec cp {} mac/$(TITLE).app/Contents/Resources/ \;
 	zip -r $(TITLE).mac.zip mac/$(TITLE).app
-windows:
+windows: source/*
 	copy $(TITLE).exe windows\ &
 	robocopy assets\ windows\assets\ /e &
 	robocopy C:\INCLUDE\SDL2\ windows\ *.dll &

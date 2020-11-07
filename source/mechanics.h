@@ -12,8 +12,7 @@ SDL_Texture* load_texture(App* app, char* file)
 void load_and_play_music(Game* game)
 {
     if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) == 0) {
-        int flags = MIX_INIT_OGG;
-        Mix_Init(flags);
+        Mix_Init(MIX_INIT_OGG);
         Mix_VolumeMusic(MUSIC_VOLUME);
         game->music = Mix_LoadMUS(MUSIC_INTRO_FILE);
         if (!Mix_PlayingMusic()) {
