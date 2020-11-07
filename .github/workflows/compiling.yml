@@ -62,7 +62,7 @@ jobs:
             - uses: actions/checkout@v2
 
             - name: Install dependencies.
-              run: git clone https://github.com/emscripten-core/emsdk.git && cd emsdk && ./emsdk install latest && ./emsdk activate latest && cd ..
+              run: git clone https://github.com/emscripten-core/emsdk.git && cd emsdk && ./emsdk install latest && ./emsdk activate latest && source "/home/runner/work/basque/basque/emsdk/emsdk_env.sh" && cd ..
 
             - name: Compile!
               run: make wasm
