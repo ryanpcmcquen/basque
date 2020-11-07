@@ -26,3 +26,14 @@ windows:
         name: basque.windows
         paths:
             - basque.windows\
+
+wasm:
+    image: gcc
+    stage: build
+    before_script:
+        - git clone https://github.com/emscripten-core/emsdk.git && cd emsdk && ./emsdk install latest && ./emsdk activate latest && cd ..
+    script: source "${HOME}/work/basque/basque/emsdk/emsdk_env.sh" && make --always-make wasm
+    artifacts:
+        name: basque.wasm
+        paths:
+            - basque.wasm.zip
