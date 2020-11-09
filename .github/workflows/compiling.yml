@@ -70,12 +70,13 @@ jobs:
             - name: Compile!
               run: source "${HOME}/work/basque/basque/emsdk/emsdk_env.sh" && make --always-make wasm
 
-            - name: Commit files
+            - name: Commit our fresh new wasm.
               run: |
                   git config --local user.email "action@github.com"
                   git config --local user.name "GitHub Action"
                   git commit -m "Beep boop. Wasm encabulator updated." -a
-            - name: Push changes
+
+            - name: Give often, give wasm.
               uses: ad-m/github-push-action@master
               with:
                   github_token: ${{ secrets.GITHUB_TOKEN }}
