@@ -1,6 +1,12 @@
 name: Compiling ...
 
-on: [pull_request, push]
+on:
+    pull_request:
+        tags-ignore:
+            - '**'
+    push:
+        tags-ignore:
+            - '**'
 
 jobs:
     linux:
