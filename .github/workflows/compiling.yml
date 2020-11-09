@@ -2,9 +2,13 @@ name: Compiling ...
 
 on:
     pull_request:
+        branches:
+            - '**'
         tags-ignore:
             - '**'
     push:
+        branches:
+            - '**'
         tags-ignore:
             - '**'
 
