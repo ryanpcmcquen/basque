@@ -83,7 +83,7 @@ jobs:
             - name: Commit our fresh new wasm.
               run: |
                   git config --local user.email "action@github.com"
-                  git config --local user.name "GitHub Action"
+                  git config --local user.name "ActionBot"
                   git commit -m "Beep boop. Wasm encabulator updated." -a
 
             - name: Give often, give wasm.
