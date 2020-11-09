@@ -478,7 +478,7 @@ void handle_input(App* app, Game* game)
             game->player.bounds.north[bound_index] = tile_coordinate_y + current_tile_attributes.border.north;
             bound_index++;
         }
-        if (next_tile_north_attributes.border.south > 0) {
+        if (next_tile_north_attributes.border.north > 0) {
             game->player.bounds.north[bound_index] = next_tile_north_coordinate_y + next_tile_north_attributes.border.north;
             bound_index++;
         }
