@@ -17,7 +17,7 @@ Running on Linux:
 
 Running in your browser (thanks to WebAssembly and Emscripten):
 
-[Basque Wasm demo](https://htmlpreview.github.io/?https://cdn.jsdelivr.net/gh/ryanpcmcquen/basque/wasm/basque.html 'Basque Wasm demo')
+[Basque Wasm demo](https://htmlpreview.github.io/?https://cdn.jsdelivr.net/gh/ryanpcmcquen/basque@master/wasm/basque.html 'Basque Wasm demo')
 
 ---
 
