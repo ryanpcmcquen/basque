@@ -29,9 +29,7 @@ RM=rm -f
 ifeq ($(origin CC), default)
 CC=clang
 endif
-ifeq ($(origin EMCC), command line)
-EMCC=emcc
-endif
+EMCC?=emcc
 # Calling which here seems wrong, but somehow, in
 # certain enviros, it breaks without the full
 # path ... even though the binary is in
