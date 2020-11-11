@@ -29,7 +29,7 @@ RM=rm -f
 ifeq ($(origin CC), default)
 CC=clang
 endif
-ifeq ($(origin EMCC), environment)
+ifeq ($(origin EMCC), command line)
 EMCC=emcc
 endif
 # Calling which here seems wrong, but somehow, in
