@@ -29,7 +29,9 @@ RM=rm -f
 ifeq ($(origin CC), default)
 CC=clang
 endif
+ifeq ($(origin EMCC), default)
 EMCC=emcc
+endif
 # Calling which here seems wrong, but somehow, in
 # certain enviros, it breaks without the full
 # path ... even though the binary is in
@@ -85,5 +87,7 @@ windows: source/*
 	powershell Compress-Archive -Force windows\* $(TITLE).windows.zip
 
 wasm: source/*
-	$(EMCC) -O3 --closure 1 -s USE_SDL=2 -s USE_SDL_IMAGE=2 -s SDL2_IMAGE_FORMATS='["png"]' -s USE_SDL_MIXER=2 -s SDL2_MIXER_FORMATS='["ogg"]' -s USE_SDL_TTF=2 -s ALLOW_MEMORY_GROWTH=1 -s INITIAL_MEMORY=512MB -s TOTAL_STACK=256MB -s WASM=2 --preload-file assets $(FLAGS) -I $${HOME}/code/emsdk/upstream/emscripten/system/include/ -I $${HOME}/work/$(TITLE)/$(TITLE)/emsdk/upstream/emscripten/system/include/ -I /builds/ryanpcmcquen/$(TITLE)/emsdk/upstream/emscripten/system/include/ source/$(TITLE).c -o wasm/$(TITLE).html
+# 	$(EMCC) -O3 --closure 1 -s USE_SDL=2 -s USE_SDL_IMAGE=2 -s SDL2_IMAGE_FORMATS='["png"]' -s USE_SDL_MIXER=2 -s SDL2_MIXER_FORMATS='["ogg"]' -s USE_SDL_TTF=2 -s ALLOW_MEMORY_GROWTH=1 -s INITIAL_MEMORY=512MB -s TOTAL_STACK=256MB -s WASM=2 --preload-file assets $(FLAGS) -I $${HOME}/code/emsdk/upstream/emscripten/system/include/ -I $${HOME}/work/$(TITLE)/$(TITLE)/emsdk/upstream/emscripten/system/include/ -I /builds/ryanpcmcquen/$(TITLE)/emsdk/upstream/emscripten/system/include/ source/$(TITLE).c -o wasm/$(TITLE).html
+	$(EMCC) --shell-file wasm/shell_minimal.html -O3 --closure 1 -s USE_SDL=2 -s USE_SDL_IMAGE=2 -s SDL2_IMAGE_FORMATS='["png"]' -s USE_SDL_MIXER=2 -s SDL2_MIXER_FORMATS='["ogg"]' -s USE_SDL_TTF=2 -s ALLOW_MEMORY_GROWTH=1 -s INITIAL_MEMORY=512MB -s TOTAL_STACK=256MB -s WASM=2 --preload-file assets $(FLAGS) -I $${HOME}/code/emsdk/upstream/emscripten/system/include/ -I $${HOME}/work/$(TITLE)/$(TITLE)/emsdk/upstream/emscripten/system/include/ -I /builds/ryanpcmcquen/$(TITLE)/emsdk/upstream/emscripten/system/include/ source/$(TITLE).c -o wasm/$(TITLE).html
+# 	$(EMCC) -O3 --closure 1 -s USE_SDL=2 -s USE_SDL_IMAGE=2 -s SDL2_IMAGE_FORMATS='["png"]' -s USE_SDL_MIXER=2 -s SDL2_MIXER_FORMATS='["ogg"]' -s USE_SDL_TTF=2 -s ALLOW_MEMORY_GROWTH=1 -s INITIAL_MEMORY=512MB -s TOTAL_STACK=256MB -s WASM=2 --preload-file assets $(FLAGS) -I $${HOME}/code/emsdk/upstream/emscripten/system/include/ -I $${HOME}/work/$(TITLE)/$(TITLE)/emsdk/upstream/emscripten/system/include/ -I /builds/ryanpcmcquen/$(TITLE)/emsdk/upstream/emscripten/system/include/ source/$(TITLE).c -o wasm/$(TITLE).html
 	zip -r $(TITLE).wasm.zip wasm/*
