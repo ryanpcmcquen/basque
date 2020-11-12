@@ -230,7 +230,7 @@ Module.postRun.push(
                     function (control) {
                         control.addEventListener('click', function (event) {
                             console.log(event.target.dataset.value);
-                            var control_event = new KeyboardEvent('keyup', {
+                            var control_event = new KeyboardEvent('keydown', {
                                 code: event.target.dataset.value,
                                 key: event.target.dataset.value,
                             });
