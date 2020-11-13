@@ -109,7 +109,7 @@
         <div class="controller">
             <button
                 class="controls"
-                style="width: 90%"
+                style="width: 50%"
                 data-key="ArrowUp"
                 data-which="38"
             >
@@ -118,7 +118,7 @@
 
             <button
                 class="controls"
-                style="width: 47%"
+                style="width: 30%"
                 data-key="ArrowLeft"
                 data-which="37"
             >
@@ -126,7 +126,7 @@
             </button>
             <button
                 class="controls"
-                style="width: 47%"
+                style="width: 30%"
                 data-key="ArrowRight"
                 data-which="39"
             >
@@ -135,7 +135,7 @@
 
             <button
                 class="controls"
-                style="width: 90%"
+                style="width: 50%"
                 data-key="ArrowDown"
                 data-which="40"
             >
@@ -268,6 +268,15 @@
                             create_and_fire_event(event, 'keydown');
                         });
                         control.addEventListener('blur', function (event) {
+                            create_and_fire_event(event, 'keyup');
+                        });
+
+                        control.addEventListener('touchstart', function (
+                            event
+                        ) {
+                            create_and_fire_event(event, 'keydown');
+                        });
+                        control.addEventListener('touchend', function (event) {
                             create_and_fire_event(event, 'keyup');
                         });
                     }
