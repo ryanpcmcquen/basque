@@ -74,6 +74,15 @@
                     transform: rotate(360deg);
                 }
             }
+
+            .controller {
+                margin: 0 auto;
+                text-align: center;
+            }
+            .controls {
+                font-size: 200%;
+                min-height: 55px;
+            }
         </style>
     </head>
     <body>
@@ -96,28 +105,44 @@
                 tabindex="-1"
             ></canvas>
         </div>
-        <!--
-    <hr />
-    <div class="emscripten">
-      <input type="checkbox" id="resize">Resize canvas
-      <input type="checkbox" id="pointerLock" checked>Lock/hide mouse pointer
-      &nbsp;&nbsp;&nbsp;
-      <input type="button" value="Fullscreen" onclick="Module.requestFullscreen(document.getElementById('pointerLock').checked,
-                                                                                document.getElementById('resize').checked)">
-    </div>
 
-    <hr />
-    -->
+        <div class="controller">
+            <button
+                class="controls"
+                style="width: 90%"
+                data-key="ArrowUp"
+                data-which="38"
+            >
+                ⇧
+            </button>
 
-        <button class="controls" data-value="ArrowUp">⇧</button>
-        <button class="controls" data-value="ArrowDown">⇩</button>
-        <button class="controls" data-value="ArrowLeft">⇦</button>
-        <button class="controls" data-value="ArrowRight">⇨</button>
+            <button
+                class="controls"
+                style="width: 47%"
+                data-key="ArrowLeft"
+                data-which="37"
+            >
+                ⇦
+            </button>
+            <button
+                class="controls"
+                style="width: 47%"
+                data-key="ArrowRight"
+                data-which="39"
+            >
+                ⇨
+            </button>
 
-        <button class="controls" data-value="38">⇧</button>
-        <button class="controls" data-value="40">⇩</button>
-        <button class="controls" data-value="37">⇦</button>
-        <button class="controls" data-value="39">⇨</button>
+            <button
+                class="controls"
+                style="width: 90%"
+                data-key="ArrowDown"
+                data-which="40"
+            >
+                ⇩
+            </button>
+        </div>
+
         <textarea class="emscripten" id="output" rows="8"></textarea>
         <hr />
         <script type="text/javascript">
@@ -222,17 +247,28 @@
                 };
             };
 
+            // Thanks to @juj for some hints on this issue as to how to get this working:
+            // https://github.com/emscripten-core/emscripten/issues/3614#issuecomment-142032269
+            var create_and_fire_event = function (event, type) {
+                var control_event = new Event(type, { bubbles: true });
+
+                control_event.code = event.target.dataset.key;
+                control_event.key = event.target.dataset.key;
+
+                control_event.keyCode = event.target.dataset.which;
+                control_event.which = event.target.dataset.which;
+
+                Module.canvas.dispatchEvent(control_event);
+            };
+
             document.addEventListener('DOMContentLoaded', function () {
-                var canvas = document.getElementById('canvas');
                 Array.from(document.querySelectorAll('.controls')).forEach(
                     function (control) {
-                        control.addEventListener('click', function (event) {
-                            console.log(event.target.dataset.value);
-                            var control_event = new Event('keydown', {
-                                code: event.target.dataset.value,
-                                key: event.target.dataset.value,
-                            });
-                            canvas.dispatchEvent(control_event);
+                        control.addEventListener('focus', function (event) {
+                            create_and_fire_event(event, 'keydown');
+                        });
+                        control.addEventListener('blur', function (event) {
+                            create_and_fire_event(event, 'keyup');
                         });
                     }
                 );
