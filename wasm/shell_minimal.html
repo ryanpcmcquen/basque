@@ -222,26 +222,21 @@
                 };
             };
 
-Module.postRun.push(
-    function(){
             document.addEventListener('DOMContentLoaded', function () {
-                // var canvas = document.getElementById('canvas');
+                var canvas = document.getElementById('canvas');
                 Array.from(document.querySelectorAll('.controls')).forEach(
                     function (control) {
                         control.addEventListener('click', function (event) {
                             console.log(event.target.dataset.value);
-                            var control_event = new KeyboardEvent('keydown', {
+                            var control_event = new Event('keydown', {
                                 code: event.target.dataset.value,
                                 key: event.target.dataset.value,
                             });
-                            document.dispatchEvent(control_event);
+                            canvas.dispatchEvent(control_event);
                         });
                     }
                 );
-            })
-}
-            );
-
+            });
         </script>
         {{{ SCRIPT }}}
     </body>
