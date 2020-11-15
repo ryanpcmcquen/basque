@@ -478,7 +478,7 @@ void handle_input(App* app, Game* game)
             game->player.bounds.north[bound_index] = tile_coordinate_y + current_tile_attributes.border.north;
             bound_index++;
         }
-        if (next_tile_north_attributes.border.north > 0) {
+        if (next_tile_north_attributes.border.south > 0) {
             game->player.bounds.north[bound_index] = next_tile_north_coordinate_y + next_tile_north_attributes.border.north;
             bound_index++;
         }
@@ -502,7 +502,7 @@ void handle_input(App* app, Game* game)
             bound_index++;
         }
 
-        if (next_tile_east_attributes.border.east > 0) {
+        if (next_tile_east_attributes.border.west > 0) {
             game->player.bounds.east[bound_index] = next_tile_east_coordinate_x - next_tile_east_attributes.border.east;
             bound_index++;
         }
@@ -525,7 +525,7 @@ void handle_input(App* app, Game* game)
             game->player.bounds.south[bound_index] = tile_coordinate_y - current_tile_attributes.border.south;
             bound_index++;
         }
-        if (next_tile_south_attributes.border.south > 0) {
+        if (next_tile_south_attributes.border.north > 0) {
             game->player.bounds.south[bound_index] = next_tile_south_coordinate_y - next_tile_south_attributes.border.south;
             bound_index++;
         }
@@ -548,7 +548,7 @@ void handle_input(App* app, Game* game)
             game->player.bounds.west[bound_index] = tile_coordinate_x + current_tile_attributes.border.west;
             bound_index++;
         }
-        if (next_tile_west_attributes.border.west > 0) {
+        if (next_tile_west_attributes.border.east > 0) {
             game->player.bounds.west[bound_index] = next_tile_west_coordinate_x + next_tile_west_attributes.border.west;
             bound_index++;
         }

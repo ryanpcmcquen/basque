@@ -78,6 +78,17 @@
             .controller {
                 margin: 0 auto;
                 text-align: center;
+
+                /*
+                Disable text selection so that you users will not
+                select text on buttons ... which is no fun.
+                */
+                -ms-user-select: none;
+                -moz-user-select: none;
+                -webkit-user-select: none;
+                -webkit-touch-callout: none;
+                -khtml-user-select: none;
+                user-select: none;
             }
             .controls {
                 font-size: 250%;
@@ -86,6 +97,13 @@
         </style>
     </head>
     <body>
+        <h2>Basque</h2>
+        <a
+            href="https://github.com/ryanpcmcquen/basque"
+            target="_blank"
+            rel="noopener noreferrer"
+            >source</a
+        >
         <hr />
         <figure style="overflow: visible" id="spinner">
             <div class="spinner"></div>
@@ -97,7 +115,8 @@
         <div class="emscripten">
             <progress value="0" max="100" id="progress" hidden="1"></progress>
         </div>
-        <div class="emscripten_border">
+        <!-- <div class="emscripten_border"> -->
+        <div>
             <canvas
                 class="emscripten"
                 id="canvas"
@@ -261,24 +280,31 @@
                 Module.canvas.dispatchEvent(control_event);
             };
 
-            document.addEventListener('DOMContentLoaded', function () {
+            Module.postRun.push(function () {
+                Module.canvas.setAttribute('width', window.innerWidth * 0.9);
+            });
+            window.addEventListener('load', function () {
                 Array.from(document.querySelectorAll('.controls')).forEach(
                     function (control) {
-                        control.addEventListener('focus', function (event) {
-                            create_and_fire_event(event, 'keydown');
-                        });
-                        control.addEventListener('blur', function (event) {
-                            create_and_fire_event(event, 'keyup');
-                        });
-
-                        control.addEventListener('touchstart', function (
-                            event
-                        ) {
-                            create_and_fire_event(event, 'keydown');
-                        });
-                        control.addEventListener('touchend', function (event) {
-                            create_and_fire_event(event, 'keyup');
-                        });
+                        if ('ontouchstart' in document.documentElement) {
+                            control.addEventListener('touchstart', function (
+                                event
+                            ) {
+                                create_and_fire_event(event, 'keydown');
+                            });
+                            control.addEventListener('touchend', function (
+                                event
+                            ) {
+                                create_and_fire_event(event, 'keyup');
+                            });
+                        } else {
+                            control.addEventListener('focus', function (event) {
+                                create_and_fire_event(event, 'keydown');
+                            });
+                            control.addEventListener('blur', function (event) {
+                                create_and_fire_event(event, 'keyup');
+                            });
+                        }
                     }
                 );
             });

@@ -1,11 +1,476 @@
-<!doctypehtml><html lang=en-us><head><meta charset=utf-8><meta content="text/html; charset=utf-8"http-equiv=Content-Type><title>Basque</title><style>.emscripten{padding-right:0;margin-left:auto;margin-right:auto;display:block}textarea.emscripten{font-family:monospace;width:80%}div.emscripten{text-align:center}div.emscripten_border{border:1px solid #000}canvas.emscripten{border:0 none;background-color:#000}.spinner{height:50px;width:50px;margin:0 auto;-webkit-animation:rotation .8s linear infinite;-moz-animation:rotation .8s linear infinite;-o-animation:rotation .8s linear infinite;animation:rotation .8s linear infinite;border-left:10px solid #0096f0;border-right:10px solid #0096f0;border-bottom:10px solid #0096f0;border-top:10px solid #6400c8;border-radius:100%;background-color:#c864fa}@-webkit-keyframes rotation{from{-webkit-transform:rotate(0)}to{-webkit-transform:rotate(360deg)}}@-moz-keyframes rotation{from{-moz-transform:rotate(0)}to{-moz-transform:rotate(360deg)}}@-o-keyframes rotation{from{-o-transform:rotate(0)}to{-o-transform:rotate(360deg)}}@keyframes rotation{from{transform:rotate(0)}to{transform:rotate(360deg)}}.controller{margin:0 auto;text-align:center}.controls{font-size:250%;min-height:55px}</style></head><body><hr><figure id=spinner style=overflow:visible><div class=spinner></div><center style=margin-top:.5em><strong>emscripten</strong></center></figure><div class=emscripten id=status>Downloading...</div><div class=emscripten><progress hidden id=progress max=100 value=0></progress></div><div class=emscripten_border><canvas class=emscripten id=canvas oncontextmenu=event.preventDefault() tabindex=-1></canvas></div><div class=controller><button class=controls data-key=ArrowUp data-which=38 style=width:70%>⇧</button><button class=controls data-key=ArrowLeft data-which=37 style=width:35%>⇦</button><button class=controls data-key=ArrowRight data-which=39 style=width:35%>⇨</button><button class=controls data-key=ArrowDown data-which=40 style=width:70%>⇩</button></div><textarea class=emscripten id=output rows=8></textarea><hr><script>var statusElement=document.getElementById("status"),progressElement=document.getElementById("progress"),spinnerElement=document.getElementById("spinner"),Module={preRun:[],postRun:[],print:function(){var e=document.getElementById("output");return e&&(e.value=""),function(t){arguments.length>1&&(t=Array.prototype.slice.call(arguments).join(" ")),console.log(t),e&&(e.value+=t+"\n",e.scrollTop=e.scrollHeight)}}(),printErr:function(e){arguments.length>1&&(e=Array.prototype.slice.call(arguments).join(" ")),console.error(e)},canvas:function(){var e=document.getElementById("canvas");return e.addEventListener("webglcontextlost",(function(e){alert("WebGL context lost. You will need to reload the page."),e.preventDefault()}),!1),e}(),setStatus:function(e){if(Module.setStatus.last||(Module.setStatus.last={time:Date.now(),text:""}),e!==Module.setStatus.last.text){var t=e.match(/([^(]+)\((\d+(\.\d+)?)\/(\d+)\)/),n=Date.now();t&&n-Module.setStatus.last.time<30||(Module.setStatus.last.time=n,Module.setStatus.last.text=e,t?(e=t[1],progressElement.value=100*parseInt(t[2]),progressElement.max=100*parseInt(t[4]),progressElement.hidden=!1,spinnerElement.hidden=!1):(progressElement.value=null,progressElement.max=null,progressElement.hidden=!0,e||(spinnerElement.hidden=!0)),statusElement.innerHTML=e)}},totalDependencies:0,monitorRunDependencies:function(e){this.totalDependencies=Math.max(this.totalDependencies,e),Module.setStatus(e?"Preparing... ("+(this.totalDependencies-e)+"/"+this.totalDependencies+")":"All downloads complete.")}};Module.setStatus("Downloading..."),window.onerror=function(){Module.setStatus("Exception thrown, see JavaScript console"),spinnerElement.style.display="none",Module.setStatus=function(e){e&&Module.printErr("[post-exception status] "+e)}};var create_and_fire_event=function(e,t){var n=new Event(t,{bubbles:!0});n.code=e.target.dataset.key,n.key=e.target.dataset.key,n.keyCode=e.target.dataset.which,n.which=e.target.dataset.which,Module.canvas.dispatchEvent(n)};document.addEventListener("DOMContentLoaded",(function(){Array.from(document.querySelectorAll(".controls")).forEach((function(e){e.addEventListener("focus",(function(e){create_and_fire_event(e,"keydown")})),e.addEventListener("blur",(function(e){create_and_fire_event(e,"keyup")})),e.addEventListener("touchstart",(function(e){create_and_fire_event(e,"keydown")})),e.addEventListener("touchend",(function(e){create_and_fire_event(e,"keyup")}))}))}))</script><script>var ASSERTIONS=0;
+<!DOCTYPE html>
+<html lang="en-us">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>Basque</title>
+        <style>
+            .emscripten {
+                padding-right: 0;
+                margin-left: auto;
+                margin-right: auto;
+                display: block;
+            }
+            textarea.emscripten {
+                font-family: monospace;
+                width: 80%;
+            }
+            div.emscripten {
+                text-align: center;
+            }
+            div.emscripten_border {
+                border: 1px solid black;
+            }
+            /* the canvas *must not* have any border or padding, or mouse coords will be wrong */
+            canvas.emscripten {
+                border: 0px none;
+                background-color: black;
+            }
+
+            .spinner {
+                height: 50px;
+                width: 50px;
+                margin: 0px auto;
+                -webkit-animation: rotation 0.8s linear infinite;
+                -moz-animation: rotation 0.8s linear infinite;
+                -o-animation: rotation 0.8s linear infinite;
+                animation: rotation 0.8s linear infinite;
+                border-left: 10px solid rgb(0, 150, 240);
+                border-right: 10px solid rgb(0, 150, 240);
+                border-bottom: 10px solid rgb(0, 150, 240);
+                border-top: 10px solid rgb(100, 0, 200);
+                border-radius: 100%;
+                background-color: rgb(200, 100, 250);
+            }
+            @-webkit-keyframes rotation {
+                from {
+                    -webkit-transform: rotate(0deg);
+                }
+                to {
+                    -webkit-transform: rotate(360deg);
+                }
+            }
+            @-moz-keyframes rotation {
+                from {
+                    -moz-transform: rotate(0deg);
+                }
+                to {
+                    -moz-transform: rotate(360deg);
+                }
+            }
+            @-o-keyframes rotation {
+                from {
+                    -o-transform: rotate(0deg);
+                }
+                to {
+                    -o-transform: rotate(360deg);
+                }
+            }
+            @keyframes rotation {
+                from {
+                    transform: rotate(0deg);
+                }
+                to {
+                    transform: rotate(360deg);
+                }
+            }
+
+            .controller {
+                margin: 0 auto;
+                text-align: center;
+
+                /*
+                Disable text selection so that you users will not
+                select text on buttons ... which is no fun.
+                */
+                -ms-user-select: none;
+                -moz-user-select: none;
+                -webkit-user-select: none;
+                -webkit-touch-callout: none;
+                -khtml-user-select: none;
+                user-select: none;
+            }
+            .controls {
+                font-size: 250%;
+                min-height: 55px;
+            }
+        </style>
+    </head>
+    <body>
+        <h2>Basque</h2>
+        <a
+            href="https://github.com/ryanpcmcquen/basque"
+            target="_blank"
+            rel="noopener noreferrer"
+            >source</a
+        >
+        <hr />
+        <figure style="overflow: visible" id="spinner">
+            <div class="spinner"></div>
+            <center style="margin-top: 0.5em">
+                <strong>emscripten</strong>
+            </center>
+        </figure>
+        <div class="emscripten" id="status">Downloading...</div>
+        <div class="emscripten">
+            <progress value="0" max="100" id="progress" hidden="1"></progress>
+        </div>
+        <!-- <div class="emscripten_border"> -->
+        <div>
+            <canvas
+                class="emscripten"
+                id="canvas"
+                oncontextmenu="event.preventDefault()"
+                tabindex="-1"
+            ></canvas>
+        </div>
+
+        <div class="controller">
+            <button
+                class="controls"
+                style="width: 70%"
+                data-key="ArrowUp"
+                data-which="38"
+            >
+                ⇧
+            </button>
+
+            <button
+                class="controls"
+                style="width: 35%"
+                data-key="ArrowLeft"
+                data-which="37"
+            >
+                ⇦
+            </button>
+            <button
+                class="controls"
+                style="width: 35%"
+                data-key="ArrowRight"
+                data-which="39"
+            >
+                ⇨
+            </button>
+
+            <button
+                class="controls"
+                style="width: 70%"
+                data-key="ArrowDown"
+                data-which="40"
+            >
+                ⇩
+            </button>
+        </div>
+
+        <textarea class="emscripten" id="output" rows="8"></textarea>
+        <hr />
+        <script type="text/javascript">
+            var statusElement = document.getElementById('status');
+            var progressElement = document.getElementById('progress');
+            var spinnerElement = document.getElementById('spinner');
+
+            var Module = {
+                preRun: [],
+                postRun: [],
+                print: (function () {
+                    var element = document.getElementById('output');
+                    if (element) element.value = ''; // clear browser cache
+                    return function (text) {
+                        if (arguments.length > 1)
+                            text = Array.prototype.slice
+                                .call(arguments)
+                                .join(' ');
+                        // These replacements are necessary if you render to raw HTML
+                        //text = text.replace(/&/g, "&amp;");
+                        //text = text.replace(/</g, "&lt;");
+                        //text = text.replace(/>/g, "&gt;");
+                        //text = text.replace('\n', '<br>', 'g');
+                        console.log(text);
+                        if (element) {
+                            element.value += text + '\n';
+                            element.scrollTop = element.scrollHeight; // focus on bottom
+                        }
+                    };
+                })(),
+                printErr: function (text) {
+                    if (arguments.length > 1)
+                        text = Array.prototype.slice.call(arguments).join(' ');
+                    console.error(text);
+                },
+                canvas: (function () {
+                    var canvas = document.getElementById('canvas');
+
+                    // As a default initial behavior, pop up an alert when webgl context is lost. To make your
+                    // application robust, you may want to override this behavior before shipping!
+                    // See http://www.khronos.org/registry/webgl/specs/latest/1.0/#5.15.2
+                    canvas.addEventListener(
+                        'webglcontextlost',
+                        function (e) {
+                            alert(
+                                'WebGL context lost. You will need to reload the page.'
+                            );
+                            e.preventDefault();
+                        },
+                        false
+                    );
+
+                    return canvas;
+                })(),
+                setStatus: function (text) {
+                    if (!Module.setStatus.last)
+                        Module.setStatus.last = { time: Date.now(), text: '' };
+                    if (text === Module.setStatus.last.text) return;
+                    var m = text.match(/([^(]+)\((\d+(\.\d+)?)\/(\d+)\)/);
+                    var now = Date.now();
+                    if (m && now - Module.setStatus.last.time < 30) return; // if this is a progress update, skip it if too soon
+                    Module.setStatus.last.time = now;
+                    Module.setStatus.last.text = text;
+                    if (m) {
+                        text = m[1];
+                        progressElement.value = parseInt(m[2]) * 100;
+                        progressElement.max = parseInt(m[4]) * 100;
+                        progressElement.hidden = false;
+                        spinnerElement.hidden = false;
+                    } else {
+                        progressElement.value = null;
+                        progressElement.max = null;
+                        progressElement.hidden = true;
+                        if (!text) spinnerElement.hidden = true;
+                    }
+                    statusElement.innerHTML = text;
+                },
+                totalDependencies: 0,
+                monitorRunDependencies: function (left) {
+                    this.totalDependencies = Math.max(
+                        this.totalDependencies,
+                        left
+                    );
+                    Module.setStatus(
+                        left
+                            ? 'Preparing... (' +
+                                  (this.totalDependencies - left) +
+                                  '/' +
+                                  this.totalDependencies +
+                                  ')'
+                            : 'All downloads complete.'
+                    );
+                },
+            };
+            Module.setStatus('Downloading...');
+            window.onerror = function () {
+                Module.setStatus('Exception thrown, see JavaScript console');
+                spinnerElement.style.display = 'none';
+                Module.setStatus = function (text) {
+                    if (text)
+                        Module.printErr('[post-exception status] ' + text);
+                };
+            };
+
+            // Thanks to @juj for some hints on this issue as to how to get this working:
+            // https://github.com/emscripten-core/emscripten/issues/3614#issuecomment-142032269
+            var create_and_fire_event = function (event, type) {
+                var control_event = new Event(type, { bubbles: true });
+
+                control_event.code = event.target.dataset.key;
+                control_event.key = event.target.dataset.key;
+
+                control_event.keyCode = event.target.dataset.which;
+                control_event.which = event.target.dataset.which;
+
+                Module.canvas.dispatchEvent(control_event);
+            };
+
+            Module.postRun.push(function () {
+                Module.canvas.setAttribute('width', window.innerWidth * 0.9);
+            });
+            window.addEventListener('load', function () {
+                Array.from(document.querySelectorAll('.controls')).forEach(
+                    function (control) {
+                        if ('ontouchstart' in document.documentElement) {
+                            control.addEventListener('touchstart', function (
+                                event
+                            ) {
+                                create_and_fire_event(event, 'keydown');
+                            });
+                            control.addEventListener('touchend', function (
+                                event
+                            ) {
+                                create_and_fire_event(event, 'keyup');
+                            });
+                        } else {
+                            control.addEventListener('focus', function (event) {
+                                create_and_fire_event(event, 'keydown');
+                            });
+                            control.addEventListener('blur', function (event) {
+                                create_and_fire_event(event, 'keyup');
+                            });
+                        }
+                    }
+                );
+            });
+        </script>
+        <script>
+var ASSERTIONS = 1;
 /**
  * @license
  * Copyright 2017 The Emscripten Authors
  * SPDX-License-Identifier: MIT
- */function hasPrefix(e,r){return String.prototype.startsWith?e.startsWith(r):0===e.indexOf(r)}var dataURIPrefix="data:application/octet-stream;base64,";function isDataURI(e){return hasPrefix(e,dataURIPrefix)}var fileURIPrefix="file://";function isFileURI(e){return hasPrefix(e,fileURIPrefix)}var decodeBase64="function"==typeof atob?atob:function(e){var r,t,a,n,i,o,s="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",f="",d=0;e=e.replace(/[^A-Za-z0-9\+\/\=]/g,"");do{r=s.indexOf(e.charAt(d++))<<2|(n=s.indexOf(e.charAt(d++)))>>4,t=(15&n)<<4|(i=s.indexOf(e.charAt(d++)))>>2,a=(3&i)<<6|(o=s.indexOf(e.charAt(d++))),f+=String.fromCharCode(r),64!==i&&(f+=String.fromCharCode(t)),64!==o&&(f+=String.fromCharCode(a))}while(d<e.length);return f};function intArrayFromBase64(e){if("boolean"==typeof ENVIRONMENT_IS_NODE&&ENVIRONMENT_IS_NODE){var r;try{r=Buffer.from(e,"base64")}catch(t){r=new Buffer(e,"base64")}return new Uint8Array(r.buffer,r.byteOffset,r.byteLength)}try{for(var t=decodeBase64(e),a=new Uint8Array(t.length),n=0;n<t.length;++n)a[n]=t.charCodeAt(n);return a}catch(e){throw new Error("Converting base64 string to bytes failed.")}}function tryParseAsDataURI(e){if(isDataURI(e))return intArrayFromBase64(e.slice(dataURIPrefix.length))}
+ */
+
+function hasPrefix(str, prefix) {
+  return String.prototype.startsWith ?
+      str.startsWith(prefix) :
+      str.indexOf(prefix) === 0;
+}
+
+// Prefix of data URIs emitted by SINGLE_FILE and related options.
+var dataURIPrefix = 'data:application/octet-stream;base64,';
+
+// Indicates whether filename is a base64 data URI.
+function isDataURI(filename) {
+  return hasPrefix(filename, dataURIPrefix);
+}
+
+var fileURIPrefix = "file://";
+
+// Indicates whether filename is delivered via file protocol (as opposed to http/https)
+function isFileURI(filename) {
+  return hasPrefix(filename, fileURIPrefix);
+}
+
+
+// Copied from https://github.com/strophe/strophejs/blob/e06d027/src/polyfills.js#L149
+
+// This code was written by Tyler Akins and has been placed in the
+// public domain.  It would be nice if you left this header intact.
+// Base64 code from Tyler Akins -- http://rumkin.com
+
+/**
+ * Decodes a base64 string.
+ * @param {string} input The string to decode.
+ */
+var decodeBase64 = typeof atob === 'function' ? atob : function (input) {
+  var keyStr = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
+
+  var output = '';
+  var chr1, chr2, chr3;
+  var enc1, enc2, enc3, enc4;
+  var i = 0;
+  // remove all characters that are not A-Z, a-z, 0-9, +, /, or =
+  input = input.replace(/[^A-Za-z0-9\+\/\=]/g, '');
+  do {
+    enc1 = keyStr.indexOf(input.charAt(i++));
+    enc2 = keyStr.indexOf(input.charAt(i++));
+    enc3 = keyStr.indexOf(input.charAt(i++));
+    enc4 = keyStr.indexOf(input.charAt(i++));
+
+    chr1 = (enc1 << 2) | (enc2 >> 4);
+    chr2 = ((enc2 & 15) << 4) | (enc3 >> 2);
+    chr3 = ((enc3 & 3) << 6) | enc4;
+
+    output = output + String.fromCharCode(chr1);
+
+    if (enc3 !== 64) {
+      output = output + String.fromCharCode(chr2);
+    }
+    if (enc4 !== 64) {
+      output = output + String.fromCharCode(chr3);
+    }
+  } while (i < input.length);
+  return output;
+};
+
+// Converts a string of base64 into a byte array.
+// Throws error on invalid input.
+function intArrayFromBase64(s) {
+  if (typeof ENVIRONMENT_IS_NODE === 'boolean' && ENVIRONMENT_IS_NODE) {
+    var buf;
+    try {
+      // TODO: Update Node.js externs, Closure does not recognize the following Buffer.from()
+      /**@suppress{checkTypes}*/
+      buf = Buffer.from(s, 'base64');
+    } catch (_) {
+      buf = new Buffer(s, 'base64');
+    }
+    return new Uint8Array(buf['buffer'], buf['byteOffset'], buf['byteLength']);
+  }
+
+  try {
+    var decoded = decodeBase64(s);
+    var bytes = new Uint8Array(decoded.length);
+    for (var i = 0 ; i < decoded.length ; ++i) {
+      bytes[i] = decoded.charCodeAt(i);
+    }
+    return bytes;
+  } catch (_) {
+    throw new Error('Converting base64 string to bytes failed.');
+  }
+}
+
+// If filename is a base64 data URI, parses and returns data (Buffer on node,
+// Uint8Array otherwise). If filename is not a base64 data URI, returns undefined.
+function tryParseAsDataURI(filename) {
+  if (!isDataURI(filename)) {
+    return;
+  }
+
+  return intArrayFromBase64(filename.slice(dataURIPrefix.length));
+}
+
+
 /**
  * @license
  * Copyright 2017 The Emscripten Authors
  * SPDX-License-Identifier: MIT
- */function intArrayFromString(e,r,t){var a=t>0?t:lengthBytesUTF8(e)+1,n=new Array(a),i=stringToUTF8Array(e,n,0,n.length);return r&&(n.length=i),n}function intArrayToString(e){for(var r=[],t=0;t<e.length;t++){var a=e[t];a>255&&(ASSERTIONS&&assert(!1,"Character code "+a+" ("+String.fromCharCode(a)+")  at offset "+t+" not in 0x00-0xFF."),a&=255),r.push(String.fromCharCode(a))}return r.join("")}function loadMainJs(){var e="basque.html.mem";e=Module.locateFile?Module.locateFile(e,""):e,Module.memoryInitializerRequestURL=e;var r=Module.memoryInitializerRequest=new XMLHttpRequest;r.open("GET",e,!0),r.responseType="arraybuffer",r.send(null);var t=document.createElement("script");t.src="basque.js",document.body.appendChild(t)}if(!window.WebAssembly||location.search.indexOf("_rwasm=0")>0){var wasm2js=document.createElement("script");wasm2js.src="basque.wasm.js",wasm2js.onload=loadMainJs,document.body.appendChild(wasm2js)}else loadMainJs()</script></body></html>
+ */
+
+/** @type {function(string, boolean=, number=)} */
+function intArrayFromString(stringy, dontAddNull, length) {
+  var len = length > 0 ? length : lengthBytesUTF8(stringy)+1;
+  var u8array = new Array(len);
+  var numBytesWritten = stringToUTF8Array(stringy, u8array, 0, u8array.length);
+  if (dontAddNull) u8array.length = numBytesWritten;
+  return u8array;
+}
+
+function intArrayToString(array) {
+  var ret = [];
+  for (var i = 0; i < array.length; i++) {
+    var chr = array[i];
+    if (chr > 0xFF) {
+      if (ASSERTIONS) {
+        assert(false, 'Character code ' + chr + ' (' + String.fromCharCode(chr) + ')  at offset ' + i + ' not in 0x00-0xFF.');
+      }
+      chr &= 0xFF;
+    }
+    ret.push(String.fromCharCode(chr));
+  }
+  return ret.join('');
+}
+
+
+
+          function loadMainJs() {
+
+          var script = document.createElement('script');
+          script.src = "basque.js";
+          document.body.appendChild(script);
+
+          }
+          if (!window.WebAssembly || location.search.indexOf('_rwasm=0') > 0) {
+            // Current browser does not support WebAssembly, load the .wasm.js JavaScript fallback
+            // before the main JS runtime.
+            var wasm2js = document.createElement('script');
+            wasm2js.src = 'basque.wasm.js';
+            wasm2js.onload = loadMainJs;
+            document.body.appendChild(wasm2js);
+          } else {
+            // Current browser supports Wasm, proceed with loading the main JS runtime.
+            loadMainJs();
+          }
+
+</script>
+    </body>
+</html>
+
+
