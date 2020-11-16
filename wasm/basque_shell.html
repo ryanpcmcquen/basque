@@ -282,8 +282,6 @@
 
             Module.postRun.push(function () {
                 Module.canvas.setAttribute('width', window.innerWidth * 0.9);
-            });
-            window.addEventListener('load', function () {
                 Array.from(document.querySelectorAll('.controls')).forEach(
                     function (control) {
                         if ('ontouchstart' in document.documentElement) {
@@ -307,6 +305,9 @@
                         }
                     }
                 );
+            });
+            window.addEventListener('load', function () {
+
             });
         </script>
         {{{ SCRIPT }}}
