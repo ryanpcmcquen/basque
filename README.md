@@ -17,7 +17,11 @@ Running on Linux:
 
 Running in your browser (thanks to WebAssembly and Emscripten):
 
-[Basque Wasm demo](https://htmlpreview.github.io/?https://cdn.jsdelivr.net/gh/ryanpcmcquen/basque@master/wasm/basque.html 'Basque Wasm demo')
+[Basque Wasm link](https://htmlpreview.github.io/?https://cdn.jsdelivr.net/gh/ryanpcmcquen/basque@master/wasm/basque.html 'Basque Wasm link')
+
+Now with touch controls!
+
+![Basque Wasm demo](demos/basque_wasm_demo.gif 'Basque Wasm demo')
 
 ---
 
