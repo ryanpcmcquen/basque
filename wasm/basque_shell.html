@@ -155,6 +155,7 @@
                 ⇩
             </button>
         </div>
+        <hr />
         <h2>Basque</h2>
         <a
             href="https://github.com/ryanpcmcquen/basque"
@@ -281,13 +282,11 @@
             };
 
             Module.postRun.push(function () {
-                Module.canvas.style.transform = 'scale(0.8)';
+                Module.canvas.style.transform = 'scale(0.9)';
                 Array.from(document.querySelectorAll('.controls')).forEach(
                     function (control) {
                         if ('ontouchstart' in document.documentElement) {
                             // Mobile:
-                            Module.canvas.style.marginTop = '0.5rem';
-                            Module.canvas.style.marginBottom = '0.5rem';
                             control.addEventListener('touchstart', function (
                                 event
                             ) {
