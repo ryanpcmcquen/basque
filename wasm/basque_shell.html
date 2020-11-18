@@ -77,7 +77,7 @@
                 }
             }
 
-            .controller {
+            html, body, .controller {
                 margin: 0 auto;
                 text-align: center;
 
@@ -281,7 +281,7 @@
             };
 
             Module.postRun.push(function () {
-                Module.canvas.style.transform = 'scale(1)';
+                Module.canvas.style.transform = 'scale(0.8)';
                 Array.from(document.querySelectorAll('.controls')).forEach(
                     function (control) {
                         if ('ontouchstart' in document.documentElement) {
