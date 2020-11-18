@@ -105,7 +105,6 @@
                 <strong>emscripten</strong>
             </center>
         </figure>
-        <div class="emscripten" id="status">Downloading...</div>
         <div class="emscripten">
             <progress value="0" max="100" id="progress" hidden="1"></progress>
         </div>
@@ -165,6 +164,7 @@
         >
         <textarea class="emscripten" id="output" rows="8"></textarea>
         <hr />
+        <div class="emscripten" id="status">Downloading...</div>
         <script type="text/javascript">
             var statusElement = document.getElementById('status');
             var progressElement = document.getElementById('progress');
@@ -282,7 +282,7 @@
             };
 
             Module.postRun.push(function () {
-                Module.canvas.style.transform = 'scale(0.9)';
+                Module.canvas.style.transform = 'scale(0.85)';
                 Array.from(document.querySelectorAll('.controls')).forEach(
                     function (control) {
                         if ('ontouchstart' in document.documentElement) {
