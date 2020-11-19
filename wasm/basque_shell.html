@@ -97,6 +97,9 @@
                 font-size: 125%;
                 min-height: 30px;
             }
+            .canvas_wrapper {
+                transform: scale(0.9);
+            }
         </style>
     </head>
     <body>
@@ -109,8 +112,7 @@
         <div class="emscripten">
             <progress value="0" max="100" id="progress" hidden="1"></progress>
         </div>
-        <!-- <div class="emscripten_border"> -->
-        <div>
+        <div class="canvas_wrapper">
             <canvas
                 class="emscripten"
                 id="canvas"
@@ -283,7 +285,7 @@
             };
 
             Module.postRun.push(function () {
-                Module.canvas.style.transform = 'scale(0.9)';
+                //Module.canvas.style.transform = 'scale(0.9)';
                 Array.from(document.querySelectorAll('.controls')).forEach(
                     function (control) {
                         if ('ontouchstart' in document.documentElement) {
