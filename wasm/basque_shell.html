@@ -77,10 +77,7 @@
                 }
             }
 
-            html, body, .controller {
-                margin: 0 auto;
-                text-align: center;
-
+            html, body {
                 /*
                 Disable text selection so that you users will not
                 select text on buttons ... which is no fun.
@@ -92,9 +89,13 @@
                 -khtml-user-select: none;
                 user-select: none;
             }
+            .controller {
+                margin: 0 auto;
+                text-align: center;
+            }
             .controls {
-                font-size: 140%;
-                min-height: 35px;
+                font-size: 125%;
+                min-height: 30px;
             }
         </style>
     </head>
@@ -282,7 +283,7 @@
             };
 
             Module.postRun.push(function () {
-                Module.canvas.style.transform = 'scale(0.85)';
+                Module.canvas.style.transform = 'scale(0.9)';
                 Array.from(document.querySelectorAll('.controls')).forEach(
                     function (control) {
                         if ('ontouchstart' in document.documentElement) {
