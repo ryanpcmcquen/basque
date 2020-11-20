@@ -100,6 +100,8 @@
             }
             .canvas_wrapper {
                 display: flex;
+                margin-bottom: -4rem;
+                margin-top: -4rem;
             }
         </style>
     </head>
@@ -286,7 +288,7 @@
             };
 
             Module.postRun.push(function () {
-                Module.canvas.parentNode.style.transform = 'scale(0.85)';
+                Module.canvas.parentNode.style.transform = 'scale(0.7)';
                 Array.from(document.querySelectorAll('.controls')).forEach(
                     function (control) {
                         if ('ontouchstart' in document.documentElement) {
