@@ -3,6 +3,7 @@
 Basque is a cross-platform top-down 2d game engine.
 
 ---
+
 Running on Windows:
 
 ![Basque Windows demo](demos/basque_windows_demo.gif 'Basque Windows demo')
@@ -17,7 +18,7 @@ Running on Linux:
 
 Running in your browser (thanks to WebAssembly and Emscripten):
 
-[Basque Wasm link](https://htmlpreview.github.io/?https://cdn.jsdelivr.net/gh/ryanpcmcquen/basque@master/wasm/basque.html 'Basque Wasm link')
+[Play Basque Wasm Now!](https://htmlpreview.github.io/?https://cdn.jsdelivr.net/gh/ryanpcmcquen/basque@master/wasm/basque.html 'Play Basque Wasm Now!')
 
 Now with touch controls!
 
