@@ -4,8 +4,8 @@
 *.dll
 *.dylib
 *.so.*
-./basque
-./basque.exe
+/basque
+/basque.exe
 basque.*.zip
 
 linux/assets/**
