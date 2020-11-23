@@ -363,6 +363,5 @@ void generate_map(App* app, Game* game)
     }
 
     // Reset positioning when the library is loaded so it appears in the upper left of the viewport.
-    background.x = initial_background.x;
-    background.y = initial_background.y;
+    background.x = initial_background.x, background.y = initial_background.y;
 }

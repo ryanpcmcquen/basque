@@ -79,8 +79,8 @@ int init()
                 if (FULLSCREEN_MODE) {
                     SCREEN_WIDTH = display_mode.w, SCREEN_HEIGHT = display_mode.h;
                 } else {
-                    SCREEN_WIDTH = (int)(display_mode.w * 0.8);
-                    SCREEN_HEIGHT = (int)(display_mode.h * 0.8);
+                    SCREEN_WIDTH = (int)(display_mode.w * 0.9);
+                    SCREEN_HEIGHT = (int)(display_mode.h * 0.9);
                 }
             }
             SDL_Log("Detected resolution: %ix%i\n", display_mode.w, display_mode.h);
