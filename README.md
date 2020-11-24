@@ -18,11 +18,11 @@ Running on Linux:
 
 Running in your browser (thanks to WebAssembly and Emscripten):
 
-[Play Basque Wasm Now!](https://htmlpreview.github.io/?https://cdn.jsdelivr.net/gh/ryanpcmcquen/basque@master/wasm/basque.html 'Play Basque Wasm Now!')
+![Basque Wasm demo](demos/basque_wasm_demo.gif 'Basque Wasm demo')
+
+[Play Basque Wasm](https://htmlpreview.github.io/?https://cdn.jsdelivr.net/gh/ryanpcmcquen/basque@master/wasm/basque.html 'Play Basque Wasm')
 
 Now with touch controls!
-
-![Basque Wasm demo](demos/basque_wasm_demo.gif 'Basque Wasm demo')
 
 ---
 
