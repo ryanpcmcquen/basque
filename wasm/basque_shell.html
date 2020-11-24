@@ -287,11 +287,12 @@
 
             Module.postRun.push(function () {
                 var transform_multiplier = 0.7;
-                while ((Module.canvas.width * transform_multiplier) > window.innerWidth && transform_multiplier > 0.1) {
+                var minimum_transform_multiplier = 0.4;
+                while ((Module.canvas.width * transform_multiplier) > window.innerWidth && transform_multiplier > minimum_transform_multiplier) {
                     transform_multiplier = transform_multiplier - 0.05;
                 }
                 Module.canvas.parentNode.style.transform = `scale(${transform_multiplier})`;
-                var margin_removal = (window.innerWidth * (transform_multiplier > 0.1 ? transform_multiplier - 0.1 : transform_multiplier)) / 4;
+                var margin_removal = (window.innerWidth * (transform_multiplier > minimum_transform_multiplier ? transform_multiplier - 0.1 : transform_multiplier)) / 4;
                 Module.canvas.parentNode.style.margin = `-${margin_removal * 0.8}px -${margin_removal}px`;
                 Array.from(document.querySelectorAll('.controls')).forEach(
                     function (control) {
