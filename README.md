@@ -279,7 +279,7 @@ make && make --always-make mac
 nmake && nmake /a windows
 ```
 
-#### WebAssembly
+#### WebAssembly (requires emsdk: https://github.com/emscripten-core/emsdk):
 
 ```
 make --always-make wasm
