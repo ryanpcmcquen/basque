@@ -94,10 +94,10 @@ int init()
 
         if (app.window != NULL) {
             app.renderer = SDL_CreateRenderer(app.window, -1, SDL_RENDERER_PRESENTVSYNC);
-            // TODO:
-            // Look into ways to check for the ability to use hardware acceleration, vsync, et cetera.
-            // app.renderer = SDL_CreateRenderer(app.window, -1, 0);
-            // app.renderer = SDL_CreateRenderer(app.window, -1, SDL_RENDERER_ACCELERATED);
+            // If VSyncing fails, just create a plain ol' renderer.
+            if (app.renderer == NULL) {
+                app.renderer = SDL_CreateRenderer(app.window, -1, 0);
+            }
             // app.renderer = SDL_CreateRenderer(app.window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 
             if (app.renderer != NULL) {
@@ -161,11 +161,7 @@ int init()
                     }
                 }
 
-                game.map.layout_file_base = MAP_LAYOUT_FILE_BASE;
-                game.map.layout_file = MAP_LAYOUT_FILE;
-                game.map.layout_modified_time = 0;
-                game.map.attributes_file = MAP_ATTRIBUTES_FILE;
-                game.map.attributes_modified_time = 0;
+                game.map.layout_file_base = MAP_LAYOUT_FILE_BASE, game.map.layout_file = MAP_LAYOUT_FILE, game.map.layout_modified_time = 0, game.map.attributes_file = MAP_ATTRIBUTES_FILE, game.map.attributes_modified_time = 0;
 
                 read_map_layout(&game);
                 read_map_attributes(&game);

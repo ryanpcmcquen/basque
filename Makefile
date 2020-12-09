@@ -12,6 +12,7 @@ TITLE=basque
 CP=copy # \
 MV=move # \
 RM=del # \
+#CC="%ProgramFiles%\CheckedC-LLVM\bin\clang" # \
 CC=clang # \
 EMCC=%UserProfile%\code\emsdk\upstream\emscripten\emcc # \
 SOURCE=source\$(TITLE).c # \
