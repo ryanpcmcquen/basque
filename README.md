@@ -306,6 +306,12 @@ After [compiling](#compiling) for your platform, you can launch with `./basque` 
 ![Basque on Haiku](https://user-images.githubusercontent.com/772937/93433807-26def300-f87c-11ea-8b75-166ba7297b4f.png)
 ![Basque on Haiku](https://user-images.githubusercontent.com/772937/93433806-26465c80-f87c-11ea-824a-6afd19c35cc3.png)
 
+**AmigaOS 4.1**:
+
+![Basque on AmigaOS](https://user-images.githubusercontent.com/82057491/113767469-63deda00-9727-11eb-924d-49f895713ca8.png)
+
+Thanks to [seventhwonder-amiga](https://github.com/seventhwonder-amiga)!
+
 #### In progress:
 
 -   ReactOS
