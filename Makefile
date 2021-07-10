@@ -38,8 +38,11 @@ EMCC?=emcc
 SDL2_FLAGS=`$$(which sdl2-config) --cflags --libs`
 SOURCE=source/$(TITLE).c
 LIBS='-Wl,-rpath,$$ORIGIN' $(SDL2_FLAGS) -l SDL2_image -l SDL2_mixer -l SDL2_ttf
+ifeq ($(origin EXTRA_LIBS), default)
+EXTRA_LIBS=
+endif
 TARGET=-o $(TITLE)
-COMPILE=$(CC) $(FLAGS) $(SOURCE) $(LIBS)
+COMPILE=$(CC) $(FLAGS) $(SOURCE) $(LIBS) $(EXTRA_LIBS)
 # \
 !endif
 
