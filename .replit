@@ -1,3 +1,3 @@
 language = "c"
 run = "EXTRA_LIBS='-l png -l jpeg -l tiff -l webp' make && ./basque"
-onboot = "install-pkg libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev"
+onBoot = "install-pkg libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev"
