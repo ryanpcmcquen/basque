@@ -36,9 +36,11 @@ https://ryanpcmcquen.itch.io/basque
 
 ---
 
-Too lazy to do local setup? You can give it a spin using Gitpod, the only downfall will be lack of audio.
+Too lazy to do local setup? You can give it a spin using Gitpod or Replit, the only downfall will be lack of audio.
 
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/ryanpcmcquen/basque)
+
+[![Run on Replit](https://replit.com/badge/github/ryanpcmcquen/basque)](https://replit.comt/github/ryanpcmcquen/basque)
 
 ---
 
