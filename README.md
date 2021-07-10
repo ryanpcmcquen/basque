@@ -40,7 +40,7 @@ Too lazy to do local setup? You can give it a spin using Gitpod or Replit, the o
 
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/ryanpcmcquen/basque)
 
-[![Run on Replit](https://replit.com/badge/github/ryanpcmcquen/basque)](https://replit.comt/github/ryanpcmcquen/basque)
+[![Run on Replit](https://replit.com/badge/github/ryanpcmcquen/basque)](https://replit.com/github/ryanpcmcquen/basque)
 
 ---
 
