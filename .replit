@@ -1,2 +1,3 @@
 language = "c"
-run = "([ $(which sdl-config) ] && make && ./basque) || install-pkg libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev"
+run = "make && ./basque"
+onBoot = "install-pkg libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev"
