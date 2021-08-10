@@ -1,3 +1,2 @@
 language = "c"
-run = "bash replit_boot.sh && EXTRA_LIBS='-l png -l jpeg -l tiff -l webp' make && ./basque"
-onBoot = "bash replit_boot.sh"
+run = "EXTRA_LIBS='-l png -l jpeg -l tiff -l webp' make && ./basque"
