@@ -1,3 +1,2 @@
 language = "c"
-run = "EXTRA_LIBS='-l png -l jpeg -l tiff -l webp' make && ./basque"
-onBoot = "install-pkg libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev"
+run = "bash replit_boot.sh && EXTRA_LIBS='-l png -l jpeg -l tiff -l webp' make && ./basque"
