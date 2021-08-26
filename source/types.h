@@ -42,6 +42,8 @@ typedef struct {
 typedef struct {
     Axes window;
     Axes global;
+    Axes movement;
+
     Directions can_move;
 
     Direction_Bounds bounds;

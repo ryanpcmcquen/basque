@@ -1,6 +1,11 @@
 #include "map.h"
 #include <SDL2/SDL_image.h>
 
+#define JOY_LEFT  12
+#define JOY_UP    13
+#define JOY_RIGHT 14
+#define JOY_DOWN  15
+
 SDL_Texture* load_texture(App* app, char* file)
 {
     SDL_Texture* texture;
@@ -271,7 +276,40 @@ void handle_input(App* app, Game* game)
 
         } break;
 
+        // use joystick
+        case SDL_JOYBUTTONDOWN: {
+            if      (event.jbutton.button == JOY_UP)    game->player.movement.y = -1;
+            else if (event.jbutton.button == JOY_DOWN)  game->player.movement.y =  1;
+            if      (event.jbutton.button == JOY_LEFT)  game->player.movement.x = -1;
+            else if (event.jbutton.button == JOY_RIGHT) game->player.movement.x =  1;
+        } break;
+
+        case SDL_JOYBUTTONUP: {
+            if (event.jbutton.button == JOY_UP ||
+                event.jbutton.button == JOY_DOWN)    game->player.movement.y = 0;
+            else
+            if (event.jbutton.button == JOY_LEFT
+            || event.jbutton.button == JOY_RIGHT)  game->player.movement.x = 0;
+        } break;
+
+        case SDL_KEYUP: {
+            if (event.key.keysym.sym == SDLK_UP
+                && game->player.movement.y == -1) game->player.movement.y = 0;
+            if (event.key.keysym.sym == SDLK_DOWN
+                && game->player.movement.y ==  1) game->player.movement.y = 0;
+            if (event.key.keysym.sym == SDLK_LEFT
+                && game->player.movement.x == -1) game->player.movement.x = 0;
+            if (event.key.keysym.sym == SDLK_RIGHT
+                && game->player.movement.x ==  1) game->player.movement.x = 0;
+        } break;
+
+        // keyboard
         case SDL_KEYDOWN: {
+
+            if      (event.key.keysym.sym == SDLK_UP)    game->player.movement.y = -1;
+            else if (event.key.keysym.sym == SDLK_DOWN)  game->player.movement.y =  1;
+            if      (event.key.keysym.sym == SDLK_LEFT)  game->player.movement.x = -1;
+            else if (event.key.keysym.sym == SDLK_RIGHT) game->player.movement.x =  1;
 
             switch (event.key.keysym.sym) {
 
@@ -463,14 +501,14 @@ void handle_input(App* app, Game* game)
     }
     previous_time = current_time;
 
-    const Uint8* current_key_states = SDL_GetKeyboardState(NULL);
+    //const Uint8* current_key_states = SDL_GetKeyboardState(NULL);
 
     int bound_index = 0;
 
     //
     // NORTH:
     //
-    if (current_key_states[SDL_SCANCODE_UP]) {
+    if (game->player.movement.y == -1) {
         int tile_coordinate_y = current_tile_y * TILE_SPRITE_HEIGHT;
         int next_tile_north_coordinate_y = next_tile_north_y * TILE_SPRITE_WIDTH;
 
@@ -493,7 +531,7 @@ void handle_input(App* app, Game* game)
     //
     // EAST:
     //
-    if (current_key_states[SDL_SCANCODE_RIGHT]) {
+    if (game->player.movement.x == 1) {
         int tile_coordinate_x = (current_tile_x + 1) * TILE_SPRITE_WIDTH;
         int next_tile_east_coordinate_x = (next_tile_east_x + 1) * TILE_SPRITE_WIDTH;
 
@@ -517,7 +555,7 @@ void handle_input(App* app, Game* game)
     //
     // SOUTH:
     //
-    if (current_key_states[SDL_SCANCODE_DOWN]) {
+    if (game->player.movement.y == 1) {
         int tile_coordinate_y = (current_tile_y + 1) * TILE_SPRITE_HEIGHT;
         int next_tile_south_coordinate_y = (next_tile_south_y + 1) * TILE_SPRITE_HEIGHT;
 
@@ -540,7 +578,7 @@ void handle_input(App* app, Game* game)
     //
     // WEST:
     //
-    if (current_key_states[SDL_SCANCODE_LEFT]) {
+    if (game->player.movement.x == -1) {
         int tile_coordinate_x = current_tile_x * TILE_SPRITE_WIDTH;
         int next_tile_west_coordinate_x = next_tile_west_x * TILE_SPRITE_WIDTH;
 
