@@ -314,6 +314,12 @@ After [compiling](#compiling) for your platform, you can launch with `./basque` 
 
 Thanks to [seventhwonder-amiga](https://github.com/seventhwonder-amiga)!
 
+**Nintendo Switch**:
+
+![Basque on Nintendo Switch](https://user-images.githubusercontent.com/88618327/131042085-efa210ad-d69b-4e9a-b1ae-56c5ba966a05.jpg)
+
+Thanks to [fontire](https://github.com/fontire)!
+
 #### In progress:
 
 -   ReactOS
