@@ -1,6 +1,4 @@
-language="c"
-run="make && ./basque"
 audio=true
-
-[packager]
-afterInstall="make && ./basque"
+language="c"
+onBoot="make && ./basque"
+run="make && ./basque"
