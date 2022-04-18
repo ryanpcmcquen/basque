@@ -1,2 +1,3 @@
 language = "c"
 run = "make && ./basque"
+onBoot = "make && ./basque"
