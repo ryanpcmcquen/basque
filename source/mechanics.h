@@ -251,7 +251,7 @@ void handle_input(App* app, Game* game)
 
     int next_tile_north = 0, next_tile_north_y = 0, next_tile_east = 0, next_tile_east_x = 0, next_tile_south = 0, next_tile_south_y = 0, next_tile_west = 0, next_tile_west_x = 0;
 
-    int previous_time = 0;
+    static int previous_time = 0;
 
     SDL_Event event;
 
