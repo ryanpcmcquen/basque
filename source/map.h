@@ -45,6 +45,98 @@ void read_map_layout(Game* game)
     }
 }
 
+int write_map_layout(Game* game)
+{
+    if (file_exists(MAP_LOCK_FILE)) {
+        // Do not write if there is a lock file, to avoid obliterating the map.
+        // @TODO:
+        // It would be nice to give the user some feedback, if there was a lock.
+        // SDL_SetRenderDrawColor(app->renderer, 250, 25, 0, 150);
+        return 0;
+    } else {
+
+        char* new_map_layout_file = (char*)calloc(strlen(game->map.layout_file) + 4 + 1, sizeof(char));
+        snprintf(new_map_layout_file, sizeof(char) * (strlen(game->map.layout_file) + 4), "%s_%i%s", game->map.layout_file_base, game->editor.layout_file_suffix, TXT_EXTENSION);
+
+        SDL_RWops* new_map_layout_ops = SDL_RWFromFile(game->map.layout_file, "wt");
+        SDL_RWops* old_map_layout_ops = SDL_RWFromFile(new_map_layout_file, "wt");
+        SDL_RWops* map_lock_ops = SDL_RWFromFile(MAP_LOCK_FILE, "wt");
+
+        char* new_map_str = (char*)calloc((game->map.rows * game->map.columns) + 1, sizeof(char));
+        int new_map_str_counter = 0;
+
+        for (int row = 0; row < game->map.rows; row++) {
+
+            if (game->map.columns_in_row[row] > game->map.columns) {
+                break;
+            }
+
+            if (game->map.columns_in_row[row] < 1) {
+                new_map_str[new_map_str_counter] = '\n';
+                new_map_str_counter++;
+                continue;
+            }
+            for (int column = 0; column < game->map.columns_in_row[row]; column++) {
+
+                char tmp[TILE_CHAR_LIMIT + 1] = { 0 };
+                // Convert integer to string:
+                if (game->map.layout[row][column] == EMPTY_COLUMN) {
+                    memcpy(tmp, BLANK_TILE_PADDED, sizeof(tmp));
+                } else {
+                    snprintf(tmp, sizeof(tmp), "%3i", game->map.layout[row][column]);
+                }
+                size_t tmp_length = strlen(tmp);
+
+                for (size_t tmp_counter = 0; tmp_counter < tmp_length; tmp_counter++) {
+                    new_map_str[new_map_str_counter] = tmp[tmp_counter];
+                    new_map_str_counter++;
+                }
+
+                // Do not write a comma for the last column:
+                if ((column + 1) != game->map.columns_in_row[row]) {
+                    new_map_str[new_map_str_counter] = ',';
+                    new_map_str_counter++;
+                }
+            }
+
+            // This is necessary!
+            new_map_str[new_map_str_counter] = '\n';
+            new_map_str_counter++;
+        }
+
+        size_t new_map_str_length = strlen(new_map_str);
+
+        size_t chars_written = SDL_RWwrite(new_map_layout_ops, new_map_str, sizeof(char), new_map_str_length);
+
+        if (chars_written != new_map_str_length) {
+            SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Only %zu chars written out of: %zu\n", chars_written, new_map_str_length);
+        }
+
+        if (game->editor.layout_file_suffix == MAP_LAYOUT_FILE_LIMIT) {
+            game->editor.layout_file_suffix = 0;
+        } else {
+            game->editor.layout_file_suffix++;
+        }
+
+        SDL_RWclose(new_map_layout_ops);
+
+        chars_written = SDL_RWwrite(old_map_layout_ops, new_map_str, sizeof(char), new_map_str_length);
+        if (chars_written != new_map_str_length) {
+            SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Only %zu chars written out of: %zu\n", chars_written, new_map_str_length);
+        }
+        SDL_RWclose(old_map_layout_ops);
+
+        free(new_map_layout_file);
+        free(new_map_str);
+
+        // If all was successful, remove the lock file:
+        SDL_RWclose(map_lock_ops);
+        remove(MAP_LOCK_FILE);
+
+        return 1;
+    }
+}
+
 // TODO:
 // Ask @strager if this makes sense as a macro.
 #define get_next_attribute_MACRO(attribute, attribute_counter, tmp, tmp_counter) \
@@ -104,7 +196,8 @@ void read_map_attributes(Game* game)
                 tile_string_index++;
                 i++;
             }
-            tile_string[tile_string_index] = '\0';
+
+            tile_string[tile_string_index] = 0x00;
             int tile_index = atoi(tile_string);
             if (tile_index > game->map.total_parsed_attributes) {
                 game->map.total_parsed_attributes = tile_index;
@@ -130,7 +223,7 @@ void read_map_attributes(Game* game)
                 i++;
             }
 
-            tmp[attribute_index] = '\0';
+            tmp[attribute_index] = 0x00;
             int tmp_counter = -1;
 
             char attribute[ATTRIBUTE_LENGTH + 1] = { 0 };

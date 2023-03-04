@@ -6,21 +6,21 @@ Basque is a cross-platform top-down 2d game engine.
 
 Running on Windows:
 
-![Basque Windows demo](demos/basque_windows_demo.gif 'Basque Windows demo')
+![Basque Windows demo](demos/basque_windows_demo.gif "Basque Windows demo")
 
 Running on Mac:
 
-![Basque Mac demo](demos/basque_mac_demo.gif 'Basque Mac demo')
+![Basque Mac demo](demos/basque_mac_demo.gif "Basque Mac demo")
 
 Running on Linux:
 
-![Basque Linux demo](demos/basque_linux_demo.gif 'Basque Linux demo')
+![Basque Linux demo](demos/basque_linux_demo.gif "Basque Linux demo")
 
 Running in your browser (thanks to WebAssembly and Emscripten):
 
-![Basque Wasm demo](demos/basque_wasm_demo.gif 'Basque Wasm demo')
+![Basque Wasm demo](demos/basque_wasm_demo.gif "Basque Wasm demo")
 
-[Play Basque Wasm](https://htmlpreview.github.io/?https://cdn.jsdelivr.net/gh/ryanpcmcquen/basque@master/wasm/basque.html 'Play Basque Wasm')
+[Play Basque Wasm](https://htmlpreview.github.io/?https://cdn.jsdelivr.net/gh/ryanpcmcquen/basque@master/wasm/basque.html "Play Basque Wasm")
 
 Now with touch controls!
 
@@ -84,6 +84,7 @@ Why not just use Godot/Unity/et cetera? Basque has a very different priority lis
 -   High DPI awareness. By default the game will not run in high DPI mode, but it will be aware of high DPI contexts. This prevents things from looking fuzzy with weird scaling settings.
 -   Automated GitHub and GitLab packaging pipelines.
 -   Scancode based movement (rather than event loop key states). This keeps the controls from being susceptible to operating system key repeat rates and delays.
+-   Unicode (UTF-8) file path support.
 
 Everything that is here should not be considered a final or optimal solution, but rather, a simple approach that can be morphed into a better solution. At this point the engine will become more specific to the game I am building, which is why I see this as the best time to open source it. Hopefully, it can be useful to others, either as a starting point, or as a reference of some things you can accomplish with SDL2.
 
@@ -297,11 +298,11 @@ After [compiling](#compiling) for your platform, you can launch with `./basque` 
 
 **BSD**:
 
-![Basque on BSD](https://user-images.githubusercontent.com/772937/91080734-f26c7400-e5fa-11ea-91bd-a1b00f589326.jpg 'Basque on BSD')
+![Basque on BSD](https://user-images.githubusercontent.com/772937/91080734-f26c7400-e5fa-11ea-91bd-a1b00f589326.jpg "Basque on BSD")
 
 **Pocketchip**:
 
-![Basque on a PocketCHIP](https://user-images.githubusercontent.com/772937/91081932-bf2ae480-e5fc-11ea-8f92-d393e08b007a.gif 'Basque on a PocketCHIP')
+![Basque on a PocketCHIP](https://user-images.githubusercontent.com/772937/91081932-bf2ae480-e5fc-11ea-8f92-d393e08b007a.gif "Basque on a PocketCHIP")
 
 **Haiku**:
 
