@@ -84,7 +84,7 @@ jobs:
               run: |
                   git config --local user.email "action@github.com"
                   git config --local user.name "ActionBot"
-                  git commit -m "Beep boop. Wasm encabulator updated." -a
+                  git commit -m "Beep boop. Wasm encabulator updated." -a || exit 0
 
             - name: Give often, give wasm.
               uses: ad-m/github-push-action@master
