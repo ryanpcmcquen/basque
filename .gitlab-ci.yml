@@ -37,3 +37,15 @@ wasm:
         name: basque.wasm
         paths:
             - basque.wasm.zip
+# mac:
+#     tags:
+#         - shared-macos-amd64
+#     stage: build
+#     before_script:
+#         - brew install sdl2 sdl2_image sdl2_mixer sdl2_ttf
+#     script:
+#         - make && make --always-make mac
+#     artifacts:
+#         name: basque.mac
+#         paths:
+#             - basque.mac.zip
