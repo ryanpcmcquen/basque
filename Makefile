@@ -9,43 +9,46 @@ TITLE=basque
 FLAGS=-Wall -Wextra -std=c99
 
 # \
-!IFDEF MAKEDIR # \
-# nmake: \
-CP=copy # \
-MV=move # \
-RM=del # \
-#CC="%ProgramFiles%\CheckedC-LLVM\bin\clang" # \
-CC=clang # \
-EMCC=%UserProfile%\code\emsdk\upstream\emscripten\emcc # \
-SOURCE=source\$(TITLE).c # \
-LIBS=-I C:\INCLUDE\ -L C:\INCLUDE\SDL2\ -Xlinker windows\$(TITLE).res -l Shell32 -l C:\INCLUDE\SDL2\SDL2.lib -l C:\INCLUDE\SDL2\SDL2main.lib -l C:\INCLUDE\SDL2\SDL2_image.lib -l C:\INCLUDE\SDL2\SDL2_mixer.lib -l C:\INCLUDE\SDL2\SDL2_ttf.lib -Xlinker /SUBSYSTEM:WINDOWS # \
-TARGET=-o $(TITLE).exe && mt.exe -nologo -manifest windows\$(TITLE).manifest -outputresource:$(TITLE).exe # \
-COMPILE=rc.exe /nologo windows\$(TITLE).rc && $(CC) $(FLAGS) $(SOURCE) $(LIBS) # \
-# \
-$(TITLE): source\* # \
-	$(COMPILE) $(TARGET) # \
-# Windows will automatically overwrite # \
-# the binary when using `nmake`, but # \
-# we add the clean command for # \
-# people who like that kind # \
-# of thing. # \
-clean: # \
-	$(RM) $(TITLE).exe # \
-# \
-force: source\* # \
-	$(RM) $(TITLE).exe # \
-	nmake /nologo $(TITLE) # \
-# \
-debug: source\* # \
-	$(COMPILE) -g $(TARGET) # \
-memdebug: source\* # \
-	$(COMPILE) -g -fsanitize=address $(TARGET) # \
-# \
-windows: source\* # \
-	copy $(TITLE).exe windows\ & # \
-	robocopy assets\ windows\assets\ /e & # \
-	robocopy C:\INCLUDE\SDL2\ windows\ *.dll & # \
-	powershell Compress-Archive -Force windows\* $(TITLE).windows.zip # \
+!IFDEF MAKEDIR
+# nmake:
+CP=copy
+MV=move
+RM=del
+#CC="%ProgramFiles%\CheckedC-LLVM\bin\clang" #
+CC=clang
+EMCC=%UserProfile%\code\emsdk\upstream\emscripten\emcc
+SOURCE=source\$(TITLE).c
+LIBS=-I C:\INCLUDE\ -L C:\INCLUDE\SDL2\ -Xlinker windows\$(TITLE).res -l Shell32 -l C:\INCLUDE\SDL2\SDL2.lib -l C:\INCLUDE\SDL2\SDL2main.lib -l C:\INCLUDE\SDL2\SDL2_image.lib -l C:\INCLUDE\SDL2\SDL2_mixer.lib -l C:\INCLUDE\SDL2\SDL2_ttf.lib -Xlinker /SUBSYSTEM:WINDOWS
+TARGET=-o $(TITLE).exe && mt.exe -nologo -manifest windows\$(TITLE).manifest -outputresource:$(TITLE).exe
+COMPILE=rc.exe /nologo windows\$(TITLE).rc && $(CC) $(FLAGS) $(SOURCE) $(LIBS)
+
+$(TITLE): source\*
+	$(COMPILE) $(TARGET)
+
+# Windows will automatically overwrite
+# the binary when using `nmake`, but
+# we add the clean command for
+# people who like that kind
+# of thing.
+clean:
+	$(RM) $(TITLE).exe
+
+force: source\*
+	$(RM) $(TITLE).exe
+	nmake /nologo $(TITLE)
+
+debug: source\*
+	$(COMPILE) -g $(TARGET)
+
+memdebug: source\*
+	$(COMPILE) -g -fsanitize=address $(TARGET)
+
+windows: source\*
+	copy $(TITLE).exe windows\ &
+	robocopy assets\ windows\assets\ /e &
+	robocopy C:\INCLUDE\SDL2\ windows\ *.dll &
+	powershell Compress-Archive -Force windows\* $(TITLE).windows.zip
+
 # \
 !ELSE
 # make:
@@ -182,4 +185,4 @@ wasmdebug: source/*
 	$(EMCC) --shell-file wasm/$(TITLE)_shell.html -g -fsanitize=address -s USE_SDL=2 -s USE_SDL_IMAGE=2 -s SDL2_IMAGE_FORMATS='["png"]' -s USE_SDL_MIXER=2 -s SDL2_MIXER_FORMATS='["ogg"]' -s USE_SDL_TTF=2 -s ALLOW_MEMORY_GROWTH=1 -s INITIAL_MEMORY=$(WASM_DEBUG_TOTAL_MEMORY) -s TOTAL_STACK=$(WASM_DEBUG_STACK_MEMORY) -s WASM=2 --preload-file assets $(FLAGS) -I $${HOME}/code/emsdk/upstream/emscripten/cache/sysroot/include/ -I $${HOME}/work/$(TITLE)/$(TITLE)/emsdk/upstream/emscripten/cache/sysroot/include/ -I /builds/ryanpcmcquen/$(TITLE)/emsdk/upstream/emscripten/cache/sysroot/include/ source/$(TITLE).c -o wasm/$(TITLE).html
 
 # \
-!ENDIF # \
+!ENDIF
