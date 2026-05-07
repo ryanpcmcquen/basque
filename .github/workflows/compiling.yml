@@ -16,7 +16,7 @@ jobs:
     linux:
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v2
+            - uses: actions/checkout@v6
 
             - name: Install dependencies.
               run: sudo apt-get update && sudo apt-get -qy install clang libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev
@@ -32,7 +32,7 @@ jobs:
     mac:
         runs-on: macos-latest
         steps:
-            - uses: actions/checkout@v2
+            - uses: actions/checkout@v6
 
             - name: Install dependencies.
               run: brew install sdl2 sdl2_image sdl2_mixer sdl2_ttf
@@ -48,7 +48,7 @@ jobs:
     windows:
         runs-on: windows-latest
         steps:
-            - uses: actions/checkout@v2
+            - uses: actions/checkout@v6
             - uses: nuget/setup-nuget@v1
 
             - name: Install dependencies.
@@ -69,7 +69,7 @@ jobs:
     wasm:
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v2
+            - uses: actions/checkout@v6
               # with:
               # persist-credentials: false # otherwise, the token used is the GITHUB_TOKEN, instead of your personal token
               # fetch-depth: 0 # otherwise, you will failed to push refs to dest repo
