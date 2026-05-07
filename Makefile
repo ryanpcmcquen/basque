@@ -1,10 +1,8 @@
 TITLE=basque
 
-# This is a cross platform Makefile, it has been tested on Linux,
-# Mac OS, and Windows (using make and nmake).
-#
-# The section under '!ifndef' is for Windows, and the
-# section under '!else' is for everything else.
+# Cross platform Makefile (make + nmake).
+# The section under '!ifndef' is for Windows (nmake), and
+# the section under '!else' is for everything else.
 
 # \
 !ifndef 0 # \
@@ -12,7 +10,6 @@ TITLE=basque
 CP=copy # \
 MV=move # \
 RM=del # \
-#CC="%ProgramFiles%\CheckedC-LLVM\bin\clang" # \
 CC=clang # \
 EMCC=%UserProfile%\code\emsdk\upstream\emscripten\emcc # \
 SOURCE=source\$(TITLE).c # \
@@ -20,52 +17,49 @@ LIBS=-I C:\INCLUDE\ -L C:\INCLUDE\SDL2\ -Xlinker windows\$(TITLE).res -l Shell32
 TARGET=-o $(TITLE).exe && mt.exe -nologo -manifest windows\$(TITLE).manifest -outputresource:$(TITLE).exe # \
 COMPILE=rc.exe /nologo windows\$(TITLE).rc && $(CC) $(FLAGS) $(SOURCE) $(LIBS) # \
 !else
-# make:
+# make (POSIX sh in recipes; no GNU make conditionals/functions):
 CP=cp -f
 MV=mv -f
 RM=rm -f
-# If this fancy syntax doesn't work with your version of `make`,
-# just remove the conditional wrapper (ifeq and endif).
-# It works here on Linux and Mac OS.
-ifeq ($(origin CC), default)
+
 CC=clang
-endif
-EMCC?=emcc
-# Calling which here seems wrong, but somehow, in
-# certain enviros, it breaks without the full
-# path ... even though the binary is in
-# the calling path.
-SDL2_FLAGS=`$$(which sdl2-config) --cflags --libs --static-libs`
+EMCC=emcc
+
 SOURCE=source/$(TITLE).c
 
-# On macOS, SDL2 add-on headers/libs installed via Homebrew are not covered by sdl2-config.
-UNAME_S := $(shell uname -s)
-BREW_PREFIX :=
-
-ifeq ($(UNAME_S),Darwin)
-BREW_PREFIX := $(shell command -v brew >/dev/null 2>&1 && brew --prefix)
-ifneq ($(BREW_PREFIX),)
-CPPFLAGS += -I$(BREW_PREFIX)/include
-EXTRA_LIBS += -L$(BREW_PREFIX)/lib
-endif
-endif
-
-LIBS='-Wl,-rpath,$$ORIGIN' $(SDL2_FLAGS) -l SDL2_image -l SDL2_mixer -l SDL2_ttf
-ifeq ($(origin EXTRA_LIBS), default)
+# Allow overrides from the command line, e.g.:
+#   make CC=gcc CPPFLAGS=... EXTRA_LIBS=...
+CPPFLAGS=
 EXTRA_LIBS=
-endif
+
+SDL2_CONFIG=sdl2-config
+
+# Note: Homebrew include/lib paths are injected at build time (recipe),
+# to avoid non-portable make conditionals/shell eval in variable assignment.
+
 TARGET=-o $(TITLE)
-COMPILE=$(CC) $(FLAGS) $(CPPFLAGS) $(SOURCE) $(LIBS) $(EXTRA_LIBS)
 # \
 !endif
 
 FLAGS=-Wall -Wextra -std=c99
-RELEASE=$(COMPILE) $(TARGET)
-DEBUG=$(COMPILE) -g $(TARGET)
-MEMDEBUG=$(COMPILE) -g -fsanitize=address $(TARGET)
 
 $(TITLE): source/*
-	$(RELEASE)
+	@brew_inc=""; brew_lib=""; \
+	case "$$(uname -s)" in \
+		Darwin) \
+			if command -v brew >/dev/null 2>&1; then \
+				p="$$(brew --prefix)"; \
+				brew_inc="-I$${p}/include"; \
+				brew_lib="-L$${p}/lib"; \
+			fi ;; \
+	esac; \
+	$(CC) $(FLAGS) $(CPPFLAGS) $$brew_inc $(SOURCE) \
+		'-Wl,-rpath,$$ORIGIN' \
+		`$$(which $(SDL2_CONFIG)) --cflags --libs --static-libs` \
+		-l SDL2_image -l SDL2_mixer -l SDL2_ttf \
+		$(EXTRA_LIBS) $$brew_lib \
+		$(TARGET)
+
 # Windows will automatically overwrite
 # the binary when using `nmake`, but
 # we add the clean command for
@@ -74,28 +68,64 @@ $(TITLE): source/*
 clean:
 	$(RM) $(TITLE)
 	$(RM) $(TITLE).exe
-force:
-	$(RELEASE)
+
+force: source/*
+	@$(RM) $(TITLE)
+	@$(RM) $(TITLE).exe
+	@$(MAKE) $(TITLE)
 
 debug: source/*
-	$(DEBUG)
+	@brew_inc=""; brew_lib=""; \
+	case "$$(uname -s)" in \
+		Darwin) \
+			if command -v brew >/dev/null 2>&1; then \
+				p="$$(brew --prefix)"; \
+				brew_inc="-I$${p}/include"; \
+				brew_lib="-L$${p}/lib"; \
+			fi ;; \
+	esac; \
+	$(CC) $(FLAGS) -g $(CPPFLAGS) $$brew_inc $(SOURCE) \
+		'-Wl,-rpath,$$ORIGIN' \
+		`$$(which $(SDL2_CONFIG)) --cflags --libs --static-libs` \
+		-l SDL2_image -l SDL2_mixer -l SDL2_ttf \
+		$(EXTRA_LIBS) $$brew_lib \
+		$(TARGET)
+
 memdebug: source/*
-	$(MEMDEBUG)
+	@brew_inc=""; brew_lib=""; \
+	case "$$(uname -s)" in \
+		Darwin) \
+			if command -v brew >/dev/null 2>&1; then \
+				p="$$(brew --prefix)"; \
+				brew_inc="-I$${p}/include"; \
+				brew_lib="-L$${p}/lib"; \
+			fi ;; \
+	esac; \
+	$(CC) $(FLAGS) -g -fsanitize=address $(CPPFLAGS) $$brew_inc $(SOURCE) \
+		'-Wl,-rpath,$$ORIGIN' \
+		`$$(which $(SDL2_CONFIG)) --cflags --libs --static-libs` \
+		-l SDL2_image -l SDL2_mixer -l SDL2_ttf \
+		$(EXTRA_LIBS) $$brew_lib \
+		$(TARGET)
 
 linux: source/*
 	cp $(TITLE) linux/
 	cp -r assets linux/
 	find /usr/lib -type f -iname "*sdl2*.so.*" -exec cp {} linux/ \;
-	# for FILE in $$(ldd $(TITLE) | awk '{print $$3}'); do cp $$(readlink -e $$FILE) linux/; done
 	for FILE in $$(find linux/ -type f -iname "*.so.0.*"); do ln -sfv $$(basename $${FILE}) $$(echo $${FILE} | sed 's/.so.0.*/.so.0/'); done
 	zip -r $(TITLE).linux.zip linux/*
+
 mac: source/*
 	mkdir -p mac/$(TITLE).app/Contents/Resources/
 	cp $(TITLE) mac/$(TITLE).app/Contents/Resources/
 	cp -r assets mac/$(TITLE).app/Contents/Resources/
-	[ -d /usr/local/Cellar ] && find /usr/local/Cellar -type f -iname "*sdl2*.dylib" -exec cp {} mac/$(TITLE).app/Contents/Resources/ \;
-	[ -d /opt/homebrew/Cellar ] && find /opt/homebrew/Cellar -type f -iname "*sdl2*.dylib" -exec cp {} mac/$(TITLE).app/Contents/Resources/ \;
+	@dest="mac/$(TITLE).app/Contents/Resources"; \
+	for cellar in /opt/homebrew/Cellar /usr/local/Cellar; do \
+		[ -d "$$cellar" ] || continue; \
+		find "$$cellar" -type f -iname '*sdl2*.dylib' -exec cp -f {} "$$dest/" + 2>/dev/null || true; \
+	done
 	zip -r $(TITLE).mac.zip mac/$(TITLE).app
+
 windows: source/*
 	copy $(TITLE).exe windows\ &
 	robocopy assets\ windows\assets\ /e &
@@ -107,6 +137,7 @@ WASM_TOTAL_MEMORY=512MB
 WASM_STACK_MEMORY=256MB
 WASM_DEBUG_TOTAL_MEMORY=1024MB
 WASM_DEBUG_STACK_MEMORY=512MB
+
 
 # This is just a nice shortcut for wasm without
 # release optimizations, that is useful
