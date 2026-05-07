@@ -5,7 +5,7 @@ TITLE=basque
 # the section under '!else' is for everything else.
 
 # \
-!ifndef 0 # \
+!IFDEF MAKEDIR # \
 # nmake: \
 CP=copy # \
 MV=move # \
@@ -16,7 +16,8 @@ SOURCE=source\$(TITLE).c # \
 LIBS=-I C:\INCLUDE\ -L C:\INCLUDE\SDL2\ -Xlinker windows\$(TITLE).res -l Shell32 -l C:\INCLUDE\SDL2\SDL2.lib -l C:\INCLUDE\SDL2\SDL2main.lib -l C:\INCLUDE\SDL2\SDL2_image.lib -l C:\INCLUDE\SDL2\SDL2_mixer.lib -l C:\INCLUDE\SDL2\SDL2_ttf.lib -Xlinker /SUBSYSTEM:WINDOWS # \
 TARGET=-o $(TITLE).exe && mt.exe -nologo -manifest windows\$(TITLE).manifest -outputresource:$(TITLE).exe # \
 COMPILE=rc.exe /nologo windows\$(TITLE).rc && $(CC) $(FLAGS) $(SOURCE) $(LIBS) # \
-!else
+# \
+!ELSE
 # make (POSIX sh in recipes; no GNU make conditionals/functions):
 CP=cp -f
 MV=mv -f
@@ -39,7 +40,7 @@ SDL2_CONFIG=sdl2-config
 
 TARGET=-o $(TITLE)
 # \
-!endif
+!ENDIF
 
 FLAGS=-Wall -Wextra -std=c99
 
