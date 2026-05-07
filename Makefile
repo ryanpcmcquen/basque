@@ -66,19 +66,15 @@ EMCC=emcc
 # the calling path.
 SDL2_CONFIG=sdl2-config
 SOURCE=source/$(TITLE).c
-
 # Allow overrides from the command line, e.g.:
 #   make CC=gcc CPPFLAGS=... EXTRA_LIBS=...
 CPPFLAGS=
 EXTRA_LIBS=
-
 # Note: On macOS, SDL2 add-on headers/libs installed via Homebrew are not
 # covered by sdl2-config. We inject Homebrew include/lib paths at build time
 # (in the recipe), to keep the Makefile compatible with basic make variants
 # (no GNU make conditionals/functions).
-
 TARGET=-o $(TITLE)
-
 $(TITLE): source/*
 	brew_inc=""; brew_lib=""; \
 	case "$$(uname -s)" in \
@@ -95,7 +91,6 @@ $(TITLE): source/*
 		-l SDL2_image -l SDL2_mixer -l SDL2_ttf \
 		$(EXTRA_LIBS) $$brew_lib \
 		$(TARGET)
-
 # Windows will automatically overwrite
 # the binary when using `nmake`, but
 # we add the clean command for
@@ -104,12 +99,10 @@ $(TITLE): source/*
 clean:
 	$(RM) $(TITLE)
 	$(RM) $(TITLE).exe
-
 force: source/*
 	$(RM) $(TITLE)
 	$(RM) $(TITLE).exe
 	$(MAKE) $(TITLE)
-
 debug: source/*
 	brew_inc=""; brew_lib=""; \
 	case "$$(uname -s)" in \
@@ -126,7 +119,6 @@ debug: source/*
 		-l SDL2_image -l SDL2_mixer -l SDL2_ttf \
 		$(EXTRA_LIBS) $$brew_lib \
 		$(TARGET)
-
 memdebug: source/*
 	brew_inc=""; brew_lib=""; \
 	case "$$(uname -s)" in \
@@ -143,7 +135,6 @@ memdebug: source/*
 		-l SDL2_image -l SDL2_mixer -l SDL2_ttf \
 		$(EXTRA_LIBS) $$brew_lib \
 		$(TARGET)
-
 linux: source/*
 	cp $(TITLE) linux/
 	cp -r assets linux/
@@ -151,7 +142,6 @@ linux: source/*
 	# for FILE in $$(ldd $(TITLE) | awk '{print $$3}'); do cp $$(readlink -e $$FILE) linux/; done
 	for FILE in $$(find linux/ -type f -iname "*.so.0.*"); do ln -sfv $$(basename $${FILE}) $$(echo $${FILE} | sed 's/.so.0.*/.so.0/'); done
 	zip -r $(TITLE).linux.zip linux/*
-
 mac: source/*
 	mkdir -p mac/$(TITLE).app/Contents/Resources/
 	cp $(TITLE) mac/$(TITLE).app/Contents/Resources/
@@ -162,27 +152,21 @@ mac: source/*
 		find "$$cellar" -type f -iname '*sdl2*.dylib' -exec cp -f {} "$$dest/" + 2>/dev/null || true; \
 	done
 	zip -r $(TITLE).mac.zip mac/$(TITLE).app
-
 windows: source/*
 	echo "Use nmake on Windows to build/package."
-
 WASM_TOTAL_MEMORY=512MB
 WASM_STACK_MEMORY=256MB
 WASM_DEBUG_TOTAL_MEMORY=1024MB
 WASM_DEBUG_STACK_MEMORY=512MB
-
 # This is just a nice shortcut for wasm without
 # release optimizations, that is useful
 # when prototyping or testing.
 wa: source/*
 	$(EMCC) --shell-file wasm/$(TITLE)_shell.html -s USE_SDL=2 -s USE_SDL_IMAGE=2 -s SDL2_IMAGE_FORMATS='["png"]' -s USE_SDL_MIXER=2 -s SDL2_MIXER_FORMATS='["ogg"]' -s USE_SDL_TTF=2 -s ALLOW_MEMORY_GROWTH=1 -s INITIAL_MEMORY=$(WASM_TOTAL_MEMORY) -s TOTAL_STACK=$(WASM_STACK_MEMORY) -s WASM=2 --preload-file assets $(FLAGS) -I $${HOME}/code/emsdk/upstream/emscripten/cache/sysroot/include/ -I $${HOME}/work/$(TITLE)/$(TITLE)/emsdk/upstream/emscripten/cache/sysroot/include/ -I /builds/ryanpcmcquen/$(TITLE)/emsdk/upstream/emscripten/cache/sysroot/include/ source/$(TITLE).c -o wasm/$(TITLE).html
-
 wasm: source/*
 	$(EMCC) --shell-file wasm/$(TITLE)_shell.html -O3 --closure 1 -s USE_SDL=2 -s USE_SDL_IMAGE=2 -s SDL2_IMAGE_FORMATS='["png"]' -s USE_SDL_MIXER=2 -s SDL2_MIXER_FORMATS='["ogg"]' -s USE_SDL_TTF=2 -s ALLOW_MEMORY_GROWTH=1 -s INITIAL_MEMORY=$(WASM_TOTAL_MEMORY) -s TOTAL_STACK=$(WASM_STACK_MEMORY) -s WASM=2 -s EXPORTED_RUNTIME_METHODS=allocate --preload-file assets $(FLAGS) -I $${HOME}/code/emsdk/upstream/emscripten/cache/sysroot/include/ -I $${HOME}/work/$(TITLE)/$(TITLE)/emsdk/upstream/emscripten/cache/sysroot/include/ -I /builds/ryanpcmcquen/$(TITLE)/emsdk/upstream/emscripten/cache/sysroot/include/ source/$(TITLE).c -o wasm/$(TITLE).html
 	zip -r $(TITLE).wasm.zip wasm/*
-
 wasmdebug: source/*
 	$(EMCC) --shell-file wasm/$(TITLE)_shell.html -g -fsanitize=address -s USE_SDL=2 -s USE_SDL_IMAGE=2 -s SDL2_IMAGE_FORMATS='["png"]' -s USE_SDL_MIXER=2 -s SDL2_MIXER_FORMATS='["ogg"]' -s USE_SDL_TTF=2 -s ALLOW_MEMORY_GROWTH=1 -s INITIAL_MEMORY=$(WASM_DEBUG_TOTAL_MEMORY) -s TOTAL_STACK=$(WASM_DEBUG_STACK_MEMORY) -s WASM=2 --preload-file assets $(FLAGS) -I $${HOME}/code/emsdk/upstream/emscripten/cache/sysroot/include/ -I $${HOME}/work/$(TITLE)/$(TITLE)/emsdk/upstream/emscripten/cache/sysroot/include/ -I /builds/ryanpcmcquen/$(TITLE)/emsdk/upstream/emscripten/cache/sysroot/include/ source/$(TITLE).c -o wasm/$(TITLE).html
-
 # \
 !ENDIF
