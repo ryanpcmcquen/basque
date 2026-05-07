@@ -35,14 +35,27 @@ EMCC?=emcc
 # certain enviros, it breaks without the full
 # path ... even though the binary is in
 # the calling path.
-SDL2_FLAGS=`$$(which sdl2-config) --cflags --libs`
+SDL2_FLAGS=`$$(which sdl2-config) --cflags --libs --static-libs`
 SOURCE=source/$(TITLE).c
+
+# On macOS, SDL2 add-on headers/libs installed via Homebrew are not covered by sdl2-config.
+UNAME_S := $(shell uname -s)
+BREW_PREFIX :=
+
+ifeq ($(UNAME_S),Darwin)
+BREW_PREFIX := $(shell command -v brew >/dev/null 2>&1 && brew --prefix)
+ifneq ($(BREW_PREFIX),)
+CPPFLAGS += -I$(BREW_PREFIX)/include
+EXTRA_LIBS += -L$(BREW_PREFIX)/lib
+endif
+endif
+
 LIBS='-Wl,-rpath,$$ORIGIN' $(SDL2_FLAGS) -l SDL2_image -l SDL2_mixer -l SDL2_ttf
 ifeq ($(origin EXTRA_LIBS), default)
 EXTRA_LIBS=
 endif
 TARGET=-o $(TITLE)
-COMPILE=$(CC) $(FLAGS) $(SOURCE) $(LIBS) $(EXTRA_LIBS)
+COMPILE=$(CC) $(FLAGS) $(CPPFLAGS) $(SOURCE) $(LIBS) $(EXTRA_LIBS)
 # \
 !endif
 
@@ -81,6 +94,7 @@ mac: source/*
 	cp $(TITLE) mac/$(TITLE).app/Contents/Resources/
 	cp -r assets mac/$(TITLE).app/Contents/Resources/
 	find /usr/local/Cellar -type f -iname "*sdl2*.dylib" -exec cp {} mac/$(TITLE).app/Contents/Resources/ \;
+	find /opt/homebrew/Cellar -type f -iname "*sdl2*.dylib" -exec cp {} mac/$(TITLE).app/Contents/Resources/ \;
 	zip -r $(TITLE).mac.zip mac/$(TITLE).app
 windows: source/*
 	copy $(TITLE).exe windows\ &
