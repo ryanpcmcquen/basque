@@ -11,6 +11,7 @@ FLAGS=-Wall -Wextra -std=c99
 # \
 !IFDEF MAKEDIR # \
 # nmake: \
+!CMDSWITCHES +s # \
 CP=copy # \
 MV=move # \
 RM=del # \
@@ -77,7 +78,7 @@ EXTRA_LIBS=
 TARGET=-o $(TITLE)
 
 $(TITLE): source/*
-	@brew_inc=""; brew_lib=""; \
+	brew_inc=""; brew_lib=""; \
 	case "$$(uname -s)" in \
 		Darwin) \
 			if command -v brew >/dev/null 2>&1; then \
