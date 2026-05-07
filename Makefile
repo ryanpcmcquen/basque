@@ -93,8 +93,8 @@ mac: source/*
 	mkdir -p mac/$(TITLE).app/Contents/Resources/
 	cp $(TITLE) mac/$(TITLE).app/Contents/Resources/
 	cp -r assets mac/$(TITLE).app/Contents/Resources/
-	find /usr/local/Cellar -type f -iname "*sdl2*.dylib" -exec cp {} mac/$(TITLE).app/Contents/Resources/ \;
-	find /opt/homebrew/Cellar -type f -iname "*sdl2*.dylib" -exec cp {} mac/$(TITLE).app/Contents/Resources/ \;
+	[ -d /usr/local/Cellar ] && find /usr/local/Cellar -type f -iname "*sdl2*.dylib" -exec cp {} mac/$(TITLE).app/Contents/Resources/ \;
+	[ -d /opt/homebrew/Cellar ] && find /opt/homebrew/Cellar -type f -iname "*sdl2*.dylib" -exec cp {} mac/$(TITLE).app/Contents/Resources/ \;
 	zip -r $(TITLE).mac.zip mac/$(TITLE).app
 windows: source/*
 	copy $(TITLE).exe windows\ &
