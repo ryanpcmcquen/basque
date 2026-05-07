@@ -11,7 +11,6 @@ FLAGS=-Wall -Wextra -std=c99
 # \
 !IFDEF MAKEDIR # \
 # nmake: \
-!CMDSWITCHES +s # \
 CP=copy # \
 MV=move # \
 RM=del # \
@@ -104,12 +103,12 @@ clean:
 	$(RM) $(TITLE).exe
 
 force: source/*
-	@$(RM) $(TITLE)
-	@$(RM) $(TITLE).exe
-	@$(MAKE) $(TITLE)
+	$(RM) $(TITLE)
+	$(RM) $(TITLE).exe
+	$(MAKE) $(TITLE)
 
 debug: source/*
-	@brew_inc=""; brew_lib=""; \
+	brew_inc=""; brew_lib=""; \
 	case "$$(uname -s)" in \
 		Darwin) \
 			if command -v brew >/dev/null 2>&1; then \
@@ -126,7 +125,7 @@ debug: source/*
 		$(TARGET)
 
 memdebug: source/*
-	@brew_inc=""; brew_lib=""; \
+	brew_inc=""; brew_lib=""; \
 	case "$$(uname -s)" in \
 		Darwin) \
 			if command -v brew >/dev/null 2>&1; then \
@@ -154,7 +153,7 @@ mac: source/*
 	mkdir -p mac/$(TITLE).app/Contents/Resources/
 	cp $(TITLE) mac/$(TITLE).app/Contents/Resources/
 	cp -r assets mac/$(TITLE).app/Contents/Resources/
-	@dest="mac/$(TITLE).app/Contents/Resources"; \
+	dest="mac/$(TITLE).app/Contents/Resources"; \
 	for cellar in /opt/homebrew/Cellar /usr/local/Cellar; do \
 		[ -d "$$cellar" ] || continue; \
 		find "$$cellar" -type f -iname '*sdl2*.dylib' -exec cp -f {} "$$dest/" + 2>/dev/null || true; \
@@ -162,7 +161,7 @@ mac: source/*
 	zip -r $(TITLE).mac.zip mac/$(TITLE).app
 
 windows: source/*
-	@echo "Use nmake on Windows to build/package."
+	echo "Use nmake on Windows to build/package."
 
 WASM_TOTAL_MEMORY=512MB
 WASM_STACK_MEMORY=256MB
